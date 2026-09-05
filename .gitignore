@@ -1,0 +1,43 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Jupyter / Colab
+.ipynb_checkpoints/
+*.ipynb
+
+# Environment files
+.env
+.env.*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Local datasets and archives
+*.zip
+*.tar
+*.tar.gz
+
+# Training / temporary folders
+deployment_models/
+final_model/
+checkpoints/
+runs/
+
+# IDE files
+.vscode/
+.idea/

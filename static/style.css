@@ -1,0 +1,340 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f7fb;
+    color: #1f2937;
+    min-height: 100vh;
+}
+
+.page-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 20px;
+}
+
+
+/* ============================================================
+   HERO
+============================================================ */
+
+.hero {
+    background: linear-gradient(135deg, #0f172a, #1e3a5f);
+    color: white;
+    border-radius: 24px;
+    padding: 55px 40px;
+    margin-bottom: 25px;
+    box-shadow: 0 15px 40px rgba(15, 23, 42, 0.15);
+}
+
+.hero-content {
+    max-width: 760px;
+}
+
+.badge {
+    display: inline-block;
+    padding: 8px 14px;
+    margin-bottom: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.08);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.hero h1 {
+    font-size: 42px;
+    line-height: 1.15;
+    margin-bottom: 15px;
+}
+
+.hero p {
+    font-size: 17px;
+    line-height: 1.7;
+    color: #dbeafe;
+}
+
+
+/* ============================================================
+   MAIN CARD
+============================================================ */
+
+.prediction-card {
+    background: white;
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 10px 35px rgba(15, 23, 42, 0.08);
+}
+
+.section-heading {
+    margin-bottom: 35px;
+}
+
+.section-heading h2 {
+    font-size: 28px;
+    margin-bottom: 8px;
+}
+
+.section-heading p {
+    color: #64748b;
+    font-size: 15px;
+}
+
+
+/* ============================================================
+   FORM SECTIONS
+============================================================ */
+
+.form-section {
+    margin-bottom: 35px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.form-section h3 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #111827;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #374151;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 13px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #111827;
+    font-size: 15px;
+    outline: none;
+    transition: 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+}
+
+.form-group input::placeholder {
+    color: #9ca3af;
+}
+
+
+/* ============================================================
+   ADDITIONAL FEATURES
+============================================================ */
+
+.checkbox-section {
+    margin-top: 25px;
+}
+
+.checkbox-section h4 {
+    margin-bottom: 15px;
+    font-size: 16px;
+    color: #374151;
+}
+
+.checkbox-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    margin-right: 25px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    color: #374151;
+    font-size: 14px;
+}
+
+.checkbox-item input {
+    width: 17px;
+    height: 17px;
+    cursor: pointer;
+}
+
+
+/* ============================================================
+   BUTTON
+============================================================ */
+
+.predict-button {
+    width: 100%;
+    border: none;
+    border-radius: 12px;
+    padding: 16px 20px;
+    background: #2563eb;
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.predict-button:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+}
+
+.predict-button:active {
+    transform: translateY(0);
+}
+
+
+/* ============================================================
+   RESULT
+============================================================ */
+
+.result-card {
+    margin-bottom: 35px;
+    padding: 30px;
+    text-align: center;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #eff6ff, #f8fafc);
+    border: 1px solid #bfdbfe;
+}
+
+.result-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 12px;
+}
+
+.result-price {
+    font-size: 38px;
+    font-weight: 800;
+    color: #1d4ed8;
+    margin-bottom: 10px;
+}
+
+.result-note {
+    font-size: 13px;
+    color: #64748b;
+}
+
+
+/* ============================================================
+   ERROR
+============================================================ */
+
+.alert {
+    padding: 15px 18px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.error-alert {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+}
+
+.error-alert strong {
+    display: block;
+    margin-bottom: 4px;
+}
+
+
+/* ============================================================
+   FOOTER
+============================================================ */
+
+.footer {
+    text-align: center;
+    padding: 25px 10px 10px;
+    color: #64748b;
+    font-size: 13px;
+}
+
+.footer p {
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+
+/* ============================================================
+   RESPONSIVE DESIGN
+============================================================ */
+
+@media (max-width: 900px) {
+
+    .form-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .hero h1 {
+        font-size: 36px;
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .page-container {
+        padding: 15px;
+    }
+
+    .hero {
+        padding: 35px 25px;
+        border-radius: 18px;
+    }
+
+    .hero h1 {
+        font-size: 30px;
+    }
+
+    .hero p {
+        font-size: 15px;
+    }
+
+    .prediction-card {
+        padding: 25px 20px;
+        border-radius: 18px;
+    }
+
+    .section-heading h2 {
+        font-size: 24px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .result-price {
+        font-size: 30px;
+    }
+
+    .checkbox-item {
+        display: flex;
+        margin-right: 0;
+    }
+}
