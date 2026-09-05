@@ -5,3 +5,4 @@ numpy==2.2.6
 pandas==2.2.3
 scikit-learn==1.7.2
 gunicorn==23.0.0
+streamlit==1.63.0
