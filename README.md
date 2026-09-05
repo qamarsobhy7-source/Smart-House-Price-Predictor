@@ -1,12 +1,18 @@
 # Smart House Price Predictor
 
+## Live Demo
+
+[Open the Live Demo](https://egypt-house-price-pr6edictor.streamlit.app/)
+
+![Smart House Price Predictor](assets/app_screenshot.png)
+
 An end-to-end machine learning web application for estimating apartment sale prices in Egyptian pounds (EGP).
 
 ## Project Overview
 
 This project predicts residential apartment sale prices in Egypt using property characteristics and location information.
 
-The project includes data cleaning, feature engineering, leakage prevention, model comparison, hyperparameter tuning, evaluation, and a Flask web application.
+The project includes data cleaning, feature engineering, leakage prevention, model comparison, hyperparameter tuning, evaluation, model verification, and both Flask and Streamlit web applications. The prediction logic is centralized in `predictor.py`.
 
 ## Dataset
 
@@ -141,7 +147,7 @@ Maximum prediction difference: 0.0 EGP
 
 ## Web Application
 
-The project includes a Flask web application for estimating apartment prices.
+The project includes Flask and Streamlit web applications for estimating apartment prices.
 
 Users can enter area, bedrooms, bathrooms, location, furnished status, completion status, reception, living room, and kitchen information.
 
@@ -149,12 +155,32 @@ The application returns the estimated apartment sale price in Egyptian pounds.
 
 ## Architecture
 
-User Input -> Flask Application -> Preprocessing -> Machine Learning Model -> Predicted Price
+```text
+User Input
+    |
+    v
+Flask / Streamlit
+    |
+    v
+predictor.py
+    |
+    +--> Input Validation
+    +--> Feature Construction
+    +--> Preprocessing
+    |
+    v
+Gradient Boosting Model
+    |
+    v
+Estimated Property Price
+```
 
 ## Project Structure
 
 Smart-House-Price-Predictor/
 |-- app.py
+|-- streamlit_app.py
+|-- predictor.py
 |-- README.md
 |-- requirements.txt
 |-- .gitignore
@@ -183,6 +209,12 @@ python app.py
 
 Open http://127.0.0.1:5000 in your browser.
 
+## Streamlit
+
+The public Streamlit application is available here:
+
+https://egypt-house-price-pr6edictor.streamlit.app/
+
 ## Production Deployment
 
 The application can be deployed using Gunicorn:
@@ -209,7 +241,6 @@ The deployed application does not depend on Google Colab.
 - Add geographic features
 - Test advanced boosting models
 - Add prediction intervals
-- Improve the location interface
 - Add automated model retraining
 - Add production monitoring
 

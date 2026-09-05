@@ -270,3 +270,145 @@
                         </div>
 
                     </div>
+                    </div>
+
+                </div>
+
+                <div class="form-section">
+
+                    <h3>Location</h3>
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label for="city">City</label>
+                            <select id="city" name="city" required>
+                                <option value="">Select city</option>
+                                {% for value in category_values.get('city', []) %}
+                                <option value="{{ value }}" {% if form_data.get('city') == value %}selected{% endif %}>
+                                    {{ value }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="town">Town</label>
+                            <select id="town" name="town" required>
+                                <option value="">Select town</option>
+                                {% for value in category_values.get('town', []) %}
+                                <option value="{{ value }}" {% if form_data.get('town') == value %}selected{% endif %}>
+                                    {{ value }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="district">District</label>
+                            <select id="district" name="district" required>
+                                <option value="">Select district</option>
+                                {% for value in category_values.get('district', []) %}
+                                <option value="{{ value }}" {% if form_data.get('district') == value %}selected{% endif %}>
+                                    {{ value }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="subdistrict">Subdistrict</label>
+                            <select id="subdistrict" name="subdistrict" required>
+                                <option value="">Select subdistrict</option>
+                                {% for value in category_values.get('subdistrict', []) %}
+                                <option value="{{ value }}" {% if form_data.get('subdistrict') == value %}selected{% endif %}>
+                                    {{ value }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="form-section">
+
+                    <h3>Property Status</h3>
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label for="furnished">Furnished Status</label>
+                            <select id="furnished" name="furnished" required>
+                                <option value="">Select furnished status</option>
+                                {% for value in category_values.get('furnished', []) %}
+                                <option value="{{ value }}" {% if form_data.get('furnished') == value %}selected{% endif %}>
+                                    {{ value }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="completion_status">Completion Status</label>
+                            <select id="completion_status" name="completion_status" required>
+                                <option value="">Select completion status</option>
+                                {% for value in category_values.get('completion_status', []) %}
+                                <option value="{{ value }}" {% if form_data.get('completion_status') == value %}selected{% endif %}>
+                                    {{ value }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="form-section">
+
+                    <h3>Amenities</h3>
+
+                    <div class="checkbox-section">
+
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="has_reception" value="yes"
+                                {% if form_data.get('has_reception') == 'yes' %}checked{% endif %}>
+                            <span>Reception</span>
+                        </label>
+
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="has_living" value="yes"
+                                {% if form_data.get('has_living') == 'yes' %}checked{% endif %}>
+                            <span>Living Room</span>
+                        </label>
+
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="has_kitchen" value="yes"
+                                {% if form_data.get('has_kitchen') == 'yes' %}checked{% endif %}>
+                            <span>Kitchen</span>
+                        </label>
+
+                    </div>
+                </div>
+
+                <button type="submit" class="predict-button">
+                    Estimate Property Price
+                </button>
+
+            </form>
+
+        </section>
+
+        <footer class="footer">
+
+            <p>Smart House Price Predictor</p>
+
+            <p>Machine Learning • Egypt Real Estate</p>
+
+        </footer>
+
+    </main>
+
+</body>
+
+</html>

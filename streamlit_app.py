@@ -1,7 +1,13 @@
 
 import streamlit as st
-import joblib
-import pandas as pd
+
+from predictor import (
+    load_artifacts,
+    get_category_values,
+    build_features,
+    predict_price,
+    format_price,
+)
 from pathlib import Path
 
 
@@ -10,24 +16,6 @@ from pathlib import Path
 # ============================================================
 
 BASE_DIR = Path(__file__).resolve().parent
-
-MODEL_PATH = BASE_DIR / "models" / "egypt_real_estate_price_model.joblib"
-METADATA_PATH = BASE_DIR / "models" / "model_metadata.joblib"
-
-
-# ============================================================
-# LOAD MODEL
-# ============================================================
-
-@st.cache_resource
-def load_model():
-    model = joblib.load(MODEL_PATH)
-    metadata = joblib.load(METADATA_PATH)
-    return model, metadata
-
-
-model, metadata = load_model()
-
 
 # ============================================================
 # PAGE CONFIGURATION
@@ -38,6 +26,19 @@ st.set_page_config(
     page_icon="🏠",
     layout="centered"
 )
+
+
+# ============================================================
+# LOAD MODEL
+# ============================================================
+
+@st.cache_resource
+def load_model():
+    return load_artifacts()
+
+
+model, metadata = load_model()
+category_values = get_category_values(model)
 
 
 # ============================================================
@@ -100,19 +101,19 @@ city = st.selectbox(
     ]
 )
 
-town = st.text_input(
+town = st.selectbox(
     "Town",
-    value="New Cairo City"
+    category_values["town"]
 )
 
-district = st.text_input(
+district = st.selectbox(
     "District",
-    value="The 5th Settlement"
+    category_values["district"]
 )
 
-subdistrict = st.text_input(
+subdistrict = st.selectbox(
     "Subdistrict",
-    value="5th Settlement Compounds"
+    category_values["subdistrict"]
 )
 
 
@@ -124,7 +125,7 @@ st.subheader("Property Status")
 
 furnished = st.selectbox(
     "Furnished Status",
-    ["YES", "NO", "Unknown"]
+    category_values["furnished"]
 )
 
 completion_status = st.selectbox(
@@ -155,41 +156,32 @@ has_kitchen = st.checkbox("Kitchen")
 
 if st.button("Estimate Property Price", type="primary"):
 
-    is_studio = int(bedroom_option == "studio")
-
-    bedrooms_clean = (
-        None if is_studio else int(bedroom_option)
-    )
-
-    input_data = pd.DataFrame([{
-        "area_value": area,
-        "bedrooms_clean": bedrooms_clean,
-        "bathrooms_clean": bathrooms,
-        "is_studio": is_studio,
-        "has_reception": int(has_reception),
-        "has_living": int(has_living),
-        "has_kitchen": int(has_kitchen),
-        "city": city,
-        "town": town,
-        "district": district,
-        "subdistrict": subdistrict,
-        "furnished": furnished,
-        "completion_status": completion_status
-    }])
-
     try:
-        predicted_price = float(model.predict(input_data)[0])
-        predicted_price = max(0, predicted_price)
+        input_data = build_features(
+            area=area,
+            bedrooms=bedroom_option,
+            bathrooms=bathrooms,
+            city=city,
+            town=town,
+            district=district,
+            subdistrict=subdistrict,
+            furnished=furnished,
+            completion_status=completion_status,
+            has_reception=has_reception,
+            has_living=has_living,
+            has_kitchen=has_kitchen,
+        )
+
+        predicted_price = predict_price(model, input_data)
 
         st.success(
-            f"Estimated Property Price: {predicted_price:,.0f} EGP"
+            f"Estimated Property Price: {format_price(predicted_price)}"
         )
 
-    except Exception as error:
+    except Exception:
         st.error(
-            "An error occurred while generating the prediction."
+            "Unable to generate the prediction. Please check your inputs and try again."
         )
-        st.exception(error)
 
 
 # ============================================================
@@ -208,9 +200,11 @@ with st.expander("Model Information"):
         f"{metadata.get('target', 'Unknown')}"
     )
 
+    feature_count = len(metadata.get("features", []))
+
     st.write(
         f"**Features:** "
-        f"{metadata.get('feature_count', 13)}"
+        f"{feature_count}"
     )
 
     st.caption(
