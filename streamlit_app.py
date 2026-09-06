@@ -37,8 +37,16 @@ def load_model():
     return load_artifacts()
 
 
-model, metadata = load_model()
-category_values = get_category_values(model)
+model = None
+metadata = {}
+category_values = {}
+load_error = None
+
+try:
+    model, metadata = load_model()
+    category_values = get_category_values(model)
+except Exception as error:
+    load_error = str(error)
 
 
 # ============================================================
@@ -91,14 +99,7 @@ st.subheader("Location")
 
 city = st.selectbox(
     "City",
-    [
-        "Cairo",
-        "Giza",
-        "Alexandria",
-        "Red Sea",
-        "North Coast",
-        "Suez"
-    ]
+    category_values["city"]
 )
 
 town = st.selectbox(
@@ -130,12 +131,7 @@ furnished = st.selectbox(
 
 completion_status = st.selectbox(
     "Completion Status",
-    [
-        "completed",
-        "off_plan_primary",
-        "off_plan",
-        "completed_primary"
-    ]
+    category_values["completion_status"]
 )
 
 
