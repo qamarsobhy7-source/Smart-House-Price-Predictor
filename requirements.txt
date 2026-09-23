@@ -4,6 +4,8 @@ scikit-learn==1.6.1
 xgboost>=2.0.0
 lightgbm>=4.0.0
 streamlit>=1.28.0
+streamlit-folium>=0.15.0
+folium>=0.14.0
 flask>=3.0.0
 flasgger>=0.9.7
 plotly>=5.17.0

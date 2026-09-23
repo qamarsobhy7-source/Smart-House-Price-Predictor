@@ -1,4 +1,22 @@
+<div align="center">
+
 # 🏠 Smart House Price Predictor
+
+### AI-powered property price estimation for the Egyptian real estate market
+
+<a href="https://smart-house-price-predictor.streamlit.app">
+  <img src="https://img.shields.io/badge/🚀_TRY_THE_LIVE_APP-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" alt="Live Demo"/>
+</a>
+&nbsp;
+<a href="https://github.com/qamarsobhy7-source/Smart-House-Price-Predictor">
+  <img src="https://img.shields.io/badge/View_on_GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"/>
+</a>
+
+**🔗 Live App:** **[https://smart-house-price-predictor.streamlit.app](https://smart-house-price-predictor.streamlit.app)**
+
+</div>
+
+---
 
 > **An end-to-end Machine Learning system for predicting residential property prices in Egypt, trained on real property listings.**
 
@@ -43,6 +61,31 @@ A complete AI/ML pipeline for predicting apartment prices in Egypt, trained on *
 - [OK] **28 unit tests** (100% pass rate)
 - [OK] **Docker** container + GitHub Actions CI
 - [OK] **Deployed on Streamlit Cloud**
+
+---
+
+
+---
+
+## 📸 Application Screenshots
+
+### Homepage — 4-Step Wizard Flow
+![Homepage](screenshots/01_hero.png)
+
+### Price Prediction Result
+![Prediction](screenshots/02_prediction.png)
+
+### AI Explainability (SHAP)
+![SHAP Explanation](screenshots/03_shap.png)
+
+### Interactive Property Map
+![Price Map](screenshots/04_map.png)
+
+### Similar Properties Recommendations
+![Recommendations](screenshots/05_recommendations.png)
+
+### Investment ROI Analysis
+![ROI](screenshots/06_roi.png)
 
 ---
 
