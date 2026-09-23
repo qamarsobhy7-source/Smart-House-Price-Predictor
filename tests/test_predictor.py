@@ -1,9 +1,8 @@
-"""اختبارات شاملة لمشروع Smart House Price Predictor v2.0"""
+"""Comprehensive test suite for Smart House Price Predictor v3.0"""
 import sys
 import unittest
 from pathlib import Path
 
-# إضافة مسار المشروع
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_DIR))
 
@@ -15,11 +14,12 @@ from predictor import (
     predict_price,
     predict_with_confidence,
     format_price,
+    extract_nlp_features,
 )
 
 
 class TestArtifactsLoading(unittest.TestCase):
-    """اختبارات تحميل الملفات."""
+    """Test artifact loading."""
 
     def test_load_artifacts(self):
         model, metadata, mappings = load_artifacts()
@@ -35,7 +35,7 @@ class TestArtifactsLoading(unittest.TestCase):
 
 
 class TestValidation(unittest.TestCase):
-    """اختبارات التحقق من المدخلات."""
+    """Test input validation."""
 
     def test_valid_input(self):
         errors = validate_input(
@@ -51,7 +51,7 @@ class TestValidation(unittest.TestCase):
             city="Cairo", town="New Cairo", district="Madinaty",
             subdistrict="1st", furnished="No", completion_status="completed",
         )
-        self.assertTrue(any("المساحة" in e for e in errors))
+        self.assertTrue(any("Area" in e for e in errors))
 
     def test_too_small_area(self):
         errors = validate_input(
@@ -59,7 +59,7 @@ class TestValidation(unittest.TestCase):
             city="Cairo", town="New Cairo", district="Madinaty",
             subdistrict="1st", furnished="No", completion_status="completed",
         )
-        self.assertTrue(any("المساحة" in e for e in errors))
+        self.assertTrue(any("Area" in e for e in errors))
 
     def test_invalid_bedrooms(self):
         errors = validate_input(
@@ -75,7 +75,7 @@ class TestValidation(unittest.TestCase):
             city="", town="New Cairo", district="Madinaty",
             subdistrict="1st", furnished="No", completion_status="completed",
         )
-        self.assertTrue(any("المدينة" in e for e in errors))
+        self.assertTrue(any("City" in e for e in errors))
 
     def test_studio_bedrooms(self):
         errors = validate_input(
@@ -87,7 +87,7 @@ class TestValidation(unittest.TestCase):
 
 
 class TestFeatureBuilding(unittest.TestCase):
-    """اختبارات بناء الميزات."""
+    """Test feature building."""
 
     def setUp(self):
         _, _, self.mappings = load_artifacts()
@@ -112,9 +112,19 @@ class TestFeatureBuilding(unittest.TestCase):
         )
         expected = ["area_value", "bedrooms_clean", "bathrooms_clean",
                     "city_price_per_sqm", "district_price_per_sqm",
-                    "town_price_per_sqm", "city", "town", "district"]
+                    "town_price_per_sqm", "city", "town", "district",
+                    "nlp_sea_view", "nlp_garden", "nlp_furnished"]
         for col in expected:
             self.assertIn(col, features.columns)
+
+    def test_total_feature_count(self):
+        features = build_features(
+            area=150, bedrooms="3", bathrooms=2,
+            city="Cairo", town="New Cairo", district="Madinaty",
+            subdistrict="1st", furnished="No", completion_status="completed",
+            mappings=self.mappings,
+        )
+        self.assertEqual(features.shape[1], 38)
 
     def test_studio_features(self):
         features = build_features(
@@ -127,8 +137,45 @@ class TestFeatureBuilding(unittest.TestCase):
         self.assertEqual(features["bedrooms_clean"].iloc[0], 0)
 
 
+class TestNLPFeatures(unittest.TestCase):
+    """Test Arabic NLP feature extraction."""
+
+    def test_sea_view_detection(self):
+        result = extract_nlp_features("شقة بحرية جميلة")
+        self.assertEqual(result["nlp_sea_view"], 1)
+
+    def test_garden_detection(self):
+        result = extract_nlp_features("شقة مع حديقة خاصة")
+        self.assertEqual(result["nlp_garden"], 1)
+
+    def test_furnished_detection(self):
+        result = extract_nlp_features("شقة مفروشة بالكامل")
+        self.assertEqual(result["nlp_furnished"], 1)
+
+    def test_empty_description(self):
+        result = extract_nlp_features("")
+        self.assertEqual(result["nlp_sea_view"], 0)
+        self.assertEqual(result["nlp_garden"], 0)
+        self.assertEqual(result["description_length"], 0)
+
+    def test_english_keywords(self):
+        result = extract_nlp_features("sea view furnished apartment")
+        self.assertEqual(result["nlp_sea_view"], 1)
+        self.assertEqual(result["nlp_furnished"], 1)
+
+    def test_all_features_returned(self):
+        result = extract_nlp_features("test")
+        expected_keys = ["nlp_sea_view", "nlp_garden", "nlp_duplex",
+                         "nlp_roof", "nlp_furnished", "nlp_new",
+                         "nlp_super_lux", "nlp_open_view", "nlp_parking",
+                         "nlp_elevator", "description_length",
+                         "description_word_count"]
+        for key in expected_keys:
+            self.assertIn(key, result)
+
+
 class TestPrediction(unittest.TestCase):
-    """اختبارات التنبؤ."""
+    """Test prediction."""
 
     def setUp(self):
         self.model, self.metadata, self.mappings = load_artifacts()
@@ -184,19 +231,20 @@ class TestPrediction(unittest.TestCase):
 
 
 class TestFormatting(unittest.TestCase):
-    """اختبارات التنسيق."""
+    """Test price formatting."""
 
     def test_format_millions(self):
         result = format_price(6_920_000)
-        self.assertIn("مليون", result)
+        self.assertIn("M", result)
+        self.assertIn("EGP", result)
 
     def test_format_thousands(self):
         result = format_price(500_000)
-        self.assertIn(",", result)
+        self.assertIn("EGP", result)
 
 
 class TestCategories(unittest.TestCase):
-    """اختبارات القيم الفئوية."""
+    """Test category values."""
 
     def test_categories_loaded(self):
         _, _, mappings = load_artifacts()

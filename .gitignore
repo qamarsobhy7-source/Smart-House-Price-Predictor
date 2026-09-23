@@ -1,12 +1,26 @@
+# Cache
 __pycache__/
 *.py[cod]
 *$py.class
+
+# Jupyter
 .ipynb_checkpoints/
+
+# Testing
 .pytest_cache/
+
+# Environment
 .env
 venv/
 env/
+
+# Logs
 *.log
+
+# OS
 .DS_Store
+Thumbs.db
+
+# IDE
 .idea/
 .vscode/

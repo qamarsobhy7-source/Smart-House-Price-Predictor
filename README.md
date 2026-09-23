@@ -2,20 +2,21 @@
 
 > **An end-to-end Machine Learning system for predicting residential property prices in the Egyptian real estate market.**
 
-![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)
-![scikit-learn](https://img.shields.io/badge/scikit--learn-1.3+-orange.svg)
-![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-red.svg)
-![Flask](https://img.shields.io/badge/Flask-3.0+-black.svg)
-![R²](https://img.shields.io/badge/R²-0.9721-success.svg)
-![MAPE](https://img.shields.io/badge/MAPE-6.50%25-brightgreen.svg)
-![Tests](https://img.shields.io/badge/Tests-18%20passing-brightgreen.svg)
-![License](https://img.shields.io/badge/License-MIT-blue.svg)
+[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://python.org)
+[![scikit-learn](https://img.shields.io/badge/scikit--learn-1.6.1-orange.svg)](https://scikit-learn.org)
+[![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-red.svg)](https://streamlit.io)
+[![R²](https://img.shields.io/badge/R²-0.9721-success.svg)]()
+[![MAPE](https://img.shields.io/badge/MAPE-6.50%25-brightgreen.svg)]()
+[![Tests](https://img.shields.io/badge/Tests-25%20passing-brightgreen.svg)]()
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+🔗 **[Live Demo →](https://smart-house-price-predictor.streamlit.app)**
 
 ---
 
 ## 📌 Overview
 
-This project implements a **complete AI/ML pipeline** for predicting apartment prices in Egypt, from data generation through deployment. It combines classical machine learning, NLP, explainable AI, and modern MLOps practices.
+A complete AI/ML pipeline for predicting apartment prices in Egypt, from data generation through cloud deployment. Combines classical machine learning, Arabic NLP, explainable AI, and modern MLOps practices.
 
 ### 🎯 Key Results
 
@@ -27,17 +28,19 @@ This project implements a **complete AI/ML pipeline** for predicting apartment p
 | **RMSE** | 445,558 EGP |
 | **Features** | 38 (incl. 10 NLP) |
 | **Models Trained** | 7 + Optuna tuning |
+| **Tests** | 25 passing |
 
 ### 🚀 Feature Highlights
 
 - ✅ **7 ML models** compared with Optuna hyperparameter tuning
-- ✅ **38 engineered features** (interaction, binary, target encoding, NLP)
-- ✅ **Explainable AI** with SHAP values
-- ✅ **Arabic NLP** on property descriptions
-- ✅ **Interactive Streamlit UI** with 4 tabs (Predict / Explain / Map / What-If)
+- ✅ **38 engineered features** (interaction, binary, target encoding, Arabic NLP)
+- ✅ **Explainable AI** with SHAP per-prediction contributions
+- ✅ **Arabic NLP** on property descriptions (10 binary features)
+- ✅ **Modern Streamlit UI** with 4 tabs (Prediction / Explanation / Map / What-If)
 - ✅ **REST API** with Swagger documentation
-- ✅ **18 unit tests** (100% pass rate)
-- ✅ **Docker** container + CI/CD ready
+- ✅ **25 unit tests** (100% pass rate)
+- ✅ **Docker** container + GitHub Actions CI
+- ✅ **Deployed on Streamlit Cloud**
 
 ---
 
@@ -49,10 +52,10 @@ This project implements a **complete AI/ML pipeline** for predicting apartment p
 | MAPE | 27.77% | **6.50%** | **−76.6%** |
 | Features | 13 | **38** | 3× |
 | Models | 3 | **7 + Optuna** | Advanced |
-| NLP | ❌ | ✅ Arabic | Added |
+| Arabic NLP | ❌ | ✅ | Added |
 | SHAP | ❌ | ✅ | Added |
-| Map | ❌ | ✅ Folium | Added |
-| REST API | Basic | **Swagger docs** | Upgraded |
+| Interactive Map | ❌ | ✅ | Added |
+| REST API | Basic | **Swagger** | Upgraded |
 
 ---
 
@@ -60,19 +63,19 @@ This project implements a **complete AI/ML pipeline** for predicting apartment p
 
 This was a **deliberate engineering decision**, not a random choice.
 
-### 🔍 Issues in the Original Data (39,000 records)
+### 🔍 Issues in the Original Data
 
 | Issue | Share | Action Taken |
 |-------|-------|--------------|
-| Missing values in critical columns (area, price, bedrooms) | **72%** | Dropped |
+| Missing values in critical columns | **72%** | Dropped |
 | Data leakage (pre-computed `price_per_sqm`) | 15% | Excluded |
 | Extreme outliers (< 100K or > 50M EGP) | 8% | IQR filtering |
 | Exact duplicates | 21% | Deduplicated |
-| Mixed property types (apartments + villas + land + commercial) | — | Focused on apartments |
+| Mixed property types | — | Apartments only |
 
 ### ✅ Engineering Decision
 
-Instead of trying to clean every category (which fragments the model), we focused on **"high-confidence residential apartments"**, raising data quality from **34% to 98%**.
+Instead of cleaning every category (which fragments the model), we focused on **high-confidence residential apartments**, raising data quality from **34% to 98%**.
 
 ### 📈 Why the Smaller Dataset Performs Better
 

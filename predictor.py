@@ -266,3 +266,148 @@ def get_shap_explainer(model, background_data):
             print(f"SHAP initialization error: {e}")
             return None
     return _shap_explainer
+
+
+# ==========================================================
+# Recommendation System
+# ==========================================================
+_recommendation_data = None
+
+
+def load_recommendation_data():
+    """Lazy load recommendation dataset."""
+    global _recommendation_data
+    if _recommendation_data is None:
+        path = MODELS_DIR / "recommendation_data.joblib"
+        if path.exists():
+            _recommendation_data = joblib.load(path)
+    return _recommendation_data
+
+
+def recommend_similar_properties(area, bedrooms, bathrooms, city, town,
+                                  district, subdistrict, furnished,
+                                  completion_status, top_n=5):
+    """Find top N similar properties from the dataset."""
+    from sklearn.metrics.pairwise import cosine_similarity
+
+    rec_data = load_recommendation_data()
+    if rec_data is None:
+        return []
+
+    import pandas as pd
+    is_studio = 1 if str(bedrooms).lower() == "studio" else 0
+    bedrooms_clean = 0 if is_studio else int(bedrooms)
+
+    # Build query
+    query_df = pd.DataFrame([{
+        'area_value': float(area),
+        'bedrooms_clean': bedrooms_clean,
+        'bathrooms_clean': int(bathrooms),
+        'is_studio': is_studio,
+        'city': str(city),
+        'town': str(town),
+        'district': str(district),
+        'subdistrict': str(subdistrict),
+        'furnished': str(furnished),
+        'completion_status': str(completion_status),
+    }])
+
+    # Fill any missing numerical columns with 0
+    for col in rec_data['numerical']:
+        if col not in query_df.columns:
+            query_df[col] = 0
+
+    query_encoded = rec_data['preprocessor'].transform(
+        query_df[rec_data['numerical'] + rec_data['categorical']]
+    )
+
+    # Similarity
+    sims = cosine_similarity(query_encoded, rec_data['X_rec'])[0]
+    top_idx = sims.argsort()[-top_n:][::-1]
+
+    results = []
+    for idx in top_idx:
+        prop = rec_data['df'][idx].copy()
+        prop['similarity'] = float(sims[idx])
+        results.append(prop)
+
+    return results
+
+
+# ==========================================================
+# Investment ROI Calculator
+# ==========================================================
+def calculate_roi(purchase_price, years=5, monthly_rent_pct=0.005,
+                   annual_appreciation=0.12):
+    """Calculate investment ROI.
+
+    Args:
+        purchase_price: property price in EGP
+        years: investment horizon
+        monthly_rent_pct: monthly rent as fraction of purchase price
+        annual_appreciation: annual price appreciation rate
+
+    Returns:
+        dict with rental_income, future_value, total_return, roi_pct, irr_estimate
+    """
+    monthly_rent = purchase_price * monthly_rent_pct
+    rental_income = monthly_rent * 12 * years
+    future_value = purchase_price * ((1 + annual_appreciation) ** years)
+    appreciation_gain = future_value - purchase_price
+    total_return = rental_income + appreciation_gain
+    roi_pct = (total_return / purchase_price) * 100
+
+    # Simple annualized ROI
+    annualized_roi = ((1 + total_return / purchase_price) ** (1 / years) - 1) * 100
+
+    return {
+        'purchase_price': purchase_price,
+        'years': years,
+        'monthly_rent': monthly_rent,
+        'annual_rental_income': monthly_rent * 12,
+        'total_rental_income': rental_income,
+        'future_value': future_value,
+        'appreciation_gain': appreciation_gain,
+        'total_return': total_return,
+        'roi_pct': roi_pct,
+        'annualized_roi_pct': annualized_roi,
+    }
+
+
+# ==========================================================
+# Property Comparison
+# ==========================================================
+def compare_properties(model, mappings, prop_a, prop_b):
+    """Compare two properties side by side.
+
+    Args:
+        prop_a, prop_b: dicts with area, bedrooms, bathrooms, city, town,
+                        district, subdistrict, furnished, completion_status
+
+    Returns:
+        dict with prices, per-sqm, cheaper, better_value
+    """
+    def _predict(p):
+        feat = build_features(
+            area=p['area'], bedrooms=p['bedrooms'], bathrooms=p['bathrooms'],
+            city=p['city'], town=p['town'], district=p['district'],
+            subdistrict=p['subdistrict'], furnished=p['furnished'],
+            completion_status=p['completion_status'], mappings=mappings,
+        )
+        price = predict_price(model, feat)
+        return price, price / float(p['area'])
+
+    price_a, ppm_a = _predict(prop_a)
+    price_b, ppm_b = _predict(prop_b)
+
+    cheaper = 'A' if price_a < price_b else 'B'
+    better_value = 'A' if ppm_a < ppm_b else 'B'
+
+    return {
+        'property_a': {'price': price_a, 'price_per_sqm': ppm_a},
+        'property_b': {'price': price_b, 'price_per_sqm': ppm_b},
+        'cheaper': cheaper,
+        'better_value': better_value,
+        'price_diff': abs(price_a - price_b),
+        'ppm_diff': abs(ppm_a - ppm_b),
+    }
