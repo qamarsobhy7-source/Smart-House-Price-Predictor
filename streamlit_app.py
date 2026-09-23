@@ -689,16 +689,18 @@ else:
 
 
 # ============================================================
-# FAQ SECTION
+# ============================================================
+# FAQ SECTION (collapsible, numbered)
 # ============================================================
 st.markdown("<br>", unsafe_allow_html=True)
 st.markdown("## ❓ Frequently Asked Questions")
+st.caption("Click any question to see the answer")
 
 faq_items = [
     ("Is this data real?",
      "Yes. Our model is trained on 7,749 real property listings from PropertyFinder Egypt — the largest real estate platform in Egypt. Every listing has verified location, GPS coordinates, size, rooms, and amenities."),
     ("How accurate are the estimates?",
-     "The model achieves 68.4% accuracy (R² = 0.68) with an average error margin of ±18.4%. This is honest performance on real market data — many listings differ in condition, floor, view, and negotiation room, which are not captured in the data."),
+     "The model achieves 68.4% accuracy (R-squared = 0.68) with an average error margin of 18.4%. This is honest performance on real market data — many listings differ in condition, floor, view, and negotiation room, which are not captured in the data."),
     ("Can I use this as an official appraisal?",
      "No. This is an AI estimation tool for reference and research purposes. For official property valuation — especially for buying, selling, or legal matters — please consult a certified real estate appraiser."),
     ("What property types are supported?",
@@ -711,19 +713,11 @@ faq_items = [
      "We only log anonymized predictions (area, city, predicted price) to monitor model performance. No personal information is collected."),
 ]
 
-for question, answer in faq_items:
-    faq_html = (
-        '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.6rem;">'
-        '<div style="font-weight:800;color:#111827;font-size:0.95rem;margin-bottom:0.4rem;">❓ ' + question + '</div>'
-        '<div style="color:#4b5563;font-size:0.85rem;line-height:1.5;">' + answer + '</div>'
-        '</div>'
-    )
-    st.markdown(faq_html, unsafe_allow_html=True)
+for i, (question, answer) in enumerate(faq_items, 1):
+    num_str = f"{i:02d}"
+    with st.expander(f"{num_str}   {question}"):
+        st.write(answer)
 
-st.markdown("<br>", unsafe_allow_html=True)
-
-
-# ============================================================
 # AGENT CONTACT CTA
 # ============================================================
 st.markdown("<br>", unsafe_allow_html=True)
