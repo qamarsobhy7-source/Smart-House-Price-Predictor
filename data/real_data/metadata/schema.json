@@ -1,0 +1,64 @@
+{
+  "columns": [
+    {
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "name": "title",
+      "type": "string"
+    },
+    {
+      "name": "price",
+      "type": "float"
+    },
+    {
+      "name": "currency",
+      "type": "string"
+    },
+    {
+      "name": "price_period",
+      "type": "string"
+    },
+    {
+      "name": "price_type",
+      "type": "string"
+    },
+    {
+      "name": "property_type",
+      "type": "string"
+    },
+    {
+      "name": "location",
+      "type": "string"
+    },
+    {
+      "name": "latitude",
+      "type": "float"
+    },
+    {
+      "name": "longitude",
+      "type": "float"
+    },
+    {
+      "name": "bedrooms",
+      "type": "integer"
+    },
+    {
+      "name": "bathrooms",
+      "type": "integer"
+    },
+    {
+      "name": "size",
+      "type": "integer"
+    },
+    {
+      "name": "amenities",
+      "type": "array"
+    },
+    {
+      "name": "category",
+      "type": "string"
+    }
+  ]
+}

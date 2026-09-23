@@ -4,101 +4,99 @@
 
 | Field | Value |
 |-------|-------|
-| **Name** | Egypt Real Estate Synthetic Dataset v3 |
-| **Version** | 3.0.0 |
-| **Size** | 8,000 records |
-| **Features** | 40 columns (before engineering) → 38 model features |
-| **Cities** | 10 |
-| **Districts** | 40+ |
-| **Generated** | 2024–2025 market simulation |
-| **Format** | CSV (UTF-8) |
-| **License** | MIT |
+| **Name** | Egypt Property Finder Real Estate Dataset |
+| **Source** | PropertyFinder Egypt (public listings) |
+| **Platform** | Kaggle: mohammedhassan1112/egypt-property-finder |
+| **License** | CC0-1.0 |
+| **Size (raw)** | 64106 listings |
+| **Size (final training)** | 7749 apartments |
+| **Scrape Date** | 2026-02-19 |
+| **Format** | CSV / JSONL |
 
 ---
 
 ## Motivation
 
-The original raw dataset (39,000 records) had severe quality issues:
+We chose to use **real scraped listings** instead of synthetic data because:
 
-| Issue | Share | Resolution |
-|-------|-------|------------|
-| Missing values in critical columns | **72%** | Dropped |
-| Data leakage (pre-computed price/sqm) | 15% | Excluded |
-| Extreme outliers (<100K or >50M EGP) | 8% | IQR filtered |
-| Exact duplicates | 21% | Deduplicated |
-| Mixed property types | — | Filtered to apartments |
-
-**Decision:** Generate a clean, homogeneous synthetic dataset grounded in real 2024–2025 Egyptian market prices.
+- Real listings reflect actual market conditions
+- Amenities, GPS, and titles are genuine
+- The model becomes credible for real-world use
+- Avoids misleading "high accuracy on fake data" pitfalls
 
 ---
 
 ## Composition
 
-### Cities (10)
+### Data Funnel
 
-| City | Records | Avg Price (EGP) |
-|------|---------|-----------------|
-| Cairo | 2,413 | 5,200,000 |
-| Giza | 1,566 | 5,720,000 |
-| Alexandria | 959 | 2,680,000 |
-| Port Said | 479 | 2,260,000 |
-| Suez | 488 | 1,850,000 |
-| Ismailia | 417 | 1,940,000 |
-| Mansoura | 413 | 1,920,000 |
-| Tanta | 417 | 1,810,000 |
-| Luxor | 455 | 1,610,000 |
-| Aswan | 393 | 1,760,000 |
+| Stage | Records | Removed |
+|-------|---------|---------|
+| Raw scrape (buy + rent + commercial) | 64106 | - |
+| Buy only (residential + commercial) | 19967 | 44139 |
+| Apartments only | 10277 | 9690 |
+| Remove suspicious_low price flag | 10276 | 1 |
+| Price 500K-50M filter | 10248 | 28 |
+| Size 40-500 sqm filter | 9459 | 789 |
+| Bedrooms 1-6 filter | 9089 | 370 |
+| 5th-95th percentile on price & price/sqm | 7749 | 1340 |
 
-### Price Distribution
+### Cities (9)
 
-- **Min:** ~650,000 EGP
-- **Median:** ~4,130,000 EGP
-- **Mean:** ~4,670,000 EGP
-- **Max:** ~20,500,000 EGP
-- **Transform:** `log1p` applied during training
+| City | Listings |
+|------|----------|
+| Cairo | 5504 |
+| Giza | 2259 |
+| Red Sea | 855 |
+| Alexandria | 236 |
+| North Coast | 104 |
+| Suez | 85 |
+| Qalyubia | 36 |
+| Matrouh | 4 |
+| Al Daqahlya | 3 |
 
-### Features
+### Top Districts (43 total)
 
-#### Numerical (20)
+New Cairo City, Sheikh Zayed City, 6 October City, Hurghada, Mostakbal City, New Capital City, Madinaty, Shorouk City, Hay Sharq, Hay El Maadi, etc.
 
-`area_value`, `bedrooms_clean`, `bathrooms_clean`, `is_studio`, `has_reception`, `has_living`, `has_kitchen`, `bed_bath_ratio`, `area_per_bedroom`, `area_per_bathroom`, `rooms_total`, `area_per_room`, `is_completed`, `is_under_construction`, `is_off_plan`, `is_furnished`, `is_semi_furnished`, `city_price_per_sqm`, `town_price_per_sqm`, `district_price_per_sqm`
+### Price Statistics (after cleaning)
 
-#### Categorical (6)
+- **Min:** about 650000 EGP
+- **Median:** 7500000 EGP
+- **Max:** about 18500000 EGP
+- **Median price/sqm:** 52398 EGP/sqm
 
-`city`, `town`, `district`, `subdistrict`, `furnished`, `completion_status`
+### Features (64 total)
 
-#### Arabic NLP (10)
+#### Numeric (61)
 
-`nlp_sea_view`, `nlp_garden`, `nlp_duplex`, `nlp_roof`, `nlp_furnished`, `nlp_new`, `nlp_super_lux`, `nlp_open_view`, `nlp_parking`, `nlp_elevator`
+- latitude, longitude, size, log_size, sqrt_size
+- bedrooms, bathrooms, bed_bath_ratio, area_per_bedroom, rooms_total
+- amenity_* (32 flags): balcony, pool, garden, security, gym, etc.
+- nlp_* (12 flags from titles): sea_view, garden, luxury, etc.
+- title_length, title_word_count
+- geo_cluster (15 clusters via KMeans on GPS)
+- distance_to_cairo
+- amenity_count
 
-Plus `description_length`, `description_word_count`.
+#### Categorical (3)
 
----
-
-## Collection Process
-
-Properties generated via probabilistic sampling:
-
-1. **Location** → sampled from 10 cities weighted by real population
-2. **Area** → lognormal distribution (median ~120 m²)
-3. **Bedrooms** → categorical (1–5, weighted)
-4. **Price** → base city price/sqm × modifiers:
-   - Completion status (completed = +15%, off-plan = −15%)
-   - Furnished (+10% for Yes, +3% for Semi)
-   - Area discount (larger units → lower EGP/m²)
-   - Bedroom multiplier
-   - Gaussian noise (σ=8%)
-5. **NLP** → realistic Arabic descriptions generated
+- city, district, compound
 
 ---
 
 ## Preprocessing
 
-1. Missing `bedrooms_clean` → set to 0 for studios, median for others
-2. Interaction features computed
-3. Binary flags encoded
-4. **Target Encoding** applied to `city`, `town`, `district` (mean price/sqm per group, computed on training data only)
-5. **NLP features** extracted via keyword matching
+1. Filtered to apartments only
+2. Removed suspicious_low price flags
+3. Price range limited to 500K-50M EGP
+4. Size range limited to 40-500 sqm
+5. Bedrooms limited to 1-6
+6. IQR outlier removal on price and price/sqm
+7. Location parsing - split location string into city/district/compound
+8. Amenity decoding - codes (BA, SE) to binary features
+9. NLP feature extraction - keyword matching on titles
+10. Target encoding - median price/sqm per city, district, compound
 
 ---
 
@@ -106,17 +104,18 @@ Properties generated via probabilistic sampling:
 
 ### Known Biases
 
-- **Geographic:** Cairo + Giza = 50% of data (weighted by real population)
-- **Property type:** Only apartments (excludes villas, land, commercial)
-- **Price range:** Capped at 30M EGP (excludes ultra-luxury)
-- **Time:** Single snapshot — no temporal drift
+- **Geographic:** Cairo + Giza = 77% of listings
+- **Property type:** Apartments only (villas, chalets, land excluded)
+- **Listing bias:** Asking prices, not final sale prices
+- **Time snapshot:** All listings scraped on 2026-02-19
+- **Platform bias:** Only PropertyFinder Egypt listings
 
 ### Not Represented
 
-- Buildings older than 30 years
+- Off-market sales
+- Distressed sales
+- Older buildings (many listings are new developments)
 - Informal settlements
-- Fractional ownership
-- Rent-to-own schemes
 
 ---
 
@@ -124,11 +123,11 @@ Properties generated via probabilistic sampling:
 
 | Aspect | Status |
 |--------|--------|
-| Personal data | ✅ None |
-| Consent | N/A (synthetic) |
-| Geographic fairness | ✅ 10 cities |
-| Transparency | ✅ Full generation code in repo |
-| Reproducibility | ✅ `random_state=42` |
+| Personal data | None |
+| Data source | Public listings |
+| Consent | Public web scrape (ToS-compliant) |
+| Transparency | Full funnel documented |
+| Reproducibility | random_state=42 |
 
 ---
 
@@ -136,19 +135,13 @@ Properties generated via probabilistic sampling:
 
 | Split | Records | Purpose |
 |-------|---------|---------|
-| Train | 6,400 | Model fitting + CV |
-| Test | 1,600 | Held-out evaluation |
-
-**Stratification:** None (regression target)
-
----
-
-## Maintenance
-
-- **Versioning:** Semantic (major.minor.patch)
-- **Regeneration:** Deterministic — `random_state=42`
-- **Updates:** Quarterly review against real market data
+| Train | 6199 | Model fitting + CV |
+| Test | 1550 | Held-out evaluation |
 
 ---
 
 ## Citation
+
+Egypt Property Finder Dataset (2026)
+Source: PropertyFinder Egypt
+Kaggle: mohammedhassan1112/egypt-property-finder

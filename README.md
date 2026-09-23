@@ -1,90 +1,106 @@
 # 🏠 Smart House Price Predictor
 
-> **An end-to-end Machine Learning system for predicting residential property prices in the Egyptian real estate market.**
+> **An end-to-end Machine Learning system for predicting residential property prices in Egypt, trained on real property listings.**
 
 [![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://python.org)
 [![scikit-learn](https://img.shields.io/badge/scikit--learn-1.6.1-orange.svg)](https://scikit-learn.org)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-red.svg)](https://streamlit.io)
-[![R²](https://img.shields.io/badge/R²-0.9721-success.svg)]()
-[![MAPE](https://img.shields.io/badge/MAPE-6.50%25-brightgreen.svg)]()
-[![Tests](https://img.shields.io/badge/Tests-25%20passing-brightgreen.svg)]()
+[![R²](https://img.shields.io/badge/R²-0.6843-success.svg)]()
+[![MAPE](https://img.shields.io/badge/MAPE-18.39%25-orange.svg)]()
+[![Tests](https://img.shields.io/badge/Tests-28%20passing-brightgreen.svg)]()
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-🔗 **[Live Demo →](https://smart-house-price-predictor.streamlit.app)**
+Link: **[Live Demo →](https://smart-house-price-predictor.streamlit.app)**
 
 ---
 
 ## 📌 Overview
 
-A complete AI/ML pipeline for predicting apartment prices in Egypt, from data generation through cloud deployment. Combines classical machine learning, Arabic NLP, explainable AI, and modern MLOps practices.
+A complete AI/ML pipeline for predicting apartment prices in Egypt, trained on **real property listings from PropertyFinder Egypt** (Egypt's largest real estate platform). The project combines classical machine learning, real estate NLP, explainable AI, and modern MLOps practices.
 
-### 🎯 Key Results
+### 🎯 Key Results (Real Data)
 
 | Metric | Value |
 |--------|-------|
-| **R² Score** | **0.9721** |
-| **MAPE** | **6.50%** |
-| **MAE** | 305,835 EGP |
-| **RMSE** | 445,558 EGP |
-| **Features** | 38 (incl. 10 NLP) |
-| **Models Trained** | 7 + Optuna tuning |
-| **Tests** | 25 passing |
+| **R² Score** | **0.6843** |
+| **MAPE** | **18.39%** |
+| **MAE** | 1,479,340 EGP |
+| **RMSE** | 2,048,059 EGP |
+| **Features** | 64 (incl. 32 amenity flags + 14 NLP) |
+| **Training Samples** | 7,749 real apartments |
+| **Data Source** | PropertyFinder Egypt |
+| **Tests** | 28 passing |
 
-### 🚀 Feature Highlights
+### >> Feature Highlights
 
-- ✅ **7 ML models** compared with Optuna hyperparameter tuning
-- ✅ **38 engineered features** (interaction, binary, target encoding, Arabic NLP)
-- ✅ **Explainable AI** with SHAP per-prediction contributions
-- ✅ **Arabic NLP** on property descriptions (10 binary features)
-- ✅ **Modern Streamlit UI** with 4 tabs (Prediction / Explanation / Map / What-If)
-- ✅ **REST API** with Swagger documentation
-- ✅ **25 unit tests** (100% pass rate)
-- ✅ **Docker** container + GitHub Actions CI
-- ✅ **Deployed on Streamlit Cloud**
-
----
-
-## 📊 Version Comparison
-
-| Metric | v1.0 | **v3.0** | Improvement |
-|--------|------|----------|-------------|
-| R² | 0.6493 | **0.9721** | **+49.7%** |
-| MAPE | 27.77% | **6.50%** | **−76.6%** |
-| Features | 13 | **38** | 3× |
-| Models | 3 | **7 + Optuna** | Advanced |
-| Arabic NLP | ❌ | ✅ | Added |
-| SHAP | ❌ | ✅ | Added |
-| Interactive Map | ❌ | ✅ | Added |
-| REST API | Basic | **Swagger** | Upgraded |
+- [OK] **Real Egyptian property data** — 64,106 listings scraped from PropertyFinder
+- [OK] **7 ML models** compared with cross-validation
+- [OK] **64 engineered features** (GPS, amenities, NLP, interactions, geo clusters)
+- [OK] **Explainable AI** with SHAP per-prediction contributions
+- [OK] **NLP on property titles** (English keywords)
+- [OK] **Modern Streamlit UI** with wizard-style flow
+- [OK] **REST API** with Swagger documentation
+- [OK] **28 unit tests** (100% pass rate)
+- [OK] **Docker** container + GitHub Actions CI
+- [OK] **Deployed on Streamlit Cloud**
 
 ---
 
-## ❓ Why the Dataset Was Reduced from 39,000 to 5,000 Records
+## 📊 The Data Story (Real Data Only)
 
-This was a **deliberate engineering decision**, not a random choice.
+### Dataset Source
 
-### 🔍 Issues in the Original Data
+We trained this model on **real, publicly available property listings** scraped from [PropertyFinder Egypt](https://www.propertyfinder.eg) — the largest real estate platform in Egypt. This is **NOT synthetic data**.
 
-| Issue | Share | Action Taken |
-|-------|-------|--------------|
-| Missing values in critical columns | **72%** | Dropped |
-| Data leakage (pre-computed `price_per_sqm`) | 15% | Excluded |
-| Extreme outliers (< 100K or > 50M EGP) | 8% | IQR filtering |
-| Exact duplicates | 21% | Deduplicated |
-| Mixed property types | — | Apartments only |
+### Data Statistics
 
-### ✅ Engineering Decision
+| Stage | Records | Notes |
+|-------|---------|-------|
+| **Raw listings** | 64,106 | All property types (buy + rent) |
+| **Buy only** | 19,967 | Sale listings only |
+| **Apartments only** | 10,277 | Filtered to residential apartments |
+| **After price/size/bedroom filters** | 9,089 | Removed outliers |
+| **After IQR outlier removal** | **7,749** | Final training dataset |
 
-Instead of cleaning every category (which fragments the model), we focused on **high-confidence residential apartments**, raising data quality from **34% to 98%**.
+### What's in the Data
 
-### 📈 Why the Smaller Dataset Performs Better
+- 🌍 **9 cities**: Cairo, Giza, Alexandria, Red Sea, North Coast, Suez, Qalyubia, Matrouh, Al Daqahlya
+- 🏘️ **43 districts** (New Cairo, Sheikh Zayed, 6 October, Hurghada, ...)
+- 🏢 **890 compounds** (Madinaty, Rehab, Mountain View iCity, ...)
+- 📍 **GPS coordinates** for every listing
+- ✨ **32 real amenity features** (balcony, pool, garden, security, ...)
+- 📝 **Arabic + English titles** for NLP
 
-> **Data quality > Data quantity**
+### Real Market Examples (from the data)
 
-- Noise removed from input errors and duplicates
-- Homogeneous target (only apartments)
-- Stronger **feature engineering** compensated for fewer rows
-- **Target encoding** turned location into a powerful numeric signal (correlation **+0.72**)
+| Property | Price | EGP/sqm |
+|----------|-------|---------|
+| 140 sqm apartment in Mountain View iCity | 800,000 EGP | 5,700 |
+| 189 sqm apartment in Hyde Park, New Cairo | 12,000,000 EGP | 63,500 |
+| 360 sqm Twin House in D-Bay, North Coast | 23,000,000 EGP | 63,900 |
+
+---
+
+## 🏆 Model Performance (Honest Numbers)
+
+### Model Comparison (3-fold CV R²)
+
+| Rank | Model | R² (CV) |
+|------|-------|---------|
+| 1. | **XGBoost** | **0.6874** |
+| 2. | LightGBM | 0.6826 |
+| 3. | Gradient Boosting | 0.6647 |
+| 4 | Ridge | 0.6378 |
+
+### Why R² = 0.68 is a Good Result on Real Data
+
+When working with **real** real estate data:
+- Real estate prices depend on factors **not in the listing** (negotiation, condition, timing, seller motivation)
+- Market noise is expected and natural
+- A model with R² = 0.68 on real data is **much more credible** than R² = 0.97 on synthetic data
+- MAPE = 18.39% is acceptable for real market estimation (industry standards often accept 15-25%)
+
+**We deliberately chose honesty over impressive-looking numbers.**
 
 ---
 

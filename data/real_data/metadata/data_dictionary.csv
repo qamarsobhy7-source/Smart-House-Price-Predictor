@@ -1,0 +1,7 @@
+Column,Description
+id,Unique property identifier
+title,Listing title
+price,Property price
+location,District and street location (Public level)
+latitude,GPS Latitude
+longitude,GPS Longitude

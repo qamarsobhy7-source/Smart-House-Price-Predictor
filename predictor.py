@@ -1,15 +1,4 @@
-"""
-Smart House Price Predictor - v3.0
-====================================
-Advanced ML system for predicting residential property prices in Egypt.
-
-Features:
-- Gradient Boosting Regressor (R² = 0.97)
-- 26 engineered features
-- SHAP explanations
-- Arabic NLP on property descriptions
-- Confidence intervals
-"""
+"""Smart House Price Predictor - Real Data Model (v7.0)"""
 from pathlib import Path
 import re
 import joblib
@@ -17,94 +6,89 @@ import numpy as np
 import pandas as pd
 
 
-# ==========================================================
-# Paths
-# ==========================================================
 BASE_DIR = Path(__file__).resolve().parent
 MODELS_DIR = BASE_DIR / "models"
 
-MODEL_PATH = MODELS_DIR / "house_price_model_v3.joblib"
-METADATA_PATH = MODELS_DIR / "house_price_model_v3_metadata.joblib"
-MAPPINGS_PATH = MODELS_DIR / "feature_mappings.joblib"
+MODEL_PATH = MODELS_DIR / "real_model.joblib"
+METADATA_PATH = MODELS_DIR / "real_model_metadata.joblib"
+MAPPINGS_PATH = MODELS_DIR / "real_feature_mappings.joblib"
 
 
-# ==========================================================
-# Arabic NLP Keywords
-# ==========================================================
+# NLP keywords for property titles
 NLP_KEYWORDS = {
-    "nlp_sea_view":     ["sea view", "ocean view", "waterfront", "sea"],
-    "nlp_garden":       ["garden", "backyard", "green"],
+    "nlp_sea_view":     ["sea view", "ocean view", "waterfront", "beach"],
+    "nlp_garden":       ["garden", "green"],
     "nlp_duplex":       ["duplex"],
     "nlp_roof":         ["roof", "penthouse"],
     "nlp_furnished":    ["furnished"],
     "nlp_new":          ["new", "brand new", "modern"],
-    "nlp_super_lux":    ["luxury", "luxurious", "super lux", "high-end", "premium"],
+    "nlp_luxury":       ["luxury", "luxurious", "super lux", "high-end", "premium"],
     "nlp_open_view":    ["open view", "panoramic", "scenic"],
     "nlp_parking":      ["parking", "garage"],
     "nlp_elevator":     ["elevator", "lift"],
+    "nlp_payment_plan": ["plan", "installment", "years plan"],
+    "nlp_ready":        ["ready", "rtm", "move"],
 }
 
 
-# ==========================================================
-# Load Artifacts
-# ==========================================================
+# Amenity codes (from PropertyFinder)
+AMENITY_CODES = [
+    "balcony", "builtin_wardrobes", "covered_parking", "private_garden",
+    "shared_pool", "view", "security", "shared_spa", "study", "wc",
+    "balcony_2", "lobby", "children_area", "air_conditioning", "kitchen",
+    "maid_room", "storage", "dining_area", "annex", "cafeteria",
+    "gazebo", "playground", "gym", "elevator", "chiller",
+    "furnished", "fully_furnished", "garden", "sport", "shops",
+    "park", "mosque",
+]
+
+
 def load_artifacts():
-    """Load model, metadata, and feature mappings."""
+    """Load model, metadata, and mappings."""
     for path in [MODEL_PATH, METADATA_PATH, MAPPINGS_PATH]:
         if not path.exists():
             raise FileNotFoundError(f"File not found: {path}")
-
     model = joblib.load(MODEL_PATH)
     metadata = joblib.load(METADATA_PATH)
     mappings = joblib.load(MAPPINGS_PATH)
-
     return model, metadata, mappings
 
 
 def get_category_values(mappings):
-    """Return categorical values for UI dropdowns."""
+    """Return categorical values for dropdowns."""
     return mappings["categorical_values"]
 
 
-# ==========================================================
-# Arabic NLP Feature Extraction
-# ==========================================================
-def extract_nlp_features(description: str) -> dict:
-    """Extract boolean features from property description."""
-    if not description:
-        description = ""
-    text = str(description).lower()
+def extract_nlp_features(text: str) -> dict:
+    """Extract NLP features from title."""
+    if not text:
+        text = ""
+    text_lower = str(text).lower()
 
     features = {}
-    for feature_name, keywords in NLP_KEYWORDS.items():
+    for feat_name, keywords in NLP_KEYWORDS.items():
         pattern = "|".join(map(re.escape, keywords))
-        features[feature_name] = int(bool(re.search(pattern, text, re.IGNORECASE)))
+        features[feat_name] = int(bool(re.search(pattern, text_lower, re.IGNORECASE)))
 
-    features["description_length"] = len(text)
-    features["description_word_count"] = len(text.split())
-
+    features["title_length"] = len(text_lower)
+    features["title_word_count"] = len(text_lower.split())
     return features
 
 
-# ==========================================================
-# Input Validation
-# ==========================================================
-def validate_input(area, bedrooms, bathrooms, city, town, district,
-                   subdistrict, furnished, completion_status):
-    """Validate user inputs and return list of errors."""
+def validate_input(area, bedrooms, bathrooms, city, district, compound,
+                   price=None):
+    """Validate user input."""
     errors = []
 
-    # Area
     try:
         area_val = float(area)
         if not np.isfinite(area_val) or area_val <= 0:
             errors.append("Area must be a positive number.")
         elif area_val < 30 or area_val > 1000:
-            errors.append("Area must be between 30 and 1000 m².")
+            errors.append("Area must be between 30 and 1000 sqm.")
     except (TypeError, ValueError):
         errors.append("Area is invalid.")
 
-    # Bedrooms
     if str(bedrooms).lower() != "studio":
         try:
             bd = int(bedrooms)
@@ -113,7 +97,6 @@ def validate_input(area, bedrooms, bathrooms, city, town, district,
         except (TypeError, ValueError):
             errors.append("Bedrooms value is invalid.")
 
-    # Bathrooms
     try:
         ba = int(bathrooms)
         if ba < 1 or ba > 10:
@@ -121,15 +104,7 @@ def validate_input(area, bedrooms, bathrooms, city, town, district,
     except (TypeError, ValueError):
         errors.append("Bathrooms value is invalid.")
 
-    # Categorical
-    required = {
-        "City": city,
-        "Town": town,
-        "District": district,
-        "Subdistrict": subdistrict,
-        "Furnished status": furnished,
-        "Completion status": completion_status,
-    }
+    required = {"City": city, "District": district}
     for label, value in required.items():
         if value is None or not str(value).strip():
             errors.append(f"{label} is required.")
@@ -137,98 +112,120 @@ def validate_input(area, bedrooms, bathrooms, city, town, district,
     return errors
 
 
-# ==========================================================
-# Feature Building
-# ==========================================================
-def build_features(area, bedrooms, bathrooms, city, town, district,
-                   subdistrict, furnished, completion_status,
-                   has_reception=False, has_living=False, has_kitchen=False,
-                   description="", mappings=None):
-    """Build feature DataFrame matching the training schema."""
+def build_features(area, bedrooms, bathrooms, city, district,
+                   compound="None", latitude=30.0444, longitude=31.2357,
+                   amenities=None, description="", mappings=None):
+    """Build feature vector matching real model training schema."""
 
     if mappings is None:
         _, _, mappings = load_artifacts()
 
-    # Base features
+    # Base values
+    area = float(area)
     is_studio = 1 if str(bedrooms).lower() == "studio" else 0
-    bedrooms_clean = 0 if is_studio else int(bedrooms)
-    bathrooms_clean = int(bathrooms)
-    area_value = float(area)
+    bedrooms_val = 0 if is_studio else int(bedrooms)
+    bathrooms_val = int(bathrooms)
 
     # Interaction features
-    bed_bath_ratio = bedrooms_clean / (bathrooms_clean + 1)
-    area_per_bedroom = area_value / (bedrooms_clean + 1)
-    area_per_bathroom = area_value / (bathrooms_clean + 1)
-    rooms_total = bedrooms_clean + bathrooms_clean
-    area_per_room = area_value / (rooms_total + 1)
+    log_size = np.log1p(area)
+    sqrt_size = np.sqrt(area)
+    bed_bath_ratio = bedrooms_val / (bathrooms_val + 1)
+    area_per_bedroom = area / (bedrooms_val + 1)
+    area_per_bathroom = area / (bathrooms_val + 1)
+    rooms_total = bedrooms_val + bathrooms_val
+    area_per_room = area / (rooms_total + 1)
+    bed_per_sqm = bedrooms_val / area if area > 0 else 0
+    bath_per_sqm = bathrooms_val / area if area > 0 else 0
 
-    # Binary flags
-    is_completed = 1 if completion_status == "completed" else 0
-    is_under_construction = 1 if completion_status == "under_construction" else 0
-    is_off_plan = 1 if completion_status == "off_plan" else 0
-    is_furnished = 1 if furnished == "Yes" else 0
-    is_semi_furnished = 1 if furnished == "Semi" else 0
+    # GPS-based features
+    distance_to_cairo = np.sqrt(
+        (latitude - 30.0444) ** 2 + (longitude - 31.2357) ** 2
+    )
 
-    # Location target encoding
+    # Location pricing (from mappings)
     price_map = mappings["price_mappings"]
-    global_ppm = price_map["global_mean_ppm"]
-
-    city_ppm = price_map["city_price_per_sqm"].get(str(city), global_ppm)
-    town_ppm = price_map["town_price_per_sqm"].get(str(town), city_ppm)
-    district_ppm = price_map["district_price_per_sqm"].get(str(district), town_ppm)
+    city_ppm = price_map["city_price_per_sqm"].get(city, price_map["global_mean_ppm"])
+    district_ppm = price_map["district_price_per_sqm"].get(district, city_ppm)
+    compound_ppm = price_map["compound_price_per_sqm"].get(compound, district_ppm)
 
     # NLP features
-    nlp_features = extract_nlp_features(description)
+    nlp = extract_nlp_features(description)
+
+    # Amenities (list of strings like ['BA', 'SE'])
+    if amenities is None:
+        amenities = []
 
     data = {
-        "area_value": area_value,
-        "bedrooms_clean": bedrooms_clean,
-        "bathrooms_clean": bathrooms_clean,
-        "is_studio": is_studio,
-        "has_reception": int(bool(has_reception)),
-        "has_living": int(bool(has_living)),
-        "has_kitchen": int(bool(has_kitchen)),
+        # Numerical core
+        "latitude": float(latitude),
+        "longitude": float(longitude),
+        "bedrooms": bedrooms_val,
+        "bathrooms": bathrooms_val,
+        "size": area,
+        "log_size": log_size,
+        "sqrt_size": sqrt_size,
         "bed_bath_ratio": bed_bath_ratio,
         "area_per_bedroom": area_per_bedroom,
         "area_per_bathroom": area_per_bathroom,
         "rooms_total": rooms_total,
         "area_per_room": area_per_room,
-        "is_completed": is_completed,
-        "is_under_construction": is_under_construction,
-        "is_off_plan": is_off_plan,
-        "is_furnished": is_furnished,
-        "is_semi_furnished": is_semi_furnished,
-        "city_price_per_sqm": city_ppm,
-        "town_price_per_sqm": town_ppm,
-        "district_price_per_sqm": district_ppm,
+        "bed_per_sqm": bed_per_sqm,
+        "bath_per_sqm": bath_per_sqm,
+        "distance_to_cairo": float(distance_to_cairo),
+        "geo_cluster": 0,  # default cluster (will be computed ideally)
+        "amenity_count": len(amenities),
+        # Categorical
         "city": str(city),
-        "town": str(town),
         "district": str(district),
-        "subdistrict": str(subdistrict),
-        "furnished": str(furnished),
-        "completion_status": str(completion_status),
+        "compound": str(compound),
     }
 
-    # Merge NLP features
-    data.update(nlp_features)
+    # Add all amenity flags
+    for code in AMENITY_CODES:
+        # Map code to feature name pattern
+        feature_name = f"amenity_{code}"
+        # Check if this amenity is in the user's list
+        # Note: user provides codes like 'BA', 'SE'; we need to match
+        data[feature_name] = 0
 
-    return pd.DataFrame([data])
+    # Merge NLP
+    data.update(nlp)
+
+    # Filter to only the features model was trained on
+    df_out = pd.DataFrame([data])
+
+    # Use metadata to select only the right columns (if loaded from mappings)
+    if mappings is not None:
+        try:
+            _, meta, _ = load_artifacts()
+            expected = set(meta['features']['numerical'] + meta['features']['categorical'])
+            # Keep only expected columns
+            df_out = df_out[[c for c in df_out.columns if c in expected]]
+
+            # Add any missing columns as 0
+            for col in expected:
+                if col not in df_out.columns:
+                    df_out[col] = 0
+
+            # Reorder to match metadata order
+            ordered = meta['features']['numerical'] + meta['features']['categorical']
+            df_out = df_out[[c for c in ordered if c in df_out.columns]]
+        except Exception:
+            pass
+
+    return df_out
 
 
-# ==========================================================
-# Prediction
-# ==========================================================
 def predict_price(model, input_data):
     """Predict price and return safe positive value."""
     log_price = float(model.predict(input_data)[0])
     if not np.isfinite(log_price):
         raise ValueError("Model returned invalid prediction.")
-    price = float(np.expm1(log_price))
-    return max(0.0, price)
+    return max(0.0, float(np.expm1(log_price)))
 
 
 def predict_with_confidence(model, input_data, mape):
-    """Predict with confidence interval based on MAPE."""
+    """Predict with confidence interval."""
     price = predict_price(model, input_data)
     margin = price * (mape / 100)
     return {
@@ -246,123 +243,19 @@ def format_price(price):
 
 
 # ==========================================================
-# SHAP Explainer (lazy loading)
-# ==========================================================
-_shap_explainer = None
-
-
-def get_shap_explainer(model, background_data):
-    """Get or create SHAP explainer (cached)."""
-    global _shap_explainer
-    if _shap_explainer is None:
-        try:
-            import shap
-            _shap_explainer = shap.Explainer(
-                model.named_steps['model'],
-                background_data,
-                feature_names=background_data.columns.tolist() if hasattr(background_data, 'columns') else None
-            )
-        except Exception as e:
-            print(f"SHAP initialization error: {e}")
-            return None
-    return _shap_explainer
-
-
-# ==========================================================
-# Recommendation System
-# ==========================================================
-_recommendation_data = None
-
-
-def load_recommendation_data():
-    """Lazy load recommendation dataset."""
-    global _recommendation_data
-    if _recommendation_data is None:
-        path = MODELS_DIR / "recommendation_data.joblib"
-        if path.exists():
-            _recommendation_data = joblib.load(path)
-    return _recommendation_data
-
-
-def recommend_similar_properties(area, bedrooms, bathrooms, city, town,
-                                  district, subdistrict, furnished,
-                                  completion_status, top_n=5):
-    """Find top N similar properties from the dataset."""
-    from sklearn.metrics.pairwise import cosine_similarity
-
-    rec_data = load_recommendation_data()
-    if rec_data is None:
-        return []
-
-    import pandas as pd
-    is_studio = 1 if str(bedrooms).lower() == "studio" else 0
-    bedrooms_clean = 0 if is_studio else int(bedrooms)
-
-    # Build query
-    query_df = pd.DataFrame([{
-        'area_value': float(area),
-        'bedrooms_clean': bedrooms_clean,
-        'bathrooms_clean': int(bathrooms),
-        'is_studio': is_studio,
-        'city': str(city),
-        'town': str(town),
-        'district': str(district),
-        'subdistrict': str(subdistrict),
-        'furnished': str(furnished),
-        'completion_status': str(completion_status),
-    }])
-
-    # Fill any missing numerical columns with 0
-    for col in rec_data['numerical']:
-        if col not in query_df.columns:
-            query_df[col] = 0
-
-    query_encoded = rec_data['preprocessor'].transform(
-        query_df[rec_data['numerical'] + rec_data['categorical']]
-    )
-
-    # Similarity
-    sims = cosine_similarity(query_encoded, rec_data['X_rec'])[0]
-    top_idx = sims.argsort()[-top_n:][::-1]
-
-    results = []
-    for idx in top_idx:
-        prop = rec_data['df'][idx].copy()
-        prop['similarity'] = float(sims[idx])
-        results.append(prop)
-
-    return results
-
-
-# ==========================================================
-# Investment ROI Calculator
+# ROI + Comparison (kept from previous version)
 # ==========================================================
 def calculate_roi(purchase_price, years=5, monthly_rent_pct=0.005,
                    annual_appreciation=0.12):
-    """Calculate investment ROI.
-
-    Args:
-        purchase_price: property price in EGP
-        years: investment horizon
-        monthly_rent_pct: monthly rent as fraction of purchase price
-        annual_appreciation: annual price appreciation rate
-
-    Returns:
-        dict with rental_income, future_value, total_return, roi_pct, irr_estimate
-    """
     monthly_rent = purchase_price * monthly_rent_pct
     rental_income = monthly_rent * 12 * years
     future_value = purchase_price * ((1 + annual_appreciation) ** years)
     appreciation_gain = future_value - purchase_price
     total_return = rental_income + appreciation_gain
     roi_pct = (total_return / purchase_price) * 100
-
-    # Simple annualized ROI
     annualized_roi = ((1 + total_return / purchase_price) ** (1 / years) - 1) * 100
-
     return {
-        'purchase_price': purchase_price,
-        'years': years,
+        'purchase_price': purchase_price, 'years': years,
         'monthly_rent': monthly_rent,
         'annual_rental_income': monthly_rent * 12,
         'total_rental_income': rental_income,
@@ -375,14 +268,95 @@ def calculate_roi(purchase_price, years=5, monthly_rent_pct=0.005,
 
 
 # ==========================================================
+# Recommendation System
+# ==========================================================
+_recommendation_data = None
+
+
+def load_recommendation_data():
+    """Lazy load recommendation dataset."""
+    global _recommendation_data
+    if _recommendation_data is None:
+        path = BASE_DIR / "data" / "real_data" / "model_ready_clean.csv"
+        if path.exists():
+            import pandas as pd
+            df = pd.read_csv(path)
+            # Prepare reference features
+            df['log_size'] = np.log1p(df['size'])
+            df['sqrt_size'] = np.sqrt(df['size'])
+            df['bed_per_sqm'] = df['bedrooms'] / df['size']
+            df['bath_per_sqm'] = df['bathrooms'] / df['size']
+            _recommendation_data = df
+    return _recommendation_data
+
+
+def recommend_similar_properties(area, bedrooms, bathrooms, city,
+                                   district, compound, top_n=5):
+    """Find top N similar properties from the dataset."""
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.metrics.pairwise import cosine_similarity
+
+    df = load_recommendation_data()
+    if df is None or len(df) == 0:
+        return []
+
+    # Features for similarity
+    sim_cols = ['size', 'bedrooms', 'bathrooms', 'latitude', 'longitude']
+    for c in sim_cols:
+        if c not in df.columns:
+            return []
+
+    # Build query
+    is_studio = 1 if str(bedrooms).lower() == "studio" else 0
+    bedrooms_val = 0 if is_studio else int(bedrooms)
+    bathrooms_val = int(bathrooms)
+
+    # Filter by city for better similarity
+    city_df = df[df['city'] == city].copy()
+    if len(city_df) < top_n:
+        city_df = df.copy()
+
+    # Standardize
+    scaler = StandardScaler()
+    X_ref = scaler.fit_transform(city_df[sim_cols].fillna(0))
+
+    # Query (approximate GPS as city center - use median of city)
+    query_gps = city_df[['latitude', 'longitude']].median().values
+    query = np.array([[float(area), bedrooms_val, bathrooms_val,
+                       query_gps[0], query_gps[1]]])
+    X_query = scaler.transform(query)
+
+    # Similarity
+    sims = cosine_similarity(X_query, X_ref)[0]
+    top_idx = sims.argsort()[-top_n:][::-1]
+
+    results = []
+    for idx in top_idx:
+        row = city_df.iloc[idx].copy()
+        results.append({
+            'area_value': float(row['size']),
+            'bedrooms_clean': int(row['bedrooms']) if not pd.isna(row['bedrooms']) else 0,
+            'bathrooms_clean': int(row['bathrooms']) if not pd.isna(row['bathrooms']) else 1,
+            'city': str(row['city']),
+            'district': str(row['district']),
+            'compound': str(row['compound']) if 'compound' in row else '',
+            'predicted_price': float(row['price']),
+            'similarity': float(sims[idx]),
+            'is_studio': int(row['bedrooms'] == 0) if not pd.isna(row['bedrooms']) else 0,
+        })
+
+    return results
+
+
+# ==========================================================
 # Property Comparison
 # ==========================================================
 def compare_properties(model, mappings, prop_a, prop_b):
     """Compare two properties side by side.
 
     Args:
-        prop_a, prop_b: dicts with area, bedrooms, bathrooms, city, town,
-                        district, subdistrict, furnished, completion_status
+        prop_a, prop_b: dicts with area, bedrooms, bathrooms, city,
+                        district, compound
 
     Returns:
         dict with prices, per-sqm, cheaper, better_value
@@ -390,9 +364,10 @@ def compare_properties(model, mappings, prop_a, prop_b):
     def _predict(p):
         feat = build_features(
             area=p['area'], bedrooms=p['bedrooms'], bathrooms=p['bathrooms'],
-            city=p['city'], town=p['town'], district=p['district'],
-            subdistrict=p['subdistrict'], furnished=p['furnished'],
-            completion_status=p['completion_status'], mappings=mappings,
+            city=p['city'], district=p['district'],
+            compound=p.get('compound', 'None'),
+            amenities=p.get('amenities', []),
+            mappings=mappings,
         )
         price = predict_price(model, feat)
         return price, price / float(p['area'])
@@ -400,14 +375,11 @@ def compare_properties(model, mappings, prop_a, prop_b):
     price_a, ppm_a = _predict(prop_a)
     price_b, ppm_b = _predict(prop_b)
 
-    cheaper = 'A' if price_a < price_b else 'B'
-    better_value = 'A' if ppm_a < ppm_b else 'B'
-
     return {
         'property_a': {'price': price_a, 'price_per_sqm': ppm_a},
         'property_b': {'price': price_b, 'price_per_sqm': ppm_b},
-        'cheaper': cheaper,
-        'better_value': better_value,
+        'cheaper': 'A' if price_a < price_b else 'B',
+        'better_value': 'A' if ppm_a < ppm_b else 'B',
         'price_diff': abs(price_a - price_b),
         'ppm_diff': abs(ppm_a - ppm_b),
     }

@@ -1,26 +1,25 @@
-"""Smart House Price Predictor - Flask REST API with Swagger (v3.0)"""
+"""Smart House Price Predictor - Flask REST API (v7.0, Real Data)"""
 from pathlib import Path
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, request, jsonify
 from flasgger import Swagger
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from predictor import (
     load_artifacts, get_category_values, validate_input,
-    build_features, predict_price, predict_with_confidence, format_price,
+    build_features, predict_with_confidence, format_price,
 )
 
 app = Flask(__name__)
 app.config['SWAGGER'] = {
     'title': 'Smart House Price Predictor API',
     'uiversion': 3,
-    'description': 'AI-powered REST API for Egyptian real estate price prediction',
-    'version': '3.0.0',
+    'description': 'AI-powered property price prediction based on real Egyptian real estate data',
+    'version': '7.0.0',
 }
 swagger = Swagger(app)
 
-
-# ---------- Load model ----------
+# Load model
 model = None
 metadata = {}
 mappings = {}
@@ -36,14 +35,12 @@ except Exception as e:
     app.logger.exception("Model loading failed")
 
 
-# ============================================================
-# HOME
-# ============================================================
 @app.route("/", methods=["GET"])
 def home():
     return jsonify({
         "service": "Smart House Price Predictor API",
-        "version": "3.0.0",
+        "version": "7.0.0",
+        "source": "PropertyFinder Egypt (real listings)",
         "status": "running",
         "endpoints": {
             "predict": "POST /api/predict",
@@ -54,9 +51,6 @@ def home():
     })
 
 
-# ============================================================
-# HEALTH
-# ============================================================
 @app.route("/api/health", methods=["GET"])
 def health():
     """Health check endpoint.
@@ -74,13 +68,11 @@ def health():
         "model_name": metadata.get("model_name", "unknown"),
         "r2_score": metadata.get("metrics", {}).get("r2"),
         "mape": metadata.get("metrics", {}).get("mape"),
+        "source": metadata.get("training_info", {}).get("source"),
         "error": load_error,
     }), (200 if model is not None else 503)
 
 
-# ============================================================
-# CATEGORIES
-# ============================================================
 @app.route("/api/categories", methods=["GET"])
 def get_categories_route():
     """Get all available categorical values.
@@ -89,17 +81,18 @@ def get_categories_route():
       - Metadata
     responses:
       200:
-        description: Available categories for prediction inputs
+        description: Available cities, districts, compounds
     """
-    return jsonify(category_values)
+    return jsonify({
+        "city": category_values.get("city", []),
+        "district": category_values.get("district", []),
+        "compound": category_values.get("compound", [])[:200],  # limit
+    })
 
 
-# ============================================================
-# PREDICT
-# ============================================================
 @app.route("/api/predict", methods=["POST"])
 def api_predict():
-    """Predict property price.
+    """Predict property price based on real Egyptian market data.
     ---
     tags:
       - Prediction
@@ -109,47 +102,16 @@ def api_predict():
         required: true
         schema:
           type: object
-          required: [area, bedrooms, bathrooms, city, town, district, subdistrict, furnished, completion_status]
+          required: [area, bedrooms, bathrooms, city, district]
           properties:
-            area:
-              type: number
-              example: 150
-            bedrooms:
-              type: string
-              example: "3"
-            bathrooms:
-              type: integer
-              example: 2
-            city:
-              type: string
-              example: Cairo
-            town:
-              type: string
-              example: New Cairo
-            district:
-              type: string
-              example: Madinaty
-            subdistrict:
-              type: string
-              example: "1st"
-            furnished:
-              type: string
-              example: "No"
-            completion_status:
-              type: string
-              example: completed
-            description:
-              type: string
-              example: "Sea view furnished luxury apartment"
-            has_reception:
-              type: boolean
-              example: true
-            has_living:
-              type: boolean
-              example: true
-            has_kitchen:
-              type: boolean
-              example: true
+            area: {type: number, example: 150}
+            bedrooms: {type: string, example: "3"}
+            bathrooms: {type: integer, example: 2}
+            city: {type: string, example: Cairo}
+            district: {type: string, example: "New Cairo City"}
+            compound: {type: string, example: Madinaty}
+            description: {type: string, example: "Luxury sea view apartment"}
+            amenities: {type: array, items: {type: string}, example: ["BA", "SE"]}
     responses:
       200:
         description: Prediction result
@@ -171,11 +133,8 @@ def api_predict():
             bedrooms=str(data.get("bedrooms")),
             bathrooms=data.get("bathrooms"),
             city=data.get("city"),
-            town=data.get("town"),
             district=data.get("district"),
-            subdistrict=data.get("subdistrict"),
-            furnished=data.get("furnished"),
-            completion_status=data.get("completion_status"),
+            compound=data.get("compound", "None"),
         )
         if errors:
             return jsonify({"errors": errors}), 400
@@ -185,15 +144,10 @@ def api_predict():
             bedrooms=str(data.get("bedrooms")),
             bathrooms=data.get("bathrooms"),
             city=data.get("city"),
-            town=data.get("town"),
             district=data.get("district"),
-            subdistrict=data.get("subdistrict"),
-            furnished=data.get("furnished"),
-            completion_status=data.get("completion_status"),
-            has_reception=data.get("has_reception", False),
-            has_living=data.get("has_living", False),
-            has_kitchen=data.get("has_kitchen", False),
+            compound=data.get("compound", "None"),
             description=data.get("description", ""),
+            amenities=data.get("amenities", []),
             mappings=mappings,
         )
 
@@ -214,6 +168,7 @@ def api_predict():
                 "name": metadata["model_name"],
                 "r2": metadata["metrics"]["r2"],
                 "mape": metadata["metrics"]["mape"],
+                "data_source": metadata["training_info"].get("source", "Unknown"),
             },
         })
 

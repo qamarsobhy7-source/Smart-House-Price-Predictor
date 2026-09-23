@@ -4,33 +4,23 @@
 
 | Field | Value |
 |-------|-------|
-| **Model Name** | Gradient Boosting Regressor (v3) |
-| **Version** | 3.0.0 |
+| **Model Name** | XGBoost Regressor (Real Data) |
+| **Version** | 7.0.0 |
 | **Type** | Supervised Regression |
-| **Target** | Property price (EGP) |
-| **Developed by** | AI Engineering Team |
-| **Date** | 2026 |
-| **Framework** | scikit-learn 1.6.1 |
+| **Target** | Apartment price (EGP) |
+| **Framework** | XGBoost 2.0+ / scikit-learn 1.6.1 |
 | **License** | MIT |
 
 ### Architecture
 
-- **Algorithm:** Gradient Boosting Regressor
-- **Target Transform:** `log(1 + price)` for normality
+- **Algorithm:** XGBoost (Gradient Boosted Trees)
+- **Target Transform:** log(1 + price)
 - **Hyperparameters:**
-  - `n_estimators`: 192
-  - `max_depth`: 3
-  - `learning_rate`: 0.075
-  - `subsample`: 0.873
-- **Tuning:** Optuna (TPE sampler)
-- **Preprocessing:** ColumnTransformer + StandardScaler + OneHotEncoder
-
-### Ensemble Alternative
-
-An optional **Stacking Regressor** is also included:
-- **Base models:** Gradient Boosting, XGBoost, LightGBM, Random Forest
-- **Meta-learner:** Ridge (alpha=1.0)
-- **Cross-validation:** 3-fold
+  - n_estimators: 200
+  - max_depth: 6
+  - learning_rate: 0.1
+  - subsample: 0.9
+  - tree_method: hist
 
 ---
 
@@ -38,27 +28,27 @@ An optional **Stacking Regressor** is also included:
 
 ### Primary Use Cases
 
-- **Buyers:** Estimate fair market value before negotiations
-- **Sellers:** Determine competitive listing prices
-- **Investors:** Evaluate ROI and compare properties
-- **Researchers:** Benchmark Egyptian real estate ML models
+- Buyers: Reference price when comparing apartments
+- Sellers: Sanity check before listing
+- Investors: Initial market scan before visiting properties
+- Researchers: Baseline benchmark for Egypt real estate ML
 
 ### Out-of-Scope Use
 
-- ❌ **Not** a formal appraisal — does not replace certified property evaluators
-- ❌ **Not** for villas, land, or commercial properties
-- ❌ **Not** for cities outside the 10 covered
+- Not a formal property appraisal
+- Not for villas, chalets, or commercial
+- Not for cities outside the training set
 
 ---
 
 ## Training Data
 
-- **Source:** Synthetic dataset simulating Egyptian market (2024–2025 prices)
-- **Size:** 8,000 records
-- **Cities:** 10 (Cairo, Giza, Alexandria, Mansoura, Tanta, Port Said, Suez, Ismailia, Luxor, Aswan)
-- **Split:** 80% train / 20% test
+- **Source:** PropertyFinder Egypt (public listings)
+- **Records:** 7,749 apartments after cleaning
+- **Train/Test split:** 80/20 with random seed 42
+- **Features:** 61 numeric + 3 categorical = 64 total
 
-Full details in [DATA_CARD.md](DATA_CARD.md).
+See DATA_CARD.md for full details.
 
 ---
 
@@ -68,51 +58,57 @@ Full details in [DATA_CARD.md](DATA_CARD.md).
 
 | Metric | Value |
 |--------|-------|
-| **R²** | 0.9784 |
-| **MAPE** | 6.61% |
-| **MAE** | ~300,000 EGP |
-| **RMSE** | ~440,000 EGP |
+| **R-squared** | 0.6843 |
+| **MAPE** | 18.39% |
+| **MAE** | 1479340 EGP |
+| **RMSE** | 2048059 EGP |
 
-### Per-Model Comparison (CV R²)
+### Model Comparison (3-fold CV R-squared)
 
-| Model | R² (CV) |
-|-------|---------|
-| **Ensemble Stacking** | **0.9784** |
-| Gradient Boosting | 0.9781 |
-| XGBoost | 0.9760 |
-| LightGBM | 0.9756 |
-| Random Forest | 0.9672 |
-| Ridge / Lasso | 0.9571 |
-| Linear Regression | 0.9567 |
+| Model | R-squared (CV) |
+|-------|----------------|
+| XGBoost | 0.6874 |
+| LightGBM | 0.6826 |
+| Gradient Boosting | 0.6647 |
+| Ridge | 0.6378 |
+
+---
+
+## Interpretation of R-squared = 0.68
+
+On real real estate data, R-squared values of 0.6-0.75 are typical and accepted. Reasons:
+
+1. **Unobserved factors** - condition of property, floor, view, negotiation, seller motivation
+2. **Listing prices vs. sale prices** - listings are asking prices, actual sales may differ
+3. **Market noise** - supply/demand variations not captured
+4. **Data limitations** - no historical price trends, no economic indicators
+
+We report honest numbers on real data rather than inflated numbers on synthetic data.
 
 ---
 
 ## Limitations
 
-1. **Synthetic data** — Generated from real market patterns but not actual transactions
-2. **Limited geography** — 10 cities only
-3. **Single property type** — Residential apartments only
-4. **Temporal** — No time-varying effects modeled (handled separately via Prophet)
-5. **Feature coverage** — Missing: floor number, building age, exact coordinates
+1. Asking prices, not transaction prices
+2. Single point in time (2026 scrape)
+3. Apartment-only; no villas/chalets/commercial
+4. No maintenance fees, installments plans, or future market factors
+5. Geographic coverage limited to 9 cities
 
 ---
 
 ## Ethical Considerations
 
-- **No personal data** collected or used
-- **No geographic bias** introduced by protected attributes
-- **Transparency:** SHAP explanations provided for every prediction
-- **Confidence intervals** always shown alongside point estimates
-
----
-
-## Recommendation
-
-**Use as a decision-support tool.** Always combine with:
-- Physical inspection
-- Comparable market listings
-- Professional appraisal for transactions over 5M EGP
+- No personal data collected
+- Only public listings used
+- SHAP explanations provided for every prediction
+- Confidence intervals always shown
+- Tool explicitly positioned as estimation, not appraisal
 
 ---
 
 ## Citation
+
+Smart House Price Predictor v7.0 (2026)
+Real data model trained on PropertyFinder Egypt listings
+https://github.com/qamarsobhy7-source/Smart-House-Price-Predictor
