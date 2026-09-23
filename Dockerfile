@@ -2,15 +2,15 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-# تثبيت المكتبات
+# Install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# نسخ المشروع
+# Copy project
 COPY . .
 
-# المنفذ
+# Port
 EXPOSE 8501
 
-# تشغيل Streamlit
+# Run Streamlit
 CMD ["streamlit", "run", "streamlit_app.py", "--server.port=8501", "--server.address=0.0.0.0"]

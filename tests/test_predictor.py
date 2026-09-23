@@ -141,15 +141,15 @@ class TestNLPFeatures(unittest.TestCase):
     """Test Arabic NLP feature extraction."""
 
     def test_sea_view_detection(self):
-        result = extract_nlp_features("شقة بحرية جميلة")
+        result = extract_nlp_features("sea view apartment")
         self.assertEqual(result["nlp_sea_view"], 1)
 
     def test_garden_detection(self):
-        result = extract_nlp_features("شقة مع حديقة خاصة")
+        result = extract_nlp_features("apartment with private garden")
         self.assertEqual(result["nlp_garden"], 1)
 
     def test_furnished_detection(self):
-        result = extract_nlp_features("شقة مفروشة بالكامل")
+        result = extract_nlp_features("fully furnished apartment")
         self.assertEqual(result["nlp_furnished"], 1)
 
     def test_empty_description(self):

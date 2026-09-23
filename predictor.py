@@ -31,17 +31,17 @@ MAPPINGS_PATH = MODELS_DIR / "feature_mappings.joblib"
 # ==========================================================
 # Arabic NLP Keywords
 # ==========================================================
-ARABIC_KEYWORDS = {
-    "nlp_sea_view":     ["بحرية", "بحر", "sea view", "sea"],
-    "nlp_garden":       ["حديقة", "garden"],
-    "nlp_duplex":       ["دوبلكس", "duplex"],
-    "nlp_roof":         ["روف", "roof"],
-    "nlp_furnished":    ["مفروش", "furnished"],
-    "nlp_new":          ["جديد", "new"],
-    "nlp_super_lux":    ["سوبر لوكس", "super lux", "الترا"],
-    "nlp_open_view":    ["فيو مفتوح", "open view"],
-    "nlp_parking":      ["جراج", "garage", "parking"],
-    "nlp_elevator":     ["اسانسير", "مصعد", "elevator"],
+NLP_KEYWORDS = {
+    "nlp_sea_view":     ["sea view", "ocean view", "waterfront", "sea"],
+    "nlp_garden":       ["garden", "backyard", "green"],
+    "nlp_duplex":       ["duplex"],
+    "nlp_roof":         ["roof", "penthouse"],
+    "nlp_furnished":    ["furnished"],
+    "nlp_new":          ["new", "brand new", "modern"],
+    "nlp_super_lux":    ["luxury", "luxurious", "super lux", "high-end", "premium"],
+    "nlp_open_view":    ["open view", "panoramic", "scenic"],
+    "nlp_parking":      ["parking", "garage"],
+    "nlp_elevator":     ["elevator", "lift"],
 }
 
 
@@ -70,13 +70,13 @@ def get_category_values(mappings):
 # Arabic NLP Feature Extraction
 # ==========================================================
 def extract_nlp_features(description: str) -> dict:
-    """Extract boolean features from Arabic/English property description."""
+    """Extract boolean features from property description."""
     if not description:
         description = ""
     text = str(description).lower()
 
     features = {}
-    for feature_name, keywords in ARABIC_KEYWORDS.items():
+    for feature_name, keywords in NLP_KEYWORDS.items():
         pattern = "|".join(map(re.escape, keywords))
         features[feature_name] = int(bool(re.search(pattern, text, re.IGNORECASE)))
 

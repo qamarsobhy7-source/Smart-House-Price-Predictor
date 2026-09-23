@@ -140,7 +140,7 @@ def api_predict():
               example: completed
             description:
               type: string
-              example: "شقة بحرية مفروشة سوبر لوكس"
+              example: "Sea view furnished luxury apartment"
             has_reception:
               type: boolean
               example: true
