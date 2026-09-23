@@ -1,4 +1,4 @@
-"""Smart House Price Predictor - Modern UI v8.0 (Zillow/Airbnb inspired)"""
+"""Smart House Price Predictor - Multi-App Inspired UI v9.0"""
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -11,7 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from predictor import (
     load_artifacts, get_category_values, validate_input,
     build_features, predict_with_confidence, format_price,
-    calculate_roi, recommend_similar_properties, compare_properties,
+    calculate_roi, recommend_similar_properties,
 )
 from sentiment_helper import analyze_sentiment
 
@@ -36,335 +36,100 @@ st.set_page_config(
 )
 
 
-# ============================================================
-# MODERN CSS
-# ============================================================
-st.markdown("""
-<style>
-    * { font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif; }
+st.markdown("""<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+* { font-family: 'Inter', -apple-system, sans-serif !important; }
+.main .block-container { max-width: 1400px !important; padding: 0 1.5rem 3rem 1.5rem !important; }
+#MainMenu, footer, header, .stDeployButton { display: none !important; }
 
-    .main { padding: 0 !important; }
-    .main .block-container {
-        max-width: 1300px;
-        padding: 1.5rem 2rem 3rem 2rem;
-    }
-    #MainMenu, footer, header { visibility: hidden; }
+/* NAVBAR */
+.nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 0; border-bottom: 1px solid #e5e7eb; margin-bottom: 1.5rem;
+}
+.nav-logo { font-size: 1.35rem; font-weight: 900; color: #111827; display: flex; align-items: center; gap: 0.5rem; }
+.nav-logo span { color: #6366f1; }
+.nav-tag { background: #eef2ff; color: #6366f1; padding: 0.35rem 0.85rem; border-radius: 8px; font-size: 0.72rem; font-weight: 800; }
 
-    /* ============ HERO ============ */
-    .hero {
-        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 40%, #ec4899 100%);
-        padding: 3rem 2rem 2.5rem 2rem;
-        border-radius: 24px;
-        color: white;
-        text-align: center;
-        margin-bottom: 2rem;
-        box-shadow: 0 24px 60px rgba(99, 102, 241, 0.25);
-        position: relative;
-        overflow: hidden;
-    }
-    .hero::before {
-        content: '';
-        position: absolute;
-        top: -100px; right: -100px;
-        width: 400px; height: 400px;
-        background: radial-gradient(circle, rgba(255,255,255,0.15), transparent 70%);
-        border-radius: 50%;
-    }
-    .hero h1 {
-        font-size: 2.8rem;
-        font-weight: 900;
-        margin: 0 0 0.5rem 0;
-        letter-spacing: -1px;
-        line-height: 1.15;
-        position: relative;
-    }
-    .hero p {
-        font-size: 1.1rem;
-        opacity: 0.95;
-        margin: 0 0 1.5rem 0;
-        position: relative;
-    }
-    .hero-badges {
-        display: flex;
-        justify-content: center;
-        gap: 0.6rem;
-        flex-wrap: wrap;
-        position: relative;
-    }
-    .hero-badge {
-        background: rgba(255,255,255,0.22);
-        backdrop-filter: blur(10px);
-        padding: 0.5rem 1rem;
-        border-radius: 100px;
-        font-weight: 600;
-        font-size: 0.85rem;
-    }
+/* HERO SEARCH */
+.hero { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%); padding: 3rem 2rem 2.5rem 2rem; border-radius: 24px; color: white; margin-bottom: 1.5rem; box-shadow: 0 20px 50px rgba(99,102,241,0.25); position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; top: -80px; right: -80px; width: 320px; height: 320px; background: radial-gradient(circle, rgba(255,255,255,0.18), transparent 70%); border-radius: 50%; }
+.hero h1 { font-size: 2.6rem; font-weight: 900; margin: 0 0 0.5rem 0; letter-spacing: -1.2px; line-height: 1.15; position: relative; text-align: center; }
+.hero p { font-size: 1.05rem; opacity: 0.95; margin: 0 0 1.75rem 0; position: relative; text-align: center; }
+.hero-chips { display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap; position: relative; }
+.hero-chip { background: rgba(255,255,255,0.22); backdrop-filter: blur(10px); padding: 0.5rem 1rem; border-radius: 100px; font-weight: 700; font-size: 0.78rem; }
 
-    /* ============ SECTION CARDS ============ */
-    .section-card {
-        background: white;
-        border-radius: 18px;
-        padding: 1.5rem 1.75rem;
-        margin-bottom: 1.25rem;
-        border: 1px solid #e2e8f0;
-        box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04);
-        transition: all 0.2s ease;
-    }
-    .section-card:hover {
-        border-color: #c7d2fe;
-        box-shadow: 0 8px 24px rgba(99, 102, 241, 0.08);
-    }
-    .section-header {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        margin-bottom: 1.25rem;
-    }
-    .step-badge {
-        width: 32px; height: 32px; line-height: 32px;
-        text-align: center;
-        background: linear-gradient(135deg, #6366f1, #8b5cf6);
-        color: white;
-        border-radius: 10px;
-        font-weight: 800;
-        font-size: 0.95rem;
-        flex-shrink: 0;
-    }
-    .section-title-text {
-        font-size: 1.15rem;
-        font-weight: 700;
-        color: #0f172a;
-    }
+/* CATEGORY PILLS (Airbnb style) */
+.cat-pills { display: flex; gap: 0.5rem; overflow-x: auto; padding: 0.75rem 0; margin-bottom: 1rem; border-bottom: 1px solid #f3f4f6; }
+.cat-pill { background: #f9fafb; color: #6b7280; padding: 0.55rem 1.1rem; border-radius: 100px; font-size: 0.82rem; font-weight: 700; white-space: nowrap; border: 1px solid #e5e7eb; }
 
-    /* ============ PREVIEW CARD (sticky sidebar) ============ */
-    .preview-wrap {
-        position: sticky;
-        top: 1rem;
-    }
-    .preview-card {
-        background: white;
-        border-radius: 20px;
-        padding: 1.5rem;
-        border: 1px solid #e2e8f0;
-        box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
-    }
-    .preview-image {
-        height: 140px;
-        border-radius: 14px;
-        background: linear-gradient(135deg, #a5b4fc 0%, #c4b5fd 50%, #f0abfc 100%);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 3rem;
-        margin-bottom: 1rem;
-    }
-    .preview-title {
-        font-size: 1.15rem;
-        font-weight: 800;
-        color: #0f172a;
-        margin-bottom: 0.25rem;
-    }
-    .preview-location {
-        color: #64748b;
-        font-size: 0.9rem;
-        margin-bottom: 1rem;
-    }
-    .preview-row {
-        display: flex;
-        justify-content: space-between;
-        padding: 0.5rem 0;
-        border-bottom: 1px solid #f1f5f9;
-        font-size: 0.9rem;
-    }
-    .preview-row:last-child { border-bottom: none; }
-    .preview-label { color: #64748b; }
-    .preview-value { color: #0f172a; font-weight: 600; }
+/* FORM CARD */
+.form-card { background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem; border: 1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
+.form-card-title { display: flex; align-items: center; gap: 0.6rem; font-size: 1rem; font-weight: 800; color: #111827; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 2px solid #f3f4f6; }
+.form-step { width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; border-radius: 8px; font-size: 0.78rem; font-weight: 800; flex-shrink: 0; }
 
-    /* ============ PRICE RESULT ============ */
-    .price-result {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        padding: 2rem 1.5rem;
-        border-radius: 20px;
-        color: white;
-        text-align: center;
-        box-shadow: 0 20px 40px rgba(16, 185, 129, 0.3);
-        margin-top: 1rem;
-    }
-    .price-result .label {
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        opacity: 0.9;
-        font-weight: 700;
-    }
-    .price-result .value {
-        font-size: 3rem;
-        font-weight: 900;
-        line-height: 1;
-        margin: 0.5rem 0;
-        letter-spacing: -2px;
-    }
-    .price-result .egp {
-        font-size: 1.1rem;
-        opacity: 0.95;
-    }
-    .price-result .range {
-        margin-top: 1rem;
-        padding-top: 1rem;
-        border-top: 1px solid rgba(255,255,255,0.25);
-        font-size: 0.85rem;
-        opacity: 0.95;
-    }
+/* PROPERTY PREVIEW (Bayut/Airbnb style) */
+.preview-wrap { position: sticky; top: 1rem; }
+.property-preview { background: white; border-radius: 20px; border: 1px solid #e5e7eb; box-shadow: 0 10px 30px rgba(0,0,0,0.06); overflow: hidden; }
+.property-image { height: 190px; background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); display: flex; align-items: center; justify-content: center; font-size: 5rem; position: relative; }
+.property-badge { position: absolute; top: 1rem; left: 1rem; background: white; color: #6366f1; padding: 0.35rem 0.85rem; border-radius: 100px; font-size: 0.72rem; font-weight: 800; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.property-heart { position: absolute; top: 1rem; right: 1rem; background: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.property-content { padding: 1.25rem; }
+.property-title { font-size: 1.15rem; font-weight: 900; color: #111827; margin-bottom: 0.35rem; }
+.property-location { color: #6b7280; font-size: 0.85rem; margin-bottom: 1rem; }
+.property-divider { height: 1px; background: #f3f4f6; margin: 1rem 0; }
+.property-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem; margin-bottom: 1rem; }
+.property-stat { background: #f9fafb; border-radius: 10px; padding: 0.65rem; text-align: center; }
+.property-stat-value { font-size: 1rem; font-weight: 800; color: #111827; }
+.property-stat-label { font-size: 0.68rem; color: #6b7280; margin-top: 0.15rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; }
+.feature-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.75rem; }
+.feature-tag { background: #ede9fe; color: #6366f1; padding: 0.25rem 0.65rem; border-radius: 100px; font-size: 0.7rem; font-weight: 700; }
 
-    /* ============ MINI METRIC ============ */
-    .mini-metric {
-        background: #f8fafc;
-        border-radius: 14px;
-        padding: 1rem;
-        text-align: center;
-        border: 1px solid #f1f5f9;
-        margin-top: 0.75rem;
-    }
-    .mini-metric .val {
-        font-size: 1.4rem;
-        font-weight: 800;
-        color: #6366f1;
-        line-height: 1;
-    }
-    .mini-metric .lbl {
-        font-size: 0.75rem;
-        color: #64748b;
-        margin-top: 0.4rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
+/* PRICE CARD (Zillow Zestimate style) */
+.price-hero { background: white; border-radius: 20px; padding: 2rem; border: 1px solid #e5e7eb; box-shadow: 0 10px 30px rgba(0,0,0,0.06); margin-bottom: 1rem; }
+.price-label { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 2px; color: #6b7280; font-weight: 700; margin-bottom: 0.5rem; }
+.price-value { font-size: 3.5rem; font-weight: 900; color: #10b981; line-height: 1; letter-spacing: -2px; }
+.price-egp { font-size: 1.15rem; color: #6b7280; margin-top: 0.25rem; font-weight: 600; }
+.price-range-bar { margin-top: 1.5rem; height: 8px; background: #f3f4f6; border-radius: 100px; position: relative; overflow: hidden; }
+.price-range-fill { height: 100%; background: linear-gradient(90deg, #10b981, #059669); border-radius: 100px; }
+.price-range-labels { display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.78rem; color: #6b7280; font-weight: 600; }
 
-    /* ============ CTA BUTTON ============ */
-    .stButton > button[kind="primary"] {
-        width: 100%;
-        background: linear-gradient(90deg, #6366f1, #8b5cf6);
-        color: white;
-        border: none;
-        border-radius: 14px;
-        padding: 1.1rem 2rem;
-        font-size: 1.1rem;
-        font-weight: 800;
-        letter-spacing: 0.3px;
-        box-shadow: 0 12px 28px rgba(99, 102, 241, 0.35);
-        transition: all 0.2s;
-    }
-    .stButton > button[kind="primary"]:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 16px 36px rgba(99, 102, 241, 0.45);
-    }
+/* MONTHLY PAYMENT (Zillow/Realtor style) */
+.monthly-card { background: #f0fdf4; border-radius: 14px; padding: 1.25rem; border: 1px solid #bbf7d0; margin-bottom: 1rem; }
+.monthly-title { font-size: 0.85rem; color: #15803d; font-weight: 800; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px; }
+.monthly-value { font-size: 1.75rem; font-weight: 900; color: #166534; line-height: 1; }
+.monthly-detail { font-size: 0.78rem; color: #15803d; margin-top: 0.5rem; }
 
-    /* ============ TABS ============ */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 0.35rem;
-        background: white;
-        padding: 0.5rem;
-        border-radius: 16px;
-        border: 1px solid #e2e8f0;
-        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
-        flex-wrap: wrap;
-    }
-    .stTabs [data-baseweb="tab"] {
-        border-radius: 12px;
-        padding: 0.65rem 1rem;
-        font-weight: 700;
-        font-size: 0.88rem;
-        color: #64748b;
-        border: none;
-    }
-    .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
-        color: white !important;
-    }
+/* METRIC CARD */
+.metric-card { background: white; border-radius: 14px; padding: 1rem 0.75rem; text-align: center; border: 1px solid #e5e7eb; }
+.metric-value { font-size: 1.3rem; font-weight: 900; color: #6366f1; line-height: 1; }
+.metric-label { font-size: 0.68rem; color: #6b7280; margin-top: 0.35rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.4px; }
 
-    /* ============ EMPTY STATE ============ */
-    .empty-state {
-        background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
-        border: 2px dashed #cbd5e1;
-        border-radius: 20px;
-        padding: 3rem 1.5rem;
-        text-align: center;
-        color: #64748b;
-    }
-    .empty-state-icon { font-size: 3rem; margin-bottom: 0.75rem; }
-    .empty-state-title {
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: #334155;
-        margin-bottom: 0.35rem;
-    }
-    .empty-state-text { font-size: 0.9rem; }
+/* BUTTONS */
+.stButton > button { border-radius: 12px !important; font-weight: 800 !important; font-size: 1rem !important; padding: 1rem 1.5rem !important; border: none !important; }
+.stButton > button[kind="primary"] { background: linear-gradient(90deg, #6366f1, #8b5cf6) !important; color: white !important; box-shadow: 0 10px 24px rgba(99,102,241,0.35) !important; }
+.stButton > button[kind="primary"]:hover { transform: translateY(-2px) !important; box-shadow: 0 14px 32px rgba(99,102,241,0.45) !important; }
 
-    /* ============ SIMILAR PROPERTY CARD ============ */
-    .prop-card {
-        background: white;
-        border-radius: 14px;
-        padding: 1rem 1.25rem;
-        margin-bottom: 0.6rem;
-        border: 1px solid #e2e8f0;
-        transition: all 0.2s;
-    }
-    .prop-card:hover {
-        border-color: #c7d2fe;
-        box-shadow: 0 4px 16px rgba(99, 102, 241, 0.08);
-    }
-    .prop-match {
-        display: inline-block;
-        background: #ede9fe;
-        color: #6366f1;
-        padding: 0.15rem 0.6rem;
-        border-radius: 100px;
-        font-size: 0.75rem;
-        font-weight: 700;
-    }
+/* TABS */
+.stTabs [data-baseweb="tab-list"] { gap: 0.35rem; background: white; padding: 0.5rem; border-radius: 14px; border: 1px solid #e5e7eb; flex-wrap: wrap; }
+.stTabs [data-baseweb="tab"] { border-radius: 10px; padding: 0.65rem 1rem; font-weight: 700; font-size: 0.85rem; color: #6b7280; }
+.stTabs [aria-selected="true"] { background: linear-gradient(135deg, #6366f1, #8b5cf6) !important; color: white !important; }
 
-    /* ============ FOOTER ============ */
-    .footer-note {
-        text-align: center;
-        color: #94a3b8;
-        font-size: 0.8rem;
-        padding: 2.5rem 0 1rem 0;
-        border-top: 1px solid #e2e8f0;
-        margin-top: 3rem;
-    }
+/* SIMILAR CARD */
+.sim-card { background: white; border-radius: 14px; padding: 1rem 1.25rem; margin-bottom: 0.6rem; border: 1px solid #e5e7eb; }
+.sim-match { background: #ede9fe; color: #6366f1; padding: 0.15rem 0.6rem; border-radius: 100px; font-size: 0.7rem; font-weight: 800; }
 
-    /* ============ COMPARE CARD ============ */
-    .compare-box {
-        background: #f8fafc;
-        border-radius: 14px;
-        padding: 1.25rem;
-        border: 1px solid #e2e8f0;
-        height: 100%;
-    }
-    .compare-header {
-        font-size: 1rem;
-        font-weight: 800;
-        margin-bottom: 0.75rem;
-        color: #6366f1;
-    }
+/* EMPTY STATE */
+.empty-box { background: #f9fafb; border: 2px dashed #e5e7eb; border-radius: 20px; padding: 3rem 1.5rem; text-align: center; }
+.empty-icon { font-size: 3.5rem; margin-bottom: 0.75rem; }
+.empty-title { font-size: 1.15rem; font-weight: 800; color: #374151; margin-bottom: 0.35rem; }
+.empty-text { color: #6b7280; font-size: 0.9rem; }
 
-    /* ============ INPUT LABELS ============ */
-    .input-label {
-        font-size: 0.8rem;
-        font-weight: 700;
-        color: #475569;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-bottom: 0.35rem;
-        margin-top: 0.75rem;
-    }
-</style>
-""", unsafe_allow_html=True)
+/* FOOTER */
+.footer-box { text-align: center; color: #9ca3af; font-size: 0.78rem; padding: 2.5rem 1rem 1rem 1rem; border-top: 1px solid #e5e7eb; margin-top: 3rem; }
+</style>""", unsafe_allow_html=True)
 
 
-# ============================================================
-# LOAD MODEL
-# ============================================================
 @st.cache_resource
 def _load():
     return load_artifacts()
@@ -380,57 +145,57 @@ m = metadata["metrics"]
 
 
 # ============================================================
+# NAVBAR
+# ============================================================
+navbar_html = '<div class="nav"><div class="nav-logo">🏠 Smart<span>Price</span></div><div class="nav-tag">✨ AI-Powered</div></div>'
+st.markdown(navbar_html, unsafe_allow_html=True)
+
+# ============================================================
 # HERO
 # ============================================================
-st.markdown(f"""
-<div class="hero">
-    <h1>Find Your Property's True Value</h1>
-    <p>AI-powered estimates for the Egyptian real estate market</p>
-    <div class="hero-badges">
-        <span class="hero-badge">🎯 Accuracy {m['r2']:.4f}</span>
-        <span class="hero-badge">📊 Avg Error {m['mape']:.2f}%</span>
-        <span class="hero-badge">🏙️ {len(categories['city'])} Cities</span>
-        <span class="hero-badge">📊 {metadata['training_info']['n_total']:,} Real Listings</span>
-    </div>
-</div>
-""", unsafe_allow_html=True)
+r2_str = f"{m['r2']:.4f}"
+mape_str = f"{m['mape']:.2f}"
+cities_str = str(len(categories["city"]))
+total_str = f"{metadata['training_info']['n_total']:,}"
+
+hero_html = (
+    '<div class="hero">'
+    "<h1>Find Your Property's True Value</h1>"
+    '<p>AI-powered estimates for the Egyptian real estate market</p>'
+    '<div class="hero-chips">'
+    '<span class="hero-chip">🎯 Accuracy ' + r2_str + '</span>'
+    '<span class="hero-chip">📊 Avg Error ' + mape_str + '%</span>'
+    '<span class="hero-chip">🏙️ ' + cities_str + ' Cities</span>'
+    '<span class="hero-chip">📊 ' + total_str + ' Real Listings</span>'
+    '</div></div>'
+)
+st.markdown(hero_html, unsafe_allow_html=True)
+
+# ============================================================
+# CATEGORY PILLS
+# ============================================================
+pills_html = '<div class="cat-pills"><div class="cat-pill">🏢 Apartment</div><div class="cat-pill">📍 All Cities</div><div class="cat-pill">⭐ Featured</div><div class="cat-pill">💰 Best Value</div><div class="cat-pill">📊 Market Trends</div><div class="cat-pill">🔮 AI Valuation</div></div>'
+st.markdown(pills_html, unsafe_allow_html=True)
 
 
 # ============================================================
-# 2-COLUMN LAYOUT: Inputs (left) + Preview (right)
+# 2-COLUMN LAYOUT
 # ============================================================
 col_left, col_right = st.columns([7, 5], gap="large")
 
 with col_left:
-    # ===== STEP 1: Location =====
-    st.markdown("""
-    <div class="section-card">
-        <div class="section-header">
-            <div class="step-badge">1</div>
-            <div class="section-title-text">Where is the property?</div>
-        </div>
-    """, unsafe_allow_html=True)
-
+    # STEP 1
+    st.markdown('<div class="form-card"><div class="form-card-title"><div class="form-step">1</div>Location</div></div>', unsafe_allow_html=True)
     c1, c2 = st.columns(2)
     with c1:
         city = st.selectbox("City", categories["city"], key="s_city")
     with c2:
         district = st.selectbox("District", categories["district"], key="s_district")
-
     compound_options = ["None"] + categories["compound"][:200]
     compound = st.selectbox("Compound (optional)", compound_options, key="s_compound")
 
-    st.markdown("</div>", unsafe_allow_html=True)
-
-    # ===== STEP 2: Size & Rooms =====
-    st.markdown("""
-    <div class="section-card">
-        <div class="section-header">
-            <div class="step-badge">2</div>
-            <div class="section-title-text">Property size & rooms</div>
-        </div>
-    """, unsafe_allow_html=True)
-
+    # STEP 2
+    st.markdown('<div class="form-card"><div class="form-card-title"><div class="form-step">2</div>Size & Rooms</div></div>', unsafe_allow_html=True)
     c1, c2, c3 = st.columns(3)
     with c1:
         area = st.slider("Area (sqm)", 40, 500, 150, 5, key="s_area")
@@ -439,32 +204,14 @@ with col_left:
     with c3:
         bathrooms = st.slider("Bathrooms", 1, 5, 2, key="s_baths")
 
-    st.markdown("</div>", unsafe_allow_html=True)
-
-    # ===== STEP 3: Amenities =====
-    st.markdown("""
-    <div class="section-card">
-        <div class="section-header">
-            <div class="step-badge">3</div>
-            <div class="section-title-text">Features & amenities</div>
-        </div>
-    """, unsafe_allow_html=True)
-
+    # STEP 3
+    st.markdown('<div class="form-card"><div class="form-card-title"><div class="form-step">3</div>Features & Amenities</div></div>', unsafe_allow_html=True)
     AMENITY_UI = {
-        "Balcony": "BA",
-        "Built-in Wardrobes": "BW",
-        "Covered Parking": "CP",
-        "Private Garden": "PG",
-        "Shared Pool": "SP",
-        "Security": "SE",
-        "Air Conditioning": "AC",
-        "Kitchen": "BK",
-        "Maid Room": "MR",
-        "Storage": "ST",
-        "Children Area": "CO",
-        "Gym": "GY",
+        "Balcony": "BA", "Built-in Wardrobes": "BW", "Covered Parking": "CP",
+        "Private Garden": "PG", "Shared Pool": "SP", "Security": "SE",
+        "Air Conditioning": "AC", "Kitchen": "BK", "Maid Room": "MR",
+        "Storage": "ST", "Children Area": "CO", "Gym": "GY",
     }
-
     selected_amenities = []
     cols = st.columns(4)
     for i, (label, code) in enumerate(AMENITY_UI.items()):
@@ -472,81 +219,56 @@ with col_left:
             if st.checkbox(label, value=(code in ["BA", "SE"]), key=f"am_{code}"):
                 selected_amenities.append(code)
 
-    st.markdown("</div>", unsafe_allow_html=True)
-
-    # ===== STEP 4: Description =====
-    st.markdown("""
-    <div class="section-card">
-        <div class="section-header">
-            <div class="step-badge">4</div>
-            <div class="section-title-text">Additional details</div>
-        </div>
-    """, unsafe_allow_html=True)
-
-    description = st.text_area(
-        "Describe the property (optional)",
-        placeholder="Example: Sea view apartment, fully furnished, super lux",
-        height=90, key="s_desc",
-        label_visibility="collapsed",
-    )
+    # STEP 4
+    st.markdown('<div class="form-card"><div class="form-card-title"><div class="form-step">4</div>Description (optional)</div></div>', unsafe_allow_html=True)
+    description = st.text_area("Description", placeholder="Example: Sea view apartment, fully furnished, super lux", height=80, key="s_desc", label_visibility="collapsed")
 
     sentiment = analyze_sentiment(description) if description else None
     if sentiment and sentiment['label'] != 'neutral':
         emoji = "😊" if sentiment['label'] == 'positive' else "😟"
         color = "#10b981" if sentiment['label'] == 'positive' else "#ef4444"
-        st.markdown(f"""
-        <div style="background:{color}10; border-left:4px solid {color};
-                    padding:0.7rem 1rem; border-radius:10px; margin-top:0.75rem;
-                    color:{color}; font-weight:600; font-size:0.88rem;">
-            {emoji} {sentiment['label'].title()} sentiment detected ({sentiment['score']:+.2f})
-        </div>
-        """, unsafe_allow_html=True)
+        score_str = f'{sentiment["score"]:+.2f}'
+        sent_html = (
+            '<div style="background:' + color + '10;border-left:4px solid ' + color
+            + ';padding:0.7rem 1rem;border-radius:10px;margin-top:0.5rem;color:' + color
+            + ';font-weight:600;font-size:0.85rem;">'
+            + emoji + ' ' + sentiment["label"].title() + ' sentiment (' + score_str + ')'
+            + '</div>'
+        )
+        st.markdown(sent_html, unsafe_allow_html=True)
 
-    st.markdown("</div>", unsafe_allow_html=True)
 
-
-# ============================================================
-# RIGHT COLUMN: Live Preview + CTA
-# ============================================================
+# RIGHT: PREVIEW
 with col_right:
     st.markdown('<div class="preview-wrap">', unsafe_allow_html=True)
-
-    # Live preview card
     bd_text = "Studio" if bedrooms == "studio" else f"{bedrooms} Bedrooms"
-    area_text = f"{area} m²"
+    compound_text = compound if compound != "None" else "—"
+    amenity_count = len(selected_amenities)
 
-    st.markdown(f"""
-    <div class="preview-card">
-        <div class="preview-image">🏢</div>
-        <div class="preview-title">{area_text} · {bd_text}</div>
-        <div class="preview-location">📍 {city} → {district}</div>
-
-        <div class="preview-row">
-            <span class="preview-label">Bathrooms</span>
-            <span class="preview-value">{bathrooms}</span>
-        </div>
-        <div class="preview-row">
-            <span class="preview-label">Compound</span>
-            <span class="preview-value">{compound if compound != "None" else "—"}</span>
-        </div>
-        <div class="preview-row">
-            <span class="preview-label">Amenities</span>
-            <span class="preview-value">{len(selected_amenities)} selected</span>
-        </div>
-        <div class="preview-row">
-            <span class="preview-label">Data Source</span>
-            <span class="preview-value">Real listings</span>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
+    preview_html = (
+        '<div class="property-preview">'
+        '<div class="property-image">🏢'
+        '<div class="property-badge">LIVE PREVIEW</div>'
+        '<div class="property-heart">♡</div></div>'
+        '<div class="property-content">'
+        '<div class="property-title">' + f'{area}' + ' m² · ' + bd_text + '</div>'
+        '<div class="property-location">📍 ' + city + ' → ' + district + '</div>'
+        '<div class="property-stats">'
+        '<div class="property-stat"><div class="property-stat-value">' + f'{bathrooms}' + '</div><div class="property-stat-label">Bathrooms</div></div>'
+        '<div class="property-stat"><div class="property-stat-value">' + f'{amenity_count}' + '</div><div class="property-stat-label">Amenities</div></div>'
+        '<div class="property-stat"><div class="property-stat-value">Real</div><div class="property-stat-label">Data</div></div>'
+        '<div class="property-stat"><div class="property-stat-value">AI</div><div class="property-stat-label">Estimate</div></div>'
+        '</div>'
+        '<div class="property-divider"></div>'
+        '<div style="font-size:0.78rem;color:#6b7280;font-weight:700;margin-bottom:0.4rem;">🏘️ COMPOUND</div>'
+        '<div style="font-size:0.9rem;font-weight:700;color:#111827;">' + compound_text + '</div>'
+        '</div></div>'
+    )
+    st.markdown(preview_html, unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
-
-    # CTA button
-    predict_btn = st.button("🔮  Get Price Estimate", type="primary",
-                            use_container_width=True)
-
+    predict_btn = st.button("🔮  Get Price Estimate", type="primary", use_container_width=True)
     st.markdown('</div>', unsafe_allow_html=True)
+
 
 
 # ============================================================
@@ -574,7 +296,7 @@ input_features = build_features(
 
 
 # ============================================================
-# RESULT SECTION
+# RESULTS
 # ============================================================
 if predict_btn:
     errors = validate_input(area, bedrooms, bathrooms, city, district, compound)
@@ -596,22 +318,45 @@ if predict_btn:
                 pass
 
         st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("## 📊 Your Property Valuation")
 
-        # Result in 2 columns
         res_left, res_right = st.columns([5, 7], gap="large")
 
         with res_left:
-            st.markdown(f"""
-            <div class="price-result">
-                <div class="label">Estimated Price</div>
-                <div class="value">{price/1_000_000:.2f}M</div>
-                <div class="egp">{price:,.0f} EGP</div>
-                <div class="range">
-                    📊 {format_price(result['lower_bound'])} — {format_price(result['upper_bound'])}
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
+            # Zillow-style big price
+            lower_pct = 5
+            upper_pct = 95
+            price_html = (
+                '<div class="price-hero">'
+                '<div class="price-label">Estimated Market Value</div>'
+                '<div class="price-value">' + f'{price/1_000_000:.2f}M' + '</div>'
+                '<div class="price-egp">' + f'{price:,.0f} EGP' + '</div>'
+                '<div class="price-range-bar"><div class="price-range-fill"></div></div>'
+                '<div class="price-range-labels">'
+                '<span>' + format_price(result['lower_bound']) + '</span>'
+                '<span>' + format_price(result['upper_bound']) + '</span>'
+                '</div>'
+                '</div>'
+            )
+            st.markdown(price_html, unsafe_allow_html=True)
 
+            # Zillow-style monthly payment
+            monthly_rate = 0.10 / 12
+            n_payments = 20 * 12
+            down_payment = price * 0.20
+            loan_amount = price - down_payment
+            monthly_payment = (loan_amount * monthly_rate) / (1 - (1 + monthly_rate) ** -n_payments)
+
+            monthly_html = (
+                '<div class="monthly-card">'
+                '<div class="monthly-title">💰 Est. Monthly Payment</div>'
+                '<div class="monthly-value">' + f'{monthly_payment:,.0f}' + ' EGP</div>'
+                '<div class="monthly-detail">20% down · 20 years · 10% interest</div>'
+                '</div>'
+            )
+            st.markdown(monthly_html, unsafe_allow_html=True)
+
+            # PDF
             if PDF_AVAILABLE:
                 try:
                     pdf_buf = generate_pdf_report(
@@ -627,7 +372,7 @@ if predict_btn:
                     st.download_button(
                         "📄  Download PDF Report",
                         data=pdf_buf,
-                        file_name=f"property_report_{int(price)}.pdf",
+                        file_name="property_report.pdf",
                         mime="application/pdf",
                         use_container_width=True,
                     )
@@ -639,27 +384,28 @@ if predict_btn:
             diff_pct = ((ppm - district_ppm) / district_ppm * 100) if district_ppm else 0
             arrow = "🟢" if diff_pct >= 0 else "🔴"
 
-            c1, c2, c3 = st.columns(3)
-            with c1:
-                st.markdown(f'<div class="mini-metric"><div class="val">{ppm:,.0f}</div><div class="lbl">Price per m2</div></div>', unsafe_allow_html=True)
-            with c2:
-                st.markdown(f'<div class="mini-metric"><div class="val">{district_ppm:,.0f}</div><div class="lbl">District Avg</div></div>', unsafe_allow_html=True)
-            with c3:
-                st.markdown(f'<div class="mini-metric"><div class="val">{arrow} {diff_pct:+.1f}%</div><div class="lbl">vs District</div></div>', unsafe_allow_html=True)
+            m1, m2, m3 = st.columns(3)
+            with m1:
+                m1_html = '<div class="metric-card"><div class="metric-value">' + f'{ppm:,.0f}' + '</div><div class="metric-label">Price / m²</div></div>'
+                st.markdown(m1_html, unsafe_allow_html=True)
+            with m2:
+                m2_html = '<div class="metric-card"><div class="metric-value">' + f'{district_ppm:,.0f}' + '</div><div class="metric-label">District Avg</div></div>'
+                st.markdown(m2_html, unsafe_allow_html=True)
+            with m3:
+                m3_html = '<div class="metric-card"><div class="metric-value">' + arrow + ' ' + f'{diff_pct:+.1f}%' + '</div><div class="metric-label">vs District</div></div>'
+                st.markdown(m3_html, unsafe_allow_html=True)
 
         st.markdown("<br>", unsafe_allow_html=True)
-        st.markdown("### Dive Deeper")
+        st.markdown("## 🔍 Dive Deeper")
 
-        tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
-            "Why This Price?",
-            "Market",
-            "Price Map",
-            "Similar",
-            "Compare",
-            "Investment",
+        tab1, tab2, tab3, tab4, tab5 = st.tabs([
+            "🧠 Why This Price",
+            "🗺️ Market",
+            "🏘️ Similar",
+            "⚖️ Compare",
+            "💰 Investment",
         ])
 
-        # ---------- TAB 1: SHAP ----------
         with tab1:
             st.caption("How each feature affected your price estimate")
             try:
@@ -668,30 +414,23 @@ if predict_btn:
                 feat_names = prep.get_feature_names_out()
                 explainer = shap.TreeExplainer(model.named_steps['model'])
                 sv = np.array(explainer.shap_values(X_t)).flatten()
-
                 top_n = 10
                 idx = np.argsort(np.abs(sv))[-top_n:][::-1]
-                clean_names = [feat_names[i].replace('num__','').replace('cat__','')
-                                .replace('_',' ').title() for i in idx]
+                clean_names = [feat_names[i].replace('num__','').replace('cat__','').replace('_',' ').title() for i in idx]
                 colors = ['#10b981' if v > 0 else '#ef4444' for v in sv[idx]]
-
                 fig = go.Figure(go.Bar(
                     x=sv[idx], y=clean_names, orientation='h',
                     marker_color=colors,
                     text=[f"{v:+.3f}" for v in sv[idx]],
                     textposition='outside',
                 ))
-                fig.update_layout(
-                    height=420, margin=dict(l=10, r=40, t=20, b=20),
-                    xaxis_title="Impact on price",
-                    showlegend=False, plot_bgcolor='white',
-                )
+                fig.update_layout(height=420, margin=dict(l=10, r=40, t=20, b=20),
+                                   xaxis_title="Impact on price", showlegend=False, plot_bgcolor='white')
                 st.plotly_chart(fig, use_container_width=True)
-                st.caption("Green = increases price | Red = decreases price")
+                st.caption("🟢 Increases price | 🔴 Decreases price")
             except Exception as e:
                 st.error(f"SHAP error: {e}")
 
-        # ---------- TAB 2: Market ----------
         with tab2:
             st.markdown("#### District Price Ranking")
             price_data = mappings['price_mappings']['district_price_per_sqm']
@@ -699,71 +438,13 @@ if predict_btn:
             fig = go.Figure(go.Bar(
                 x=ppm_series.values, y=ppm_series.index, orientation='h',
                 marker=dict(color=ppm_series.values, colorscale='RdYlGn_r', showscale=False),
-                text=[f"{v:,.0f}" for v in ppm_series.values],
-                textposition='outside',
+                text=[f"{v:,.0f}" for v in ppm_series.values], textposition='outside',
             ))
             fig.update_layout(height=650, margin=dict(l=10, r=60, t=20, b=20),
-                              xaxis_title="EGP per m2")
+                              xaxis_title="EGP per m²")
             st.plotly_chart(fig, use_container_width=True)
 
-        # ---------- TAB 3: Map ----------
         with tab3:
-            st.markdown("#### Property Map")
-            st.caption("Real listings from PropertyFinder Egypt")
-            try:
-                import folium
-                from streamlit_folium import st_folium
-                from predictor import load_recommendation_data
-
-                rec_df = load_recommendation_data()
-                if rec_df is not None and len(rec_df) > 0:
-                    sample_df = rec_df.dropna(subset=['latitude', 'longitude']).sample(
-                        n=min(400, len(rec_df)), random_state=42)
-
-                    map_obj = folium.Map(location=[27, 31], zoom_start=6,
-                                          tiles='cartodbpositron')
-
-                    for _, row in sample_df.iterrows():
-                        price_m = row['price'] / 1e6
-                        if price_m < 3:
-                            color = '#43A047'
-                        elif price_m < 8:
-                            color = '#FB8C00'
-                        else:
-                            color = '#E53935'
-
-                        folium.CircleMarker(
-                            location=[row['latitude'], row['longitude']],
-                            radius=4, color=color, fill=True,
-                            fill_opacity=0.7, weight=1,
-                            popup=f"{row['city']} - {row['district']}<br>"
-                                  f"{row['size']:.0f} m2<br>"
-                                  f"{row['price']:,.0f} EGP",
-                        ).add_to(map_obj)
-
-                    if city in CITY_GPS:
-                        folium.Marker(
-                            location=[lat, lon],
-                            popup=f"Your property: {city}",
-                            icon=folium.Icon(color='purple', icon='home'),
-                        ).add_to(map_obj)
-
-                    st_folium(map_obj, width=None, height=500, returned_objects=[])
-
-                    st.markdown("""
-                    <div style="background:#f8fafc; padding:1rem; border-radius:10px; margin-top:0.5rem;">
-                        <b>Legend:</b>
-                        <span style="color:#43A047;">Green</span> = Under 3M EGP
-                        <span style="color:#FB8C00; margin-left:1rem;">Orange</span> = 3M-8M EGP
-                        <span style="color:#E53935; margin-left:1rem;">Red</span> = Over 8M EGP
-                        <span style="color:purple; margin-left:1rem;">Pin</span> = Your property
-                    </div>
-                    """, unsafe_allow_html=True)
-            except Exception as e:
-                st.error(f"Map error: {e}")
-
-        # ---------- TAB 4: Similar ----------
-        with tab4:
             st.caption("Top 5 most similar properties from real listings")
             try:
                 recs = recommend_similar_properties(
@@ -776,55 +457,42 @@ if predict_btn:
                     for i, r in enumerate(recs, 1):
                         sim_pct = r['similarity'] * 100
                         bd = "Studio" if r.get('is_studio') == 1 else f"{r['bedrooms_clean']} BR"
-                        st.markdown(f"""
-                        <div class="prop-card">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <div>
-                                    <b style="color:#6366f1; font-size:1.05rem;">#{i}</b>
-                                    <b style="font-size:1.05rem;">{r['area_value']:.0f} m2 - {bd} - {r['bathrooms_clean']} bath</b>
-                                    <div style="color:#64748b; font-size:0.9rem; margin-top:0.25rem;">
-                                        {r['city']} - {r['district']}
-                                    </div>
-                                    <div style="margin-top:0.35rem;">
-                                        <span class="prop-match">{sim_pct:.0f}% match</span>
-                                    </div>
-                                </div>
-                                <div style="text-align:right;">
-                                    <div style="font-size:1.4rem; font-weight:800; color:#10b981;">
-                                        {r['predicted_price']/1e6:.2f}M
-                                    </div>
-                                    <div style="font-size:0.75rem; color:#94a3b8;">EGP</div>
-                                </div>
-                            </div>
-                        </div>
-                        """, unsafe_allow_html=True)
+                        card_html = (
+                            '<div class="sim-card">'
+                            '<div style="display:flex;justify-content:space-between;align-items:center;">'
+                            '<div>'
+                            '<b style="color:#6366f1;font-size:1.05rem;">#' + str(i) + '</b> '
+                            '<b style="font-size:1.05rem;">' + f"{r['area_value']:.0f}" + ' m² · ' + bd + ' · ' + f"{r['bathrooms_clean']}" + ' bath</b>'
+                            '<div style="color:#6b7280;font-size:0.85rem;margin-top:0.25rem;">📍 ' + r['city'] + ' → ' + r['district'] + '</div>'
+                            '<div style="margin-top:0.35rem;"><span class="sim-match">' + f'{sim_pct:.0f}' + '% match</span></div>'
+                            '</div>'
+                            '<div style="text-align:right;">'
+                            '<div style="font-size:1.4rem;font-weight:800;color:#10b981;">' + f"{r['predicted_price']/1e6:.2f}" + 'M</div>'
+                            '<div style="font-size:0.72rem;color:#9ca3af;">EGP</div>'
+                            '</div></div></div>'
+                        )
+                        st.markdown(card_html, unsafe_allow_html=True)
             except Exception as e:
                 st.error(f"Recommendation error: {e}")
 
-        # ---------- TAB 5: Compare ----------
-        with tab5:
+        with tab4:
             st.caption("Compare this property with an alternative")
-
             colA, colB = st.columns(2)
             with colA:
-                st.markdown("**Property A (current)**")
-                st.markdown(f"""
-                <div class="compare-box">
-                    <div style="font-size:1.3rem; font-weight:800; color:#10b981;">
-                        {price:,.0f} EGP
-                    </div>
-                    <div style="margin-top:0.75rem;">
-                        Area: {area} m2<br>
-                        Bedrooms: {bedrooms}<br>
-                        Bathrooms: {bathrooms}<br>
-                        Location: {city} - {district}
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
-
+                st.markdown("**🅰️ Current Property**")
+                a_html = (
+                    '<div class="metric-card">'
+                    '<div class="metric-value" style="color:#10b981;">' + f'{price:,.0f}' + ' EGP</div>'
+                    '<div style="margin-top:0.75rem;font-size:0.9rem;">'
+                    'Area: ' + f'{area}' + ' m²<br>'
+                    'Bedrooms: ' + str(bedrooms) + '<br>'
+                    'Bathrooms: ' + str(bathrooms) + '<br>'
+                    'Location: ' + city + ' → ' + district + '</div></div>'
+                )
+                st.markdown(a_html, unsafe_allow_html=True)
             with colB:
-                st.markdown("**Property B (alternative)**")
-                b_area = st.number_input("Area (sqm)", 40, 500, 200, 5, key="cmp_area")
+                st.markdown("**🅱️ Alternative Property**")
+                b_area = st.number_input("Area (m²)", 40, 500, 200, 5, key="cmp_area")
                 b_bedrooms = st.selectbox("Bedrooms", ["1","2","3","4","5"], index=3, key="cmp_bed")
                 b_bathrooms = st.slider("Bathrooms", 1, 5, 3, key="cmp_bath")
                 b_district = st.selectbox("District", categories["district"], key="cmp_dist")
@@ -837,46 +505,43 @@ if predict_btn:
                 }
                 feat_b = build_features(**prop_b, mappings=mappings)
                 price_b = predict_with_confidence(model, feat_b, m["mape"])['price']
-
-                st.markdown(f"""
-                <div class="compare-box">
-                    <div style="font-size:1.3rem; font-weight:800; color:#6366f1;">
-                        {price_b:,.0f} EGP
-                    </div>
-                    <div style="margin-top:0.75rem;">
-                        Area: {b_area} m2<br>
-                        Bedrooms: {b_bedrooms}<br>
-                        Bathrooms: {b_bathrooms}<br>
-                        Location: {b_city} - {b_district}
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
+                b_html = (
+                    '<div class="metric-card">'
+                    '<div class="metric-value" style="color:#6366f1;">' + f'{price_b:,.0f}' + ' EGP</div>'
+                    '<div style="margin-top:0.75rem;font-size:0.9rem;">'
+                    'Area: ' + f'{b_area}' + ' m²<br>'
+                    'Bedrooms: ' + b_bedrooms + '<br>'
+                    'Bathrooms: ' + str(b_bathrooms) + '<br>'
+                    'Location: ' + b_city + ' → ' + b_district + '</div></div>'
+                )
+                st.markdown(b_html, unsafe_allow_html=True)
 
             diff = price - price_b
             if diff < 0:
-                st.success(f"Property A is cheaper by {abs(diff):,.0f} EGP")
+                st.success(f"💰 Property A is cheaper by {abs(diff):,.0f} EGP")
             else:
-                st.info(f"Property B is cheaper by {abs(diff):,.0f} EGP")
+                st.info(f"💰 Property B is cheaper by {abs(diff):,.0f} EGP")
 
-        # ---------- TAB 6: Investment ----------
-        with tab6:
-            st.markdown("#### Investment Analysis (5 Years)")
+        with tab5:
+            st.markdown("#### Investment ROI (5 Years)")
             roi = calculate_roi(price, years=5)
-
-            c1, c2, c3, c4 = st.columns(4)
-            metrics_list = [
-                ("Total ROI", f"{roi['roi_pct']:.0f}%", "#6366f1"),
-                ("Annualized", f"{roi['annualized_roi_pct']:.1f}%", "#10b981"),
-                ("Rental (5y)", f"{roi['total_rental_income']/1e6:.2f}M", "#f59e0b"),
-                ("Appreciation", f"{roi['appreciation_gain']/1e6:.2f}M", "#8b5cf6"),
-            ]
-            for col, (label, val, color) in zip([c1, c2, c3, c4], metrics_list):
-                col.markdown(f'<div class="mini-metric"><div class="val" style="color:{color};">{val}</div><div class="lbl">{label}</div></div>', unsafe_allow_html=True)
+            i1, i2, i3, i4 = st.columns(4)
+            with i1:
+                h1 = '<div class="metric-card"><div class="metric-value">' + f"{roi['roi_pct']:.0f}" + '%</div><div class="metric-label">Total ROI</div></div>'
+                st.markdown(h1, unsafe_allow_html=True)
+            with i2:
+                h2 = '<div class="metric-card"><div class="metric-value">' + f"{roi['annualized_roi_pct']:.1f}" + '%</div><div class="metric-label">Annualized</div></div>'
+                st.markdown(h2, unsafe_allow_html=True)
+            with i3:
+                h3 = '<div class="metric-card"><div class="metric-value">' + f"{roi['total_rental_income']/1e6:.2f}" + 'M</div><div class="metric-label">Rental</div></div>'
+                st.markdown(h3, unsafe_allow_html=True)
+            with i4:
+                h4 = '<div class="metric-card"><div class="metric-value">' + f"{roi['appreciation_gain']/1e6:.2f}" + 'M</div><div class="metric-label">Appreciation</div></div>'
+                st.markdown(h4, unsafe_allow_html=True)
 
             years_arr = np.arange(6)
             rental = [price * 0.005 * 12 * y / 1e6 for y in years_arr]
             appr = [(price * (1.12 ** y) - price) / 1e6 for y in years_arr]
-
             fig_roi = go.Figure()
             fig_roi.add_trace(go.Bar(x=years_arr, y=rental, name='Rental Income', marker_color='#10b981'))
             fig_roi.add_trace(go.Bar(x=years_arr, y=appr, name='Appreciation', marker_color='#6366f1'))
@@ -885,26 +550,29 @@ if predict_btn:
             st.plotly_chart(fig_roi, use_container_width=True)
 
 else:
-    st.markdown("""
-    <div class="empty-state" style="margin-top: 2rem;">
-        <div class="empty-state-icon">Home</div>
-        <div class="empty-state-title">Ready to estimate your property</div>
-        <div class="empty-state-text">
-            Fill in the details above and click <b>Get Price Estimate</b> to see the AI-powered valuation.
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    empty_html = (
+        '<div class="empty-box" style="margin-top:2rem;">'
+        '<div class="empty-icon">🏠</div>'
+        '<div class="empty-title">Ready to estimate your property</div>'
+        '<div class="empty-text">Fill in the details above and click <b>Get Price Estimate</b></div>'
+        '</div>'
+    )
+    st.markdown(empty_html, unsafe_allow_html=True)
 
 
-st.markdown(f"""
-<div class="footer-note">
-    <b>Smart House Price Predictor</b> v8.0 &nbsp;&middot;&nbsp;
-    {metadata['model_name']} &nbsp;&middot;&nbsp;
-    R2 {m['r2']:.4f} &nbsp;&middot;&nbsp; MAPE {m['mape']:.2f}%
-    <br>
-    Trained on <b>{metadata['training_info']['n_total']:,} real property listings</b>
-    from PropertyFinder Egypt
-    <br><br>
-    AI estimation tool - not a certified appraisal.
-</div>
-""", unsafe_allow_html=True)
+# ============================================================
+# FOOTER
+# ============================================================
+footer_html = (
+    '<div class="footer-box">'
+    '<b>Smart House Price Predictor</b> v9.0 · '
+    + metadata['model_name'] + ' · '
+    + f"R² {m['r2']:.4f}" + ' · '
+    + f"MAPE {m['mape']:.2f}%" + '<br>'
+    'Trained on <b>' + f"{metadata['training_info']['n_total']:,}" + ' real property listings</b> '
+    'from PropertyFinder Egypt'
+    '<br><br>'
+    'AI estimation tool — not a certified appraisal.'
+    '</div>'
+)
+st.markdown(footer_html, unsafe_allow_html=True)
