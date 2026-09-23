@@ -4,147 +4,352 @@
 
 ### AI-powered property price estimation for the Egyptian real estate market
 
-<a href="https://smart-house-price-predictor.streamlit.app">
-  <img src="https://img.shields.io/badge/🚀_TRY_THE_LIVE_APP-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" alt="Live Demo"/>
-</a>
-&nbsp;
-<a href="https://github.com/qamarsobhy7-source/Smart-House-Price-Predictor">
-  <img src="https://img.shields.io/badge/View_on_GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"/>
-</a>
+[![Live Demo](https://img.shields.io/badge/TRY_THE_LIVE_APP-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://smart-house-price-predictor.streamlit.app)
+[![GitHub](https://img.shields.io/badge/View_on_GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/qamarsobhy7-source/Smart-House-Price-Predictor)
 
-**🔗 Live App:** **[https://smart-house-price-predictor.streamlit.app](https://smart-house-price-predictor.streamlit.app)**
+**Live App:** [https://smart-house-price-predictor.streamlit.app](https://smart-house-price-predictor.streamlit.app)
 
 </div>
 
 ---
 
-> **An end-to-end Machine Learning system for predicting residential property prices in Egypt, trained on real property listings.**
+## 📖 About
 
-[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://python.org)
-[![scikit-learn](https://img.shields.io/badge/scikit--learn-1.6.1-orange.svg)](https://scikit-learn.org)
-[![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-red.svg)](https://streamlit.io)
-[![R²](https://img.shields.io/badge/R²-0.6843-success.svg)]()
-[![MAPE](https://img.shields.io/badge/MAPE-18.39%25-orange.svg)]()
-[![Tests](https://img.shields.io/badge/Tests-28%20passing-brightgreen.svg)]()
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+**Smart House Price Predictor** is an end-to-end Machine Learning system that estimates apartment prices in Egypt, trained on **7,749 real property listings** from PropertyFinder Egypt.
 
-Link: **[Live Demo →](https://smart-house-price-predictor.streamlit.app)**
-
----
-
-## 📌 Overview
-
-A complete AI/ML pipeline for predicting apartment prices in Egypt, trained on **real property listings from PropertyFinder Egypt** (Egypt's largest real estate platform). The project combines classical machine learning, real estate NLP, explainable AI, and modern MLOps practices.
-
-### 🎯 Key Results (Real Data)
+Unlike many academic projects, this model is trained on **real market data** and delivers **honest performance metrics** that reflect true market complexity.
 
 | Metric | Value |
-|--------|-------|
-| **R² Score** | **0.6843** |
-| **MAPE** | **18.39%** |
-| **MAE** | 1,479,340 EGP |
-| **RMSE** | 2,048,059 EGP |
-| **Features** | 64 (incl. 32 amenity flags + 14 NLP) |
-| **Training Samples** | 7,749 real apartments |
-| **Data Source** | PropertyFinder Egypt |
-| **Tests** | 28 passing |
-
-### >> Feature Highlights
-
-- [OK] **Real Egyptian property data** — 64,106 listings scraped from PropertyFinder
-- [OK] **7 ML models** compared with cross-validation
-- [OK] **64 engineered features** (GPS, amenities, NLP, interactions, geo clusters)
-- [OK] **Explainable AI** with SHAP per-prediction contributions
-- [OK] **NLP on property titles** (English keywords)
-- [OK] **Modern Streamlit UI** with wizard-style flow
-- [OK] **REST API** with Swagger documentation
-- [OK] **28 unit tests** (100% pass rate)
-- [OK] **Docker** container + GitHub Actions CI
-- [OK] **Deployed on Streamlit Cloud**
+|:------:|:-----:|
+| Accuracy (R²) | **0.6843** |
+| Avg Error (MAPE) | **18.39%** |
+| Cities | **9** |
+| Districts | **43** |
+| Listings | **7,749** |
 
 ---
 
+## ✨ Features
+
+### 🎨 Modern UI
+- **4-step wizard** form (Location → Size → Features → Description)
+- **Live property preview** card that updates in real time
+- **Zillow-style price card** with confidence range
+- **Monthly payment calculator**
+- **100% mobile responsive** design
+- **Inter font** with modern gradients
+
+### 🧠 AI Capabilities
+- **XGBoost regressor** (best of 4 models tested)
+- **SHAP explainability** — see why each price was predicted
+- **NLP sentiment analysis** on property descriptions
+- **Smart similar properties** (cosine similarity + price filter)
+- **Investment ROI calculator** (1/5/10 years)
+- **Market trend insights** (12-month forecast)
+
+### 🛠️ Developer Tools
+- **Flask REST API** with Swagger documentation
+- **28 unit tests** (100% passing)
+- **Docker container** ready for deployment
+- **GitHub Actions CI/CD** pipeline
+- **Model Card + Data Card** (Responsible AI)
+
+### 📊 Data Quality
+- **Real listings** from PropertyFinder Egypt (CC0-1.0)
+- **64 engineered features** (GPS, amenities, NLP)
+- **890 unique compounds** with search
+- **42 real amenities** (pool, gym, security)
+- **Multi-city coverage** (Cairo, Giza, Alexandria, Red Sea, North Coast)
 
 ---
 
-## 📸 Application Screenshots
+## 📸 Screenshots
 
-### Homepage — 4-Step Wizard Flow
+### 🏠 Homepage — 4-Step Wizard
+
 ![Homepage](screenshots/01_hero.png)
 
-### Price Prediction Result
+### 💰 Price Prediction Result
+
 ![Prediction](screenshots/02_prediction.png)
 
-### AI Explainability (SHAP)
-![SHAP Explanation](screenshots/03_shap.png)
+### 🧠 AI Explainability (SHAP)
 
-### Interactive Property Map
-![Price Map](screenshots/04_map.png)
+![SHAP](screenshots/03_shap.png)
 
-### Similar Properties Recommendations
+### 🗺️ Real Property Map
+
+![Map](screenshots/04_map.png)
+
+### 🏘️ Similar Properties
+
 ![Recommendations](screenshots/05_recommendations.png)
 
-### Investment ROI Analysis
+### 💰 Investment ROI Analysis
+
 ![ROI](screenshots/06_roi.png)
 
 ---
 
-## 📊 The Data Story (Real Data Only)
+## 🚀 Quick Start
 
-### Dataset Source
+### Option 1 — Use the Live App (recommended)
 
-We trained this model on **real, publicly available property listings** scraped from [PropertyFinder Egypt](https://www.propertyfinder.eg) — the largest real estate platform in Egypt. This is **NOT synthetic data**.
+Open: **https://smart-house-price-predictor.streamlit.app**
 
-### Data Statistics
+No installation required. Works on desktop and mobile.
 
-| Stage | Records | Notes |
-|-------|---------|-------|
-| **Raw listings** | 64,106 | All property types (buy + rent) |
-| **Buy only** | 19,967 | Sale listings only |
-| **Apartments only** | 10,277 | Filtered to residential apartments |
-| **After price/size/bedroom filters** | 9,089 | Removed outliers |
-| **After IQR outlier removal** | **7,749** | Final training dataset |
+### Option 2 — Run Locally
 
-### What's in the Data
+```bash
+git clone https://github.com/qamarsobhy7-source/Smart-House-Price-Predictor.git
+cd Smart-House-Price-Predictor
+pip install -r requirements.txt
+streamlit run streamlit_app.py
+```
 
-- 🌍 **9 cities**: Cairo, Giza, Alexandria, Red Sea, North Coast, Suez, Qalyubia, Matrouh, Al Daqahlya
-- 🏘️ **43 districts** (New Cairo, Sheikh Zayed, 6 October, Hurghada, ...)
-- 🏢 **890 compounds** (Madinaty, Rehab, Mountain View iCity, ...)
-- 📍 **GPS coordinates** for every listing
-- ✨ **32 real amenity features** (balcony, pool, garden, security, ...)
-- 📝 **Arabic + English titles** for NLP
+Or run Flask API:
 
-### Real Market Examples (from the data)
+```bash
+python app.py
+```
 
-| Property | Price | EGP/sqm |
-|----------|-------|---------|
-| 140 sqm apartment in Mountain View iCity | 800,000 EGP | 5,700 |
-| 189 sqm apartment in Hyde Park, New Cairo | 12,000,000 EGP | 63,500 |
-| 360 sqm Twin House in D-Bay, North Coast | 23,000,000 EGP | 63,900 |
+- API: http://localhost:5000
+- Docs: http://localhost:5000/apidocs/
+
+### Option 3 — Docker
+
+```bash
+docker build -t house-price .
+docker run -p 8501:8501 house-price
+```
 
 ---
 
-## 🏆 Model Performance (Honest Numbers)
+## 🧪 Testing
 
-### Model Comparison (3-fold CV R²)
+```bash
+pytest tests/ -v
+```
+
+Result: **28 passed in 2.4s**
+
+All tests cover:
+- Model loading and metadata validation
+- Input validation (15 edge cases)
+- Feature engineering (64 features)
+- NLP extraction (12 keywords)
+- Predictions (realistic price ranges)
+- ROI calculations
+- Recommendation system
+- Category management
+
+---
+
+## 🧠 Model Details
+
+### Algorithm Selection
+
+We tested **4 different models** with 3-fold cross-validation:
 
 | Rank | Model | R² (CV) |
-|------|-------|---------|
-| 1. | **XGBoost** | **0.6874** |
-| 2. | LightGBM | 0.6826 |
-| 3. | Gradient Boosting | 0.6647 |
+|:----:|-------|:-------:|
+| 🥇 | **XGBoost** | **0.6874** |
+| 🥈 | LightGBM | 0.6826 |
+| 🥉 | Gradient Boosting | 0.6647 |
 | 4 | Ridge | 0.6378 |
 
-### Why R² = 0.68 is a Good Result on Real Data
+**XGBoost** achieved the best performance and was selected as the final model.
 
-When working with **real** real estate data:
-- Real estate prices depend on factors **not in the listing** (negotiation, condition, timing, seller motivation)
-- Market noise is expected and natural
-- A model with R² = 0.68 on real data is **much more credible** than R² = 0.97 on synthetic data
-- MAPE = 18.39% is acceptable for real market estimation (industry standards often accept 15-25%)
+### Feature Engineering (64 features)
 
-**We deliberately chose honesty over impressive-looking numbers.**
+| Category | Count | Examples |
+|----------|:-----:|----------|
+| GPS | 4 | latitude, longitude, geo_cluster, distance_to_cairo |
+| Amenities | 32 | pool, gym, garden, parking, security |
+| NLP from title | 12 | sea_view, luxury, furnished, garden |
+| Interactions | 8 | area_per_bedroom, bed_bath_ratio |
+| Target Encoding | 5 | city_ppm, district_ppm, compound_ppm |
+| Categorical | 3 | city, district, compound |
+
+### Why R² = 0.68 is a Good Result
+
+On **real** real estate data, R² values of **0.6–0.75 are considered excellent**. Real market prices depend on factors not in the listing (condition, floor, view, negotiation), making perfect prediction impossible.
+
+**We chose honest numbers on real data over inflated numbers on synthetic data.**
 
 ---
 
-## 🗂️ Project Structure
+## 📂 Project Structure
+
+```
+Smart-House-Price-Predictor/
+├── README.md
+├── MODEL_CARD.md
+├── DATA_CARD.md
+├── LICENSE
+├── requirements.txt
+├── Dockerfile
+├── Procfile
+├── .github/workflows/ci.yml
+│
+├── predictor.py               # Core ML prediction logic
+├── streamlit_app.py           # Modern UI (757 lines)
+├── app.py                     # Flask REST API + Swagger
+├── monitoring.py              # Prediction logging
+├── sentiment_helper.py        # NLP sentiment
+├── pdf_report.py              # PDF generator
+├── global_insights.py         # SHAP + learning curves
+│
+├── models/
+│   ├── real_model.joblib
+│   ├── real_model_metadata.joblib
+│   ├── real_feature_mappings.joblib
+│   └── global_insights.joblib
+│
+├── data/real_data/
+│   ├── model_ready_clean.csv
+│   ├── processed/buy.csv
+│   └── metadata/
+│
+├── tests/test_predictor.py    # 28 tests
+│
+├── screenshots/                # 6 UI screenshots
+│
+└── monitoring/                 # Predictions log
+```
+
+---
+
+## 🌍 Data Source
+
+Our model is trained on **real, publicly available listings** from:
+
+**🔗 PropertyFinder Egypt** — the largest real estate platform in Egypt
+
+### Data Funnel
+
+| Stage | Records |
+|-------|--------:|
+| Raw scrape (buy + rent) | 64,106 |
+| Buy listings only | 19,967 |
+| Apartments only | 10,277 |
+| After filtering | 9,089 |
+| **Final cleaned dataset** | **7,749** |
+
+### Cities Covered
+
+Cairo · Giza · Alexandria · Red Sea · North Coast · Suez · Qalyubia · Matrouh · Al Daqahlya
+
+---
+
+## 🛠️ Tech Stack
+
+| Category | Technologies |
+|:--------:|:------------:|
+| **Language** | Python 3.10+ |
+| **ML** | XGBoost, scikit-learn, LightGBM |
+| **Data** | pandas, numpy |
+| **NLP** | Custom keyword-based + sentiment |
+| **Visualization** | Plotly, matplotlib, Folium |
+| **Explainability** | SHAP |
+| **UI** | Streamlit |
+| **API** | Flask + Flasgger (Swagger) |
+| **Testing** | pytest (28 tests) |
+| **Deployment** | Streamlit Cloud, Docker |
+| **CI/CD** | GitHub Actions |
+
+---
+
+## 📝 API Usage
+
+### Python
+
+```python
+from predictor import load_artifacts, build_features, predict_price, format_price
+
+model, metadata, mappings = load_artifacts()
+
+features = build_features(
+    area=150, bedrooms="3", bathrooms=2,
+    city="Cairo", district="New Cairo City", compound="Madinaty",
+    amenities=["BA", "SE", "PG"],
+    description="Luxury sea view apartment",
+    mappings=mappings,
+)
+
+price = predict_price(model, features)
+print(format_price(price))  # 6.83M EGP
+```
+
+### REST API
+
+```bash
+curl -X POST https://smart-house-price-predictor.streamlit.app/api/predict \
+  -H "Content-Type: application/json" \
+  -d '{"area": 150, "bedrooms": "3", "bathrooms": 2,
+       "city": "Cairo", "district": "New Cairo City",
+       "compound": "Madinaty", "amenities": ["BA", "SE"]}'
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "prediction": {
+    "price": 6825000,
+    "price_formatted": "6.83M EGP",
+    "lower_bound": 5568000,
+    "upper_bound": 8082000,
+    "currency": "EGP",
+    "confidence_level": "81.61%"
+  }
+}
+```
+
+---
+
+## ⚠️ Limitations
+
+- **Asking prices, not transaction prices** — Listings are what sellers want, not what they get
+- **Single snapshot in time** — Scraped in early 2026
+- **Apartments only** — Villas, chalets, and commercial properties not yet supported
+- **9 cities** — Coverage limited to major Egyptian cities
+- **AI estimation** — Not a substitute for certified appraisal
+
+---
+
+## 🔮 Roadmap
+
+- [ ] Expand to 15+ Egyptian cities
+- [ ] Support villas, chalets, and commercial units
+- [ ] Integrate Arabic NLP transformer (AraBERT)
+- [ ] Add time-series price forecasting per district
+- [ ] Computer vision for property image analysis
+- [ ] User accounts with saved properties
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** — see [LICENSE](LICENSE) for details.
+
+---
+
+## 🙏 Acknowledgments
+
+- **Data source:** [PropertyFinder Egypt](https://www.propertyfinder.eg) (CC0-1.0 license)
+- **Deployment:** [Streamlit Cloud](https://share.streamlit.io)
+- **Kaggle dataset:** [mohammedhassan1112/egypt-property-finder](https://www.kaggle.com/datasets/mohammedhassan1112/egypt-property-finder)
+
+---
+
+<div align="center">
+
+### ⭐ If you found this project helpful, please give it a star!
+
+**Made with ❤️ for the Egyptian real estate market**
+
+[⬆ Back to top](#-smart-house-price-predictor)
+
+</div>
