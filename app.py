@@ -86,7 +86,7 @@ def get_categories_route():
     return jsonify({
         "city": category_values.get("city", []),
         "district": category_values.get("district", []),
-        "compound": category_values.get("compound", [])[:200],  # limit
+        "compound": category_values.get("compound", []),  # limit
     })
 
 

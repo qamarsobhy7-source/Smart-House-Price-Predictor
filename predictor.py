@@ -84,23 +84,23 @@ def validate_input(area, bedrooms, bathrooms, city, district, compound,
         area_val = float(area)
         if not np.isfinite(area_val) or area_val <= 0:
             errors.append("Area must be a positive number.")
-        elif area_val < 30 or area_val > 1000:
-            errors.append("Area must be between 30 and 1000 sqm.")
+        elif area_val < 40 or area_val > 500:
+            errors.append("Area must be between 40 and 500 sqm.")
     except (TypeError, ValueError):
         errors.append("Area is invalid.")
 
     if str(bedrooms).lower() != "studio":
         try:
             bd = int(bedrooms)
-            if bd < 1 or bd > 10:
-                errors.append("Bedrooms must be between 1 and 10.")
+            if bd < 1 or bd > 6:
+                errors.append("Bedrooms must be between 1 and 6.")
         except (TypeError, ValueError):
             errors.append("Bedrooms value is invalid.")
 
     try:
         ba = int(bathrooms)
-        if ba < 1 or ba > 10:
-            errors.append("Bathrooms must be between 1 and 10.")
+        if ba < 1 or ba > 5:
+            errors.append("Bathrooms must be between 1 and 5.")
     except (TypeError, ValueError):
         errors.append("Bathrooms value is invalid.")
 
@@ -291,8 +291,13 @@ def load_recommendation_data():
 
 
 def recommend_similar_properties(area, bedrooms, bathrooms, city,
-                                   district, compound, top_n=5):
-    """Find top N similar properties from the dataset."""
+                                   district, compound, top_n=5,
+                                   price_range=None):
+    """Find top N similar properties from the dataset.
+
+    Args:
+        price_range: optional tuple (min_price, max_price) to filter
+    """
     from sklearn.preprocessing import StandardScaler
     from sklearn.metrics.pairwise import cosine_similarity
 
@@ -300,39 +305,74 @@ def recommend_similar_properties(area, bedrooms, bathrooms, city,
     if df is None or len(df) == 0:
         return []
 
-    # Features for similarity
     sim_cols = ['size', 'bedrooms', 'bathrooms', 'latitude', 'longitude']
     for c in sim_cols:
         if c not in df.columns:
             return []
+
+    # Filter by city
+    city_df = df[df['city'] == city].copy()
+    if len(city_df) < top_n * 4:
+        city_df = df.copy()
+
+    # Filter by price range (progressive widening if not enough results)
+    if price_range is not None:
+        pmin, pmax = price_range
+        span = pmax - pmin
+        center = (pmin + pmax) / 2
+
+        # Try original range first
+        price_filtered = city_df[
+            (city_df['price'] >= pmin) & (city_df['price'] <= pmax)
+        ]
+
+        # Widen progressively if not enough results
+        factor = 1.0
+        while len(price_filtered) < top_n and factor < 3.0:
+            factor += 0.3
+            pmin_w = center - (span * factor / 2)
+            pmax_w = center + (span * factor / 2)
+            price_filtered = city_df[
+                (city_df['price'] >= pmin_w) & (city_df['price'] <= pmax_w)
+            ]
+
+        if len(price_filtered) >= top_n:
+            city_df = price_filtered
+        elif len(price_filtered) > 0:
+            city_df = price_filtered
 
     # Build query
     is_studio = 1 if str(bedrooms).lower() == "studio" else 0
     bedrooms_val = 0 if is_studio else int(bedrooms)
     bathrooms_val = int(bathrooms)
 
-    # Filter by city for better similarity
-    city_df = df[df['city'] == city].copy()
-    if len(city_df) < top_n:
-        city_df = df.copy()
-
-    # Standardize
     scaler = StandardScaler()
     X_ref = scaler.fit_transform(city_df[sim_cols].fillna(0))
 
-    # Query (approximate GPS as city center - use median of city)
     query_gps = city_df[['latitude', 'longitude']].median().values
     query = np.array([[float(area), bedrooms_val, bathrooms_val,
                        query_gps[0], query_gps[1]]])
     X_query = scaler.transform(query)
 
-    # Similarity
     sims = cosine_similarity(X_query, X_ref)[0]
     top_idx = sims.argsort()[-top_n:][::-1]
 
     results = []
+    seen_keys = set()
+
     for idx in top_idx:
         row = city_df.iloc[idx].copy()
+
+        # Deduplicate by (area, price, district)
+        dedup_key = (
+            round(float(row['size'])),
+            round(float(row['price']) / 10000),  # round to nearest 10K
+            str(row['district']),
+        )
+        if dedup_key in seen_keys:
+            continue
+        seen_keys.add(dedup_key)
+
         results.append({
             'area_value': float(row['size']),
             'bedrooms_clean': int(row['bedrooms']) if not pd.isna(row['bedrooms']) else 0,
@@ -345,12 +385,12 @@ def recommend_similar_properties(area, bedrooms, bathrooms, city,
             'is_studio': int(row['bedrooms'] == 0) if not pd.isna(row['bedrooms']) else 0,
         })
 
+        if len(results) >= top_n:
+            break
+
     return results
 
 
-# ==========================================================
-# Property Comparison
-# ==========================================================
 def compare_properties(model, mappings, prop_a, prop_b):
     """Compare two properties side by side.
 

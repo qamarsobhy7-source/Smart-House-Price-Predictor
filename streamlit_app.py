@@ -235,7 +235,7 @@ with col_left:
     with c2:
         district = st.selectbox("District", categories["district"], key="s_district")
 
-    compound_options = ["None"] + categories["compound"][:200]
+    compound_options = ["None"] + categories["compound"]
     compound = st.selectbox("Compound (optional)", compound_options, key="s_compound")
 
     st.markdown('</div>', unsafe_allow_html=True)
@@ -503,15 +503,18 @@ if predict_btn:
             st.plotly_chart(fig, use_container_width=True)
 
         with tab3:
-            st.caption("Top 5 most similar properties from real listings")
+            st.caption("Most similar properties from real listings")
             try:
+                # Filter similar properties by price range (±30% of estimate)
+                price_range = (result['lower_bound'] * 0.85, result['upper_bound'] * 1.15)
                 recs = recommend_similar_properties(
                     area=area, bedrooms=bedrooms, bathrooms=bathrooms,
                     city=city, district=district,
                     compound=compound if compound != "None" else "None",
-                    top_n=5,
+                    top_n=5, price_range=price_range,
                 )
                 if recs:
+                    st.caption(f"Found {len(recs)} similar properties")
                     for i, r in enumerate(recs, 1):
                         sim_pct = r['similarity'] * 100
                         bd = "Studio" if r.get('is_studio') == 1 else f"{r['bedrooms_clean']} BR"

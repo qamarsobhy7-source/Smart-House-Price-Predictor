@@ -1,5 +1,42 @@
 {
-  "total_predictions": 0,
-  "predictions": [],
-  "last_updated": null
+  "total_predictions": 3,
+  "predictions": [
+    {
+      "timestamp": "2026-09-23T21:22:59.336334",
+      "area": 100.0,
+      "bedrooms": "2",
+      "bathrooms": 2,
+      "city": "Cairo",
+      "district": "New Cairo City",
+      "compound": "None",
+      "predicted_price": 5000000.0,
+      "confidence_lower": 4500000.0,
+      "confidence_upper": 5500000.0
+    },
+    {
+      "timestamp": "2026-09-23T21:22:59.343198",
+      "area": 150.0,
+      "bedrooms": "3",
+      "bathrooms": 2,
+      "city": "Cairo",
+      "district": "New Cairo City",
+      "compound": "None",
+      "predicted_price": 6000000.0,
+      "confidence_lower": 4500000.0,
+      "confidence_upper": 5500000.0
+    },
+    {
+      "timestamp": "2026-09-23T21:22:59.349663",
+      "area": 200.0,
+      "bedrooms": "4",
+      "bathrooms": 2,
+      "city": "Cairo",
+      "district": "New Cairo City",
+      "compound": "None",
+      "predicted_price": 7000000.0,
+      "confidence_lower": 4500000.0,
+      "confidence_upper": 5500000.0
+    }
+  ],
+  "last_updated": "2026-09-23T21:22:59.349684"
 }
