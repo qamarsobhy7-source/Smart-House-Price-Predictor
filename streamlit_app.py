@@ -652,12 +652,6 @@ faq_items = [
      "We use XGBoost, a powerful gradient-boosting algorithm. It analyzes 64 features including size, location, GPS coordinates, amenities, and NLP-extracted keywords from listing titles. Every prediction comes with a SHAP explanation showing what drove the price."),
     ("Is my data stored anywhere?",
      "We only log anonymized predictions (area, city, predicted price) to monitor model performance. No personal information is collected."),
-    ("Can I download the data or model?",
-     "The full dataset is publicly available on Kaggle (mohammedhassan1112/egypt-property-finder). The trained XGBoost model is downloadable from this GitHub repository under the models/ folder."),
-    ("Is the model open source?",
-     "Yes. The entire project is open source under the MIT License. You can find the code, models, tests, and documentation on our GitHub repository."),
-    ("How often is the model updated?",
-     "The model is a snapshot trained on listings scraped in early 2026. Future updates will incorporate new listings and market shifts as data becomes available."),
 ]
 
 faq_css = """<style>
