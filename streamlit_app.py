@@ -690,11 +690,9 @@ else:
 
 # ============================================================
 # ============================================================
-# FAQ SECTION (collapsible, numbered)
+# FAQ SECTION (single expander with all questions)
 # ============================================================
 st.markdown("<br>", unsafe_allow_html=True)
-st.markdown("## ❓ Frequently Asked Questions")
-st.caption("Click any question to see the answer")
 
 faq_items = [
     ("Is this data real?",
@@ -713,10 +711,21 @@ faq_items = [
      "We only log anonymized predictions (area, city, predicted price) to monitor model performance. No personal information is collected."),
 ]
 
-for i, (question, answer) in enumerate(faq_items, 1):
-    num_str = f"{i:02d}"
-    with st.expander(f"{num_str}   {question}"):
-        st.write(answer)
+with st.expander("Frequently Asked Questions", expanded=False):
+    for i, (question, answer) in enumerate(faq_items, 1):
+        num_html = (
+            '<div style="padding:0.75rem 0;border-bottom:1px solid #f3f4f6;">'
+            '<div style="font-weight:800;color:#111827;font-size:0.95rem;margin-bottom:0.35rem;">'
+            + f'{i:02d}  ' + question +
+            '</div>'
+            '<div style="color:#4b5563;font-size:0.85rem;line-height:1.55;">'
+            + answer +
+            '</div>'
+            '</div>'
+        )
+        st.markdown(num_html, unsafe_allow_html=True)
+
+
 
 # AGENT CONTACT CTA
 # ============================================================
