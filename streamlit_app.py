@@ -537,7 +537,7 @@ if predict_btn:
                 except Exception as e:
                     st.error(f"Comparison error: {e}")
 
-with tab3:
+with tab6:
             st.markdown("#### 💰 Investment ROI (5 Years)")
             roi = calculate_roi(price, years=5)
             c1, c2, c3, c4 = st.columns(4)
