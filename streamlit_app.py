@@ -128,6 +128,52 @@ st.markdown("""<style>
 
 /* FOOTER */
 .footer-box { text-align: center; color: #9ca3af; font-size: 0.75rem; padding: 2rem 1rem 1rem 1rem; border-top: 1px solid #e5e7eb; margin-top: 2rem; }
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .hero { padding: 1.5rem 1rem; border-radius: 16px; }
+    .hero h1 { font-size: 1.5rem; letter-spacing: -0.5px; }
+    .hero p { font-size: 0.85rem; margin-bottom: 0.85rem; }
+    .hero-badge { font-size: 0.65rem; padding: 0.35rem 0.7rem; }
+    .nav { padding: 0.6rem 0; margin-bottom: 1rem; }
+    .nav-logo { font-size: 1.05rem; }
+    .nav-tag { font-size: 0.62rem; padding: 0.25rem 0.6rem; }
+    
+    .form-card { padding: 0.95rem; border-radius: 12px; }
+    .form-card-title { font-size: 0.88rem; margin-bottom: 0.7rem; }
+    
+    .property-image { height: 200px; font-size: 4.5rem; }
+    .property-title { font-size: 1.15rem; }
+    .property-location { font-size: 0.9rem; }
+    .property-stat-value { font-size: 1.05rem; }
+    .property-stat-label { font-size: 0.68rem; }
+    
+    .price-value { font-size: 2.4rem; letter-spacing: -1px; }
+    .price-label { font-size: 0.68rem; }
+    .price-egp { font-size: 0.95rem; }
+    .monthly-value { font-size: 1.3rem; }
+    
+    .metric-value { font-size: 1rem; }
+    .metric-label { font-size: 0.58rem; }
+    
+    .market-strip { flex-direction: column; gap: 0.5rem; padding: 0.75rem; }
+    .market-item { width: 100%; text-align: center; padding: 0.5rem 0; border-bottom: 1px solid #e0e7ff; }
+    .market-item:last-child { border-bottom: none; }
+    .market-label { font-size: 0.62rem; }
+    .market-value { font-size: 0.95rem; }
+    
+    .faq-card { padding: 0.85rem 1rem; }
+    .faq-q { font-size: 0.85rem; }
+    .faq-a { font-size: 0.78rem; }
+    
+    .agent-cta { padding: 1.5rem 1rem; }
+    .agent-cta h3 { font-size: 1.1rem; }
+    .agent-cta p { font-size: 0.82rem; }
+    
+    .footer-box { font-size: 0.7rem; padding: 1.5rem 0.75rem 0.75rem 0.75rem; }
+    
+    .main .block-container { padding: 0.75rem 0.75rem 2rem 0.75rem !important; }
+}
 </style>""", unsafe_allow_html=True)
 
 
@@ -606,6 +652,12 @@ faq_items = [
      "We use XGBoost, a powerful gradient-boosting algorithm. It analyzes 64 features including size, location, GPS coordinates, amenities, and NLP-extracted keywords from listing titles. Every prediction comes with a SHAP explanation showing what drove the price."),
     ("Is my data stored anywhere?",
      "We only log anonymized predictions (area, city, predicted price) to monitor model performance. No personal information is collected."),
+    ("Can I download the data or model?",
+     "The full dataset is publicly available on Kaggle (mohammedhassan1112/egypt-property-finder). The trained XGBoost model is downloadable from this GitHub repository under the models/ folder."),
+    ("Is the model open source?",
+     "Yes. The entire project is open source under the MIT License. You can find the code, models, tests, and documentation on our GitHub repository."),
+    ("How often is the model updated?",
+     "The model is a snapshot trained on listings scraped in early 2026. Future updates will incorporate new listings and market shifts as data becomes available."),
 ]
 
 faq_css = """<style>
