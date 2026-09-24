@@ -1,7 +1,7 @@
 <div align="center">
 
 <!-- Hero Banner -->
-<img src="screenshots/01_hero.png" alt="Smart House Price Predictor" width="100%" />
+<img src="screenshots/01_homepage.png" alt="Smart House Price Predictor" width="100%" />
 
 <br />
 <br />
@@ -15,7 +15,7 @@
 <br />
 
 <!-- Main CTA -->
-<a href="https://smart-house-price-predictor.streamlit.app">
+<a href="https://smartprice-egypt.streamlit.app">
   <img src="https://img.shields.io/badge/🚀%20TRY%20THE%20LIVE%20APP-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" alt="Live Demo" height="40" />
 </a>
 &nbsp;
@@ -52,8 +52,8 @@
 
 ### **🚀 Try the application now**
 
-<a href="https://smart-house-price-predictor.streamlit.app">
-  <img src="https://img.shields.io/badge/smart--house--price--predictor.streamlit.app-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" alt="Live App URL" height="35" />
+<a href="https://smartprice-egypt.streamlit.app">
+  <img src="https://img.shields.io/badge/smartprice--egypt.streamlit.app-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" alt="Live App URL" height="35" />
 </a>
 
 **The app is fully deployed and ready to use — no installation required.**
@@ -244,7 +244,7 @@ We chose **honest performance metrics on real data** over inflated numbers on sy
 
 <div align="center">
 
-**Open:** **[smart-house-price-predictor.streamlit.app](https://smart-house-price-predictor.streamlit.app)**
+**Open:** **[smartprice-egypt.streamlit.app](https://smartprice-egypt.streamlit.app)**
 
 No installation required. Works on desktop and mobile.
 
@@ -561,7 +561,7 @@ This project is licensed under the **MIT License** — see [LICENSE](LICENSE) fo
 
 ### ⭐ If you found this project helpful, please give it a star!
 
-<a href="https://smart-house-price-predictor.streamlit.app">
+<a href="https://smartprice-egypt.streamlit.app">
   <img src="https://img.shields.io/badge/🚀%20Try%20the%20App-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" />
 </a>
 
