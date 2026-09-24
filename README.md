@@ -30,7 +30,95 @@
   <img src="https://img.shields.io/badge/Flask-000000?style=flat-square&logo=flask&logoColor=white" />
   <img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white" />
   <img src="https://img.shields.io/badge/Tests-28_Passing-43A047?style=flat-square&logo=pytest&logoColor=white" />
+  <br>
+  <img src="https://img.shields.io/github/stars/qamarsobhy7-source/Smart-House-Price-Predictor?style=flat-square&color=yellow&logo=github" alt="Stars" />
+  <img src="https://img.shields.io/github/last-commit/qamarsobhy7-source/Smart-House-Price-Predictor?style=flat-square&color=blue" alt="Last Commit" />
+  <img src="https://img.shields.io/github/repo-size/qamarsobhy7-source/Smart-House-Price-Predictor?style=flat-square&color=purple" alt="Repo Size" />
+  <img src="https://img.shields.io/github/license/qamarsobhy7-source/Smart-House-Price-Predictor?style=flat-square&color=green" alt="License" />
 </p>
+
+<br>
+
+---
+
+
+<br>
+
+<p align="center">
+  <img src="screenshots/demo.gif" alt="Live Demo" width="90%" style="border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);" />
+</p>
+
+<br>
+
+---
+
+## 📚 Table of Contents
+
+<details open>
+<summary><b>Click to expand/collapse</b></summary>
+
+<br>
+
+- [📖 Overview](#-overview)
+- [✨ Features](#-features)
+- [📸 Screenshots](#-screenshots)
+- [🚀 Quick Start](#-quick-start)
+- [🧪 Testing](#-testing)
+- [🧠 Model Details](#-model-details)
+- [📂 Project Structure](#-project-structure)
+- [🌍 Data Source](#-data-source)
+- [🛠️ Tech Stack](#-tech-stack)
+- [📝 API Usage](#-api-usage)
+- [⚠️ Limitations](#️-limitations)
+- [🔮 Roadmap](#-roadmap)
+- [📊 Project Statistics](#-project-statistics)
+- [📄 License](#-license)
+- [🙏 Acknowledgments](#-acknowledgments)
+
+</details>
+
+---
+
+## 🎯 Why This Project?
+
+Real estate pricing in Egypt faces three critical problems:
+
+<table>
+<tr>
+<td width="33%" align="center">
+
+### 😰 Opaque
+
+Sellers set prices arbitrarily. Buyers have no way to verify what's fair.
+
+</td>
+<td width="33%" align="center">
+
+### 💸 Expensive
+
+Hiring a certified appraiser costs **thousands of EGP** and takes weeks.
+
+</td>
+<td width="33%" align="center">
+
+### 🐌 Slow
+
+Traditional valuation requires site visits, paperwork, and manual comparison.
+
+</td>
+</tr>
+</table>
+
+### ✅ Our Solution
+
+**Smart House Price Predictor** delivers **instant, transparent, and explainable** valuations:
+
+| Feature | Traditional | Ours |
+|---------|:-----------:|:----:|
+| **Speed** | 1-2 weeks | **3 seconds** |
+| **Cost** | 2,000-5,000 EGP | **Free** |
+| **Explainability** | Report only | **SHAP per feature** |
+| **Data** | Manual comps | **7,749 real listings** |
 
 <br>
 
@@ -150,11 +238,11 @@ We chose **honest performance metrics on real data** over inflated numbers on sy
 ### 💰 Price Prediction Result
 
 <p align="center">
-  <img src="screenshots/05_prediction_result.png" alt="Prediction Result" width="90%" />
+  <img src="screenshots/03_prediction.png" alt="Prediction Result" width="90%" />
 </p>
 
 <details>
-<summary><b>📷 View all 6 more screenshots — click to expand</b></summary>
+<summary><b>📷 View all 4 more screenshots — click to expand</b></summary>
 
 <br>
 
@@ -167,31 +255,19 @@ We chose **honest performance metrics on real data** over inflated numbers on sy
 ### 🧠 Analysis Tabs (SHAP / Market / Similar / Compare / ROI)
 
 <p align="center">
-  <img src="screenshots/06_analysis_tabs.png" alt="Analysis Tabs" width="90%" />
+  <img src="screenshots/04_tabs.png" alt="Analysis Tabs" width="90%" />
 </p>
 
 ### ❓ FAQ Section
 
 <p align="center">
-  <img src="screenshots/07_faq.png" alt="FAQ" width="90%" />
+  <img src="screenshots/05_faq.png" alt="FAQ" width="90%" />
 </p>
 
-### 🏠 Homepage FAQ
+### 🤝 Agent CTA + Footer
 
 <p align="center">
-  <img src="screenshots/03_homepage_faq.png" alt="Homepage FAQ" width="90%" />
-</p>
-
-### 🤝 Agent CTA
-
-<p align="center">
-  <img src="screenshots/08_agent_cta.png" alt="Agent CTA" width="90%" />
-</p>
-
-### 🦶 Footer
-
-<p align="center">
-  <img src="screenshots/04_homepage_footer.png" alt="Footer" width="90%" />
+  <img src="screenshots/06_agent_footer.png" alt="Agent CTA and Footer" width="90%" />
 </p>
 
 </details>
