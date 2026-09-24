@@ -1,5 +1,5 @@
 {
-  "total_predictions": 3,
+  "total_predictions": 12,
   "predictions": [
     {
       "timestamp": "2026-09-24T20:32:27.261100",
@@ -36,7 +36,115 @@
       "predicted_price": 5883282.036134879,
       "confidence_lower": 4801307.088023251,
       "confidence_upper": 6965256.984246507
+    },
+    {
+      "timestamp": "2026-09-24T20:48:58.830922",
+      "area": 150.0,
+      "bedrooms": "3",
+      "bathrooms": 2,
+      "city": "Al Daqahlya",
+      "district": "6 October City",
+      "compound": "None",
+      "predicted_price": 5110587.017440667,
+      "confidence_lower": 4170715.8555529322,
+      "confidence_upper": 6050458.1793284025
+    },
+    {
+      "timestamp": "2026-09-24T20:49:37.615185",
+      "area": 150.0,
+      "bedrooms": "3",
+      "bathrooms": 2,
+      "city": "Al Daqahlya",
+      "district": "6 October City",
+      "compound": "None",
+      "predicted_price": 5110587.017440667,
+      "confidence_lower": 4170715.8555529322,
+      "confidence_upper": 6050458.1793284025
+    },
+    {
+      "timestamp": "2026-09-24T20:55:10.680395",
+      "area": 150.0,
+      "bedrooms": "3",
+      "bathrooms": 2,
+      "city": "Al Daqahlya",
+      "district": "6 October City",
+      "compound": "None",
+      "predicted_price": 5110587.017440667,
+      "confidence_lower": 4170715.8555529322,
+      "confidence_upper": 6050458.1793284025
+    },
+    {
+      "timestamp": "2026-09-24T20:56:04.270653",
+      "area": 150.0,
+      "bedrooms": "3",
+      "bathrooms": 2,
+      "city": "Al Daqahlya",
+      "district": "6 October City",
+      "compound": "None",
+      "predicted_price": 5110587.017440667,
+      "confidence_lower": 4170715.8555529322,
+      "confidence_upper": 6050458.1793284025
+    },
+    {
+      "timestamp": "2026-09-24T21:07:46.341809",
+      "area": 150.0,
+      "bedrooms": "3",
+      "bathrooms": 2,
+      "city": "Al Daqahlya",
+      "district": "6 October City",
+      "compound": "None",
+      "predicted_price": 5110587.017440667,
+      "confidence_lower": 4170715.8555529322,
+      "confidence_upper": 6050458.1793284025
+    },
+    {
+      "timestamp": "2026-09-24T21:08:39.555998",
+      "area": 150.0,
+      "bedrooms": "3",
+      "bathrooms": 2,
+      "city": "Al Daqahlya",
+      "district": "6 October City",
+      "compound": "None",
+      "predicted_price": 5110587.017440667,
+      "confidence_lower": 4170715.8555529322,
+      "confidence_upper": 6050458.1793284025
+    },
+    {
+      "timestamp": "2026-09-24T21:17:40.351816",
+      "area": 150.0,
+      "bedrooms": "3",
+      "bathrooms": 2,
+      "city": "Al Daqahlya",
+      "district": "6 October City",
+      "compound": "None",
+      "predicted_price": 5110587.017440667,
+      "confidence_lower": 4170715.8555529322,
+      "confidence_upper": 6050458.1793284025
+    },
+    {
+      "timestamp": "2026-09-24T21:20:18.441217",
+      "area": 150.0,
+      "bedrooms": "3",
+      "bathrooms": 2,
+      "city": "Al Daqahlya",
+      "district": "6 October City",
+      "compound": "None",
+      "predicted_price": 5110587.017440667,
+      "confidence_lower": 4170715.8555529322,
+      "confidence_upper": 6050458.1793284025
+    },
+    {
+      "timestamp": "2026-09-24T21:24:09.081698",
+      "area": 150.0,
+      "bedrooms": "3",
+      "bathrooms": 2,
+      "city": "Al Daqahlya",
+      "district": "6 October City",
+      "compound": "None",
+      "predicted_price": 5110587.017440667,
+      "confidence_lower": 4170715.8555529322,
+      "confidence_upper": 6050458.1793284025
     }
   ],
-  "last_updated": "2026-09-24T20:35:47.751802"
+  "last_updated": "2026-09-24T21:24:09.081720"
 }
