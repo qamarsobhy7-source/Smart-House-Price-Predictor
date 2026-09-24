@@ -25,11 +25,9 @@ Thumbs.db
 .idea/
 .vscode/
 
-# Large data files (kept on Drive, not in Git)
-data/real_data/raw/
-data/real_data/processed/all_egypt.csv
-data/real_data/processed/commercial_*.csv
-data/real_data/model_ready.csv
-data/real_data/model_ready_v2.csv
-data/real_data/real_clean.csv
-data/real_data/real_features.csv
+# Temporary folders (regenerable)
+_temp/
+_gif_frames/
+
+# Large archives
+*.zip
