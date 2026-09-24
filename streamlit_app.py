@@ -235,7 +235,17 @@ with col_left:
     with c2:
         district = st.selectbox("District", categories["district"], key="s_district")
 
-    compound_options = ["None"] + categories["compound"]
+    # Compound options with search fallback
+    _all_compounds = categories["compound"]
+    _seen = set()
+    _clean_compounds = []
+    for _c in _all_compounds:
+        _ck = str(_c).strip().lower()
+        if _ck and _ck not in _seen:
+            _seen.add(_ck)
+            _clean_compounds.append(str(_c).strip())
+    _clean_compounds.sort(key=str.lower)
+    compound_options = ["None"] + _clean_compounds
     compound = st.selectbox("Compound (optional)", compound_options, key="s_compound")
 
     st.markdown('</div>', unsafe_allow_html=True)
