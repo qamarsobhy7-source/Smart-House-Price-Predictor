@@ -246,7 +246,12 @@ with col_left:
             _clean_compounds.append(str(_c).strip())
     _clean_compounds.sort(key=str.lower)
     compound_options = ["None"] + _clean_compounds
-    compound = st.selectbox("Compound (optional)", compound_options, key="s_compound")
+    compound = st.selectbox(
+        "Known Compound (optional) — skip if unknown",
+        compound_options,
+        key="s_compound",
+        help="Many areas are districts, not compounds. Try the District field first (e.g., Madinaty, Rehab)."
+    )
 
     st.markdown('</div>', unsafe_allow_html=True)
 
