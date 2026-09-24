@@ -1,64 +1,38 @@
-<div align="center">
+<h1 align="center">
+  <br>
+  🏠 Smart House Price Predictor
+  <br>
+</h1>
 
-<!-- Hero Banner -->
-<img src="screenshots/01_homepage.png" alt="Smart House Price Predictor" width="100%" />
+<h4 align="center">AI-powered apartment price estimation for the Egyptian real estate market.</h4>
 
-<br />
-<br />
+<p align="center">
+  <strong>Trained on 7,749 real property listings · XGBoost · R² = 0.6843</strong>
+</p>
 
-# 🏠 Smart House Price Predictor
+<p align="center">
+  <a href="https://smartprice-egypt.streamlit.app">
+    <img src="https://img.shields.io/badge/🚀_LIVE_DEMO-Open_App-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" alt="Live Demo"/>
+  </a>
+  <a href="https://github.com/qamarsobhy7-source/Smart-House-Price-Predictor/releases/tag/v10.0">
+    <img src="https://img.shields.io/badge/RELEASE-v10.0-6366f1?style=for-the-badge&logo=github&logoColor=white" alt="Release"/>
+  </a>
+  <a href="LICENSE">
+    <img src="https://img.shields.io/badge/LICENSE-MIT-10b981?style=for-the-badge" alt="License"/>
+  </a>
+</p>
 
-### **AI-powered apartment price estimation for the Egyptian real estate market**
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white" />
+  <img src="https://img.shields.io/badge/XGBoost-FF6600?style=flat-square" />
+  <img src="https://img.shields.io/badge/scikit--learn-F7931E?style=flat-square&logo=scikitlearn&logoColor=white" />
+  <img src="https://img.shields.io/badge/Streamlit-FF4B4B?style=flat-square&logo=streamlit&logoColor=white" />
+  <img src="https://img.shields.io/badge/Flask-000000?style=flat-square&logo=flask&logoColor=white" />
+  <img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white" />
+  <img src="https://img.shields.io/badge/Tests-28_Passing-43A047?style=flat-square&logo=pytest&logoColor=white" />
+</p>
 
-**Trained on 7,749 real property listings from PropertyFinder Egypt**
-
-<br />
-
-<!-- Main CTA -->
-<a href="https://smartprice-egypt.streamlit.app">
-  <img src="https://img.shields.io/badge/🚀%20TRY%20THE%20LIVE%20APP-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" alt="Live Demo" height="40" />
-</a>
-&nbsp;
-<a href="https://github.com/qamarsobhy7-source/Smart-House-Price-Predictor/releases/tag/v10.0">
-  <img src="https://img.shields.io/badge/RELEASE-v10.0-6366f1?style=for-the-badge&logo=github&logoColor=white" alt="Release" height="40" />
-</a>
-&nbsp;
-<a href="LICENSE">
-  <img src="https://img.shields.io/badge/LICENSE-MIT-10b981?style=for-the-badge&logo=opensourceinitiative&logoColor=white" alt="License" height="40" />
-</a>
-
-<br />
-<br />
-
-<!-- Tech Badges -->
-<img src="https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white" />
-<img src="https://img.shields.io/badge/XGBoost-2.0+-FF6600?style=flat-square" />
-<img src="https://img.shields.io/badge/Streamlit-1.28+-FF4B4B?style=flat-square&logo=streamlit&logoColor=white" />
-<img src="https://img.shields.io/badge/scikit--learn-1.6.1-F7931E?style=flat-square&logo=scikitlearn&logoColor=white" />
-<img src="https://img.shields.io/badge/Flask-3.0+-000000?style=flat-square&logo=flask&logoColor=white" />
-<img src="https://img.shields.io/badge/Docker-Ready-2496ED?style=flat-square&logo=docker&logoColor=white" />
-<img src="https://img.shields.io/badge/Tests-28%20Passing-43A047?style=flat-square&logo=pytest&logoColor=white" />
-
-<br />
-<br />
-
-</div>
-
----
-
-## 🌐 Live Demo
-
-<div align="center">
-
-### **🚀 Try the application now**
-
-<a href="https://smartprice-egypt.streamlit.app">
-  <img src="https://img.shields.io/badge/smartprice--egypt.streamlit.app-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" alt="Live App URL" height="35" />
-</a>
-
-**The app is fully deployed and ready to use — no installation required.**
-
-</div>
+<br>
 
 ---
 
@@ -68,70 +42,65 @@
 
 We chose **honest performance metrics on real data** over inflated numbers on synthetic data.
 
-<div align="center">
+<br>
 
-<table>
-<tr>
-<td align="center" width="20%">
-<img src="https://img.shields.io/badge/🎯_R²-0.6843-10b981?style=for-the-badge" /><br />
-<sub><b>Model Accuracy</b></sub>
-</td>
-<td align="center" width="20%">
-<img src="https://img.shields.io/badge/📊_MAPE-18.39%25-f59e0b?style=for-the-badge" /><br />
-<sub><b>Avg Error</b></sub>
-</td>
-<td align="center" width="20%">
-<img src="https://img.shields.io/badge/🏙️_Cities-9-6366f1?style=for-the-badge" /><br />
-<sub><b>Cities Covered</b></sub>
-</td>
-<td align="center" width="20%">
-<img src="https://img.shields.io/badge/🏘️_Districts-43-8b5cf6?style=for-the-badge" /><br />
-<sub><b>Districts</b></sub>
-</td>
-<td align="center" width="20%">
-<img src="https://img.shields.io/badge/🏢_Listings-7,749-ec4899?style=for-the-badge" /><br />
-<sub><b>Real Records</b></sub>
-</td>
-</tr>
+<table align="center">
+  <tr>
+    <td align="center" width="20%">
+      <h2>0.6843</h2>
+      <sub><b>Model Accuracy (R²)</b></sub>
+    </td>
+    <td align="center" width="20%">
+      <h2>18.39%</h2>
+      <sub><b>Average Error (MAPE)</b></sub>
+    </td>
+    <td align="center" width="20%">
+      <h2>7,749</h2>
+      <sub><b>Real Listings</b></sub>
+    </td>
+    <td align="center" width="20%">
+      <h2>64</h2>
+      <sub><b>Engineered Features</b></sub>
+    </td>
+    <td align="center" width="20%">
+      <h2>9</h2>
+      <sub><b>Cities Covered</b></sub>
+    </td>
+  </tr>
 </table>
 
-</div>
+<br>
 
 ---
 
 ## ✨ Features
 
-<div align="center">
-
 <table>
 <tr>
 <td width="50%" valign="top">
 
-### 🎨 Modern UI
-<img src="https://img.shields.io/badge/Mobile_First-FF4B4B?style=flat-square" />
-<img src="https://img.shields.io/badge/Responsive-10b981?style=flat-square" />
+### 🎨 Modern User Interface
 
-- **4-step wizard** form
-- **Live property preview** card
-- **Zillow-style price card** with confidence range
-- **Monthly payment calculator**
-- **5 analysis tabs** (SHAP / Market / Similar / Compare / ROI)
-- **WhatsApp share** + **PDF download**
-- **FAQ** with collapsible HTML5 details
+- **4-step wizard** form — clear progression from location to result
+- **Live property preview** card that updates in real time
+- **Zillow-inspired price card** with confidence interval
+- **Monthly payment calculator** (20% down, 20 years, 10% interest)
+- **5 analysis tabs** — SHAP, Market, Similar, Compare, Investment
+- **WhatsApp share** button and **PDF report** download
+- **Collapsible FAQ** section with 6 common questions
+- **100% mobile-responsive** design
 
 </td>
 <td width="50%" valign="top">
 
 ### 🧠 AI Capabilities
-<img src="https://img.shields.io/badge/XGBoost-FF6600?style=flat-square" />
-<img src="https://img.shields.io/badge/SHAP-6366f1?style=flat-square" />
 
-- **XGBoost regressor** (best of 4 models tested)
-- **SHAP explainability** — see why each price was predicted
-- **NLP sentiment analysis** on descriptions
-- **Smart similar properties** (cosine similarity + price filter)
-- **Investment ROI calculator** (1/5/10 years)
-- **Market trend insights** (12-month forecast)
+- **XGBoost regressor** — best of 4 models tested
+- **SHAP explainability** — see exactly why each price was predicted
+- **NLP sentiment analysis** on property descriptions
+- **Smart similar properties** using cosine similarity + price filter
+- **Investment ROI calculator** for 1, 5, and 10 year horizons
+- **Market trend insights** with 12-month forecast per city
 - **Confidence intervals** for every prediction
 
 </td>
@@ -139,102 +108,95 @@ We chose **honest performance metrics on real data** over inflated numbers on sy
 <tr>
 <td width="50%" valign="top">
 
-### 🛠️ Developer Tools
-<img src="https://img.shields.io/badge/Flask-000000?style=flat-square" />
-<img src="https://img.shields.io/badge/Swagger-85EA2D?style=flat-square" />
+### 🛠️ Developer Experience
 
-- **Flask REST API** with **Swagger** documentation
+- **Flask REST API** with Swagger documentation
 - **28 unit tests** (100% passing)
 - **Docker container** ready for deployment
-- **GitHub Actions CI/CD** pipeline
-- **Model Card** + **Data Card** (Responsible AI)
-- **Full type hints** and docstrings
+- **GitHub Actions** CI/CD pipeline
+- **Model Card** + **Data Card** for responsible AI
+- **Type hints** and docstrings throughout
+- **Modular architecture** — easy to extend
 
 </td>
 <td width="50%" valign="top">
 
 ### 📊 Data Quality
-<img src="https://img.shields.io/badge/Real_Data-10b981?style=flat-square" />
-<img src="https://img.shields.io/badge/No_Leakage-43A047?style=flat-square" />
 
 - **Real listings** from PropertyFinder Egypt (CC0-1.0)
-- **64 engineered features** (GPS, amenities, NLP)
+- **64 engineered features** — GPS, amenities, NLP, interactions
 - **890 unique compounds** with search
-- **42 real amenities** (pool, gym, security, ...)
-- **Multi-city coverage** (Cairo, Giza, Alexandria, Red Sea, North Coast)
-- **Zero data leakage** (verified with SHAP)
+- **42 real amenities** — pool, gym, garden, parking, security
+- **Multi-city coverage** — 9 cities, 43 districts
+- **Zero data leakage** — verified with SHAP
 - **IQR outlier removal** + strict filtering
 
 </td>
 </tr>
 </table>
 
-</div>
+<br>
 
 ---
 
 ## 📸 Screenshots
 
-<div align="center">
-
 ### 🏠 Homepage
 
-<img src="screenshots/01_homepage.png" alt="Homepage" width="90%" />
-
-<br />
+<p align="center">
+  <img src="screenshots/01_homepage.png" alt="Homepage" width="90%" />
+</p>
 
 ### 💰 Price Prediction Result
 
-<img src="screenshots/05_prediction_result.png" alt="Prediction" width="90%" />
-
-<br />
-
-</div>
+<p align="center">
+  <img src="screenshots/05_prediction_result.png" alt="Prediction Result" width="90%" />
+</p>
 
 <details>
-<summary><b>📷 View all screenshots (6 more) — click to expand</b></summary>
+<summary><b>📷 View all 6 more screenshots — click to expand</b></summary>
 
-<br />
-
-<div align="center">
+<br>
 
 ### 📝 Property Form
 
-<img src="screenshots/02_form.png" alt="Form" width="90%" />
-
-<br />
+<p align="center">
+  <img src="screenshots/02_form.png" alt="Form" width="90%" />
+</p>
 
 ### 🧠 Analysis Tabs (SHAP / Market / Similar / Compare / ROI)
 
-<img src="screenshots/06_analysis_tabs.png" alt="Tabs" width="90%" />
-
-<br />
+<p align="center">
+  <img src="screenshots/06_analysis_tabs.png" alt="Analysis Tabs" width="90%" />
+</p>
 
 ### ❓ FAQ Section
 
-<img src="screenshots/07_faq.png" alt="FAQ" width="90%" />
-
-<br />
+<p align="center">
+  <img src="screenshots/07_faq.png" alt="FAQ" width="90%" />
+</p>
 
 ### 🏠 Homepage FAQ
 
-<img src="screenshots/03_homepage_faq.png" alt="Homepage FAQ" width="90%" />
-
-<br />
+<p align="center">
+  <img src="screenshots/03_homepage_faq.png" alt="Homepage FAQ" width="90%" />
+</p>
 
 ### 🤝 Agent CTA
 
-<img src="screenshots/08_agent_cta.png" alt="Agent CTA" width="90%" />
-
-<br />
+<p align="center">
+  <img src="screenshots/08_agent_cta.png" alt="Agent CTA" width="90%" />
+</p>
 
 ### 🦶 Footer
 
-<img src="screenshots/04_homepage_footer.png" alt="Footer" width="90%" />
-
-</div>
+<p align="center">
+  <img src="screenshots/04_homepage_footer.png" alt="Footer" width="90%" />
+</p>
 
 </details>
+
+<br>
 
 ---
 
@@ -242,13 +204,13 @@ We chose **honest performance metrics on real data** over inflated numbers on sy
 
 ### 📱 Option 1 — Use the Live App *(recommended)*
 
-<div align="center">
+<p align="center">
 
-**Open:** **[smartprice-egypt.streamlit.app](https://smartprice-egypt.streamlit.app)**
+**👉 [smartprice-egypt.streamlit.app](https://smartprice-egypt.streamlit.app)**
 
 No installation required. Works on desktop and mobile.
 
-</div>
+</p>
 
 ### 💻 Option 2 — Run Locally
 
@@ -260,21 +222,22 @@ cd Smart-House-Price-Predictor
 # Install dependencies
 pip install -r requirements.txt
 
-# Run the Streamlit UI
+# Launch the Streamlit UI
 streamlit run streamlit_app.py
 ```
 
-### 🌐 Option 3 — Run Flask API (locally)
+### 🌐 Option 3 — Run the Flask REST API
 
 ```bash
-# Start the API server
 python app.py
 ```
 
-- API endpoint: `http://localhost:5000`
-- Swagger docs: `http://localhost:5000/apidocs/`
+| Endpoint | URL |
+|----------|-----|
+| API Base | `http://localhost:5000` |
+| Swagger Docs | `http://localhost:5000/apidocs/` |
 
-> **Note:** The Streamlit Cloud app hosts the **UI only**. The REST API requires running the Flask server (`app.py`) locally or deploying to a service like Render/Railway.
+> **Note:** The Streamlit Cloud app hosts the UI only. The REST API requires running the Flask server locally or deploying to Render/Railway.
 
 ### 🐳 Option 4 — Docker
 
@@ -287,56 +250,63 @@ docker run -p 8501:8501 house-price
 
 ## 🧪 Testing
 
+Run the full test suite:
+
 ```bash
 pytest tests/ -v
 ```
 
 **Result:** `28 passed in 2.4s`
 
-Our test suite covers:
+<details>
+<summary><b>📋 View full test coverage — click to expand</b></summary>
 
-- ✅ Model loading and metadata validation
-- ✅ Input validation (15 edge cases)
-- ✅ Feature engineering (64 features)
-- ✅ NLP extraction (12 keywords)
-- ✅ Predictions (realistic price ranges)
-- ✅ ROI calculations
-- ✅ Recommendation system
-- ✅ Category management
+| Category | Tests | Description |
+|----------|:-----:|-------------|
+| Artifacts Loading | 3 | Model, metadata, and mappings validation |
+| Input Validation | 6 | Area, bedrooms, bathrooms, city edge cases |
+| Feature Engineering | 5 | 64 features, amenities, NLP, studio handling |
+| NLP Extraction | 5 | Sea view, garden, furnished, luxury, empty |
+| Predictions | 4 | Positive values, realistic range, confidence |
+| Formatting | 2 | Million and thousand formatting |
+| Categories | 1 | All 3 categories loaded correctly |
+| ROI | 2 | ROI calculations for multiple years |
+
+</details>
 
 ---
 
 ## 🧠 Model Details
 
-### Algorithm Selection
+### Algorithm Comparison
 
-We tested **4 different models** with 3-fold cross-validation:
+We benchmarked **4 algorithms** with 3-fold cross-validation:
 
-| Rank | Model | R² (CV) |
-|:----:|-------|:-------:|
-| 🥇 | **XGBoost** | **0.6874** |
-| 🥈 | LightGBM | 0.6826 |
-| 🥉 | Gradient Boosting | 0.6647 |
-| 4 | Ridge | 0.6378 |
+| Rank | Algorithm | R² (CV) | Selected |
+|:----:|-----------|:-------:|:--------:|
+| 🥇 | **XGBoost** | **0.6874** | ✅ |
+| 🥈 | LightGBM | 0.6826 | |
+| 🥉 | Gradient Boosting | 0.6647 | |
+| 4 | Ridge Regression | 0.6378 | |
 
-**XGBoost** achieved the best performance and was selected as the final model.
+### Feature Engineering
 
-### Feature Engineering (64 features)
+**64 engineered features** across 6 categories:
 
 | Category | Count | Examples |
 |----------|:-----:|----------|
-| GPS | 4 | latitude, longitude, geo_cluster, distance_to_cairo |
-| Amenities | 32 | pool, gym, garden, parking, security |
-| NLP from title | 12 | sea_view, luxury, furnished, garden |
-| Interactions | 8 | area_per_bedroom, bed_bath_ratio |
-| Target Encoding | 5 | city_ppm, district_ppm, compound_ppm |
-| Categorical | 3 | city, district, compound |
+| GPS Features | 4 | `latitude`, `longitude`, `geo_cluster`, `distance_to_cairo` |
+| Amenities | 32 | `pool`, `gym`, `garden`, `parking`, `security`, `elevator` |
+| NLP from Title | 12 | `sea_view`, `luxury`, `furnished`, `duplex`, `ready` |
+| Interactions | 8 | `area_per_bedroom`, `bed_bath_ratio`, `rooms_total` |
+| Target Encoding | 5 | `city_ppm`, `district_ppm`, `compound_ppm` |
+| Categorical | 3 | `city`, `district`, `compound` |
 
 ### Why R² = 0.68 is a Good Result
 
-On **real** real estate data, R² values of **0.6–0.75 are considered excellent**. Real market prices depend on factors not in the listing (condition, floor, view, negotiation), making perfect prediction impossible.
+On **real** real estate data, R² values of **0.6 – 0.75 are considered excellent**. Perfect prediction is impossible because market prices depend on factors not captured in listings — property condition, floor level, view, seller motivation, and negotiation dynamics.
 
-**We chose honest numbers on real data over inflated numbers on synthetic data.**
+> 💡 **We chose honest numbers on real data over inflated numbers on synthetic data.**
 
 ---
 
@@ -345,42 +315,42 @@ On **real** real estate data, R² values of **0.6–0.75 are considered excellen
 ```
 Smart-House-Price-Predictor/
 │
-├── 📄 README.md                 # This file
-├── 📄 MODEL_CARD.md             # Model details (Responsible AI)
-├── 📄 DATA_CARD.md              # Dataset documentation
-├── 📄 LICENSE                   # MIT License
-├── 📄 requirements.txt          # Dependencies
-├── 📄 Dockerfile                # Container config
-├── 📄 Procfile                  # Heroku deployment
+├── 📄 README.md                    # This file
+├── 📄 MODEL_CARD.md                # Model documentation
+├── 📄 DATA_CARD.md                 # Dataset documentation
+├── 📄 LICENSE                      # MIT License
+├── 📄 requirements.txt             # Python dependencies
+├── 📄 Dockerfile                   # Container config
+├── 📄 Procfile                     # Deployment config
 │
 ├── 📁 .github/workflows/
-│   └── ci.yml                   # GitHub Actions
+│   └── ci.yml                      # GitHub Actions CI
 │
-├── 🐍 predictor.py              # Core ML prediction logic
-├── 🐍 streamlit_app.py          # Modern UI (~770 lines)
-├── 🐍 app.py                    # Flask REST API + Swagger
-├── 🐍 monitoring.py             # Prediction logging
-├── 🐍 sentiment_helper.py       # NLP sentiment
-├── 🐍 pdf_report.py             # PDF generator
-├── 🐍 global_insights.py        # SHAP + learning curves
+├── 🐍 predictor.py                 # Core ML prediction logic
+├── 🐍 streamlit_app.py             # Streamlit UI (~770 lines)
+├── 🐍 app.py                       # Flask REST API + Swagger
+├── 🐍 monitoring.py                # Prediction logging
+├── 🐍 sentiment_helper.py          # NLP sentiment
+├── 🐍 pdf_report.py                # PDF report generator
+├── 🐍 global_insights.py           # SHAP + learning curves
 │
 ├── 📁 models/
-│   ├── real_model.joblib              # Trained XGBoost (534 KB)
-│   ├── real_model_metadata.joblib
-│   ├── real_feature_mappings.joblib
-│   └── global_insights.joblib
+│   ├── real_model.joblib           # Trained XGBoost (534 KB)
+│   ├── real_model_metadata.joblib  # Model metrics
+│   ├── real_feature_mappings.joblib # Location mappings
+│   └── global_insights.joblib      # SHAP + curves
 │
 ├── 📁 data/real_data/
-│   ├── model_ready_clean.csv          # 7,749 clean apartments
-│   ├── processed/buy.csv              # 19,967 raw listings
-│   └── metadata/                      # Schema + data dictionary
+│   ├── model_ready_clean.csv       # 7,749 clean apartments
+│   ├── processed/buy.csv           # 19,967 raw listings
+│   └── metadata/                   # Schema + data dictionary
 │
 ├── 📁 tests/
-│   └── test_predictor.py              # 28 unit tests
+│   └── test_predictor.py           # 28 unit tests
 │
-├── 📁 screenshots/                    # 6 UI screenshots
+├── 📁 screenshots/                 # 8 UI screenshots
 │
-└── 📁 monitoring/                     # Predictions log
+└── 📁 monitoring/                  # Predictions log
 ```
 
 ---
@@ -389,67 +359,68 @@ Smart-House-Price-Predictor/
 
 Our model is trained on **real, publicly available listings** from:
 
-<div align="center">
+<p align="center">
 
-**🔗 [PropertyFinder Egypt](https://www.propertyfinder.eg)**
+### 🔗 [PropertyFinder Egypt](https://www.propertyfinder.eg)
 
 *The largest real estate platform in Egypt*
 
-</div>
+</p>
 
 ### Data Funnel
 
-| Stage | Records |
-|-------|--------:|
-| Raw scrape (buy + rent) | 64,106 |
-| Buy listings only | 19,967 |
-| Apartments only | 10,277 |
-| After filtering | 9,089 |
-| **Final cleaned dataset** | **7,749** |
+| Stage | Records | Description |
+|-------|--------:|-------------|
+| Raw scrape | 64,106 | All buy + rent listings |
+| Buy only | 19,967 | Sale listings |
+| Apartments only | 10,277 | Residential apartments |
+| After filtering | 9,089 | Price 500K-50M, size 40-500 |
+| **Final cleaned** | **7,749** | IQR outlier removal |
 
 ### Cities Covered
 
-<div align="center">
+<p align="center">
 
-`Cairo` · `Giza` · `Alexandria` · `Red Sea` · `North Coast`
+`Cairo` · `Giza` · `Alexandria` · `Red Sea` · `North Coast` · `Suez` · `Qalyubia` · `Matrouh` · `Al Daqahlya`
 
-`Suez` · `Qalyubia` · `Matrouh` · `Al Daqahlya`
-
-</div>
+</p>
 
 ---
 
 ## 🛠️ Tech Stack
 
-<div align="center">
-
-| **Category** | **Technologies** |
-|:------------:|:----------------:|
+| Category | Technologies |
+|:--------:|:------------|
 | **Language** | Python 3.10+ |
-| **ML** | XGBoost, scikit-learn, LightGBM |
-| **Data** | pandas, numpy |
-| **NLP** | Custom keyword-based + sentiment |
+| **Machine Learning** | XGBoost, scikit-learn, LightGBM |
+| **Data Processing** | pandas, numpy |
+| **NLP** | Custom keyword matcher + sentiment |
 | **Visualization** | Plotly, matplotlib, Folium |
 | **Explainability** | SHAP |
-| **UI** | Streamlit |
-| **API** | Flask + Flasgger (Swagger) |
+| **UI Framework** | Streamlit |
+| **API Framework** | Flask + Flasgger (Swagger) |
 | **Testing** | pytest (28 tests) |
 | **Deployment** | Streamlit Cloud, Docker |
 | **CI/CD** | GitHub Actions |
-
-</div>
 
 ---
 
 ## 📝 API Usage
 
-### Python
+### Python SDK
 
 ```python
-from predictor import load_artifacts, build_features, predict_price, format_price
+from predictor import (
+    load_artifacts,
+    build_features,
+    predict_price,
+    format_price,
+)
 
+# Load the trained model
 model, metadata, mappings = load_artifacts()
 
+# Build features for a property
 features = build_features(
     area=150, bedrooms="3", bathrooms=2,
     city="Cairo", district="Madinaty", compound="None",
@@ -458,19 +429,20 @@ features = build_features(
     mappings=mappings,
 )
 
+# Get prediction
 price = predict_price(model, features)
 print(format_price(price))  # 6.11M EGP
 ```
 
-### REST API *(local deployment)*
+### REST API
 
-Start the server:
+Start the Flask server locally:
 
 ```bash
 python app.py
 ```
 
-Then call the endpoint:
+Then send a POST request:
 
 ```bash
 curl -X POST http://localhost:5000/api/predict \
@@ -486,74 +458,84 @@ curl -X POST http://localhost:5000/api/predict \
 {
   "success": true,
   "prediction": {
-    "price": 6825000,
-    "price_formatted": "6.83M EGP",
-    "lower_bound": 5568000,
-    "upper_bound": 8082000,
+    "price": 6110000,
+    "price_formatted": "6.11M EGP",
+    "lower_bound": 4987000,
+    "upper_bound": 7233000,
     "currency": "EGP",
     "confidence_level": "81.61%"
   }
 }
 ```
 
-> **Note:** The Streamlit Cloud app hosts the **UI only**. The REST API requires running the Flask server (`app.py`) locally or deploying to a service like Render/Railway.
+> **Note:** The Streamlit Cloud app hosts the UI only. The REST API requires running the Flask server (`app.py`) locally or deploying to Render/Railway.
 
 ---
 
 ## ⚠️ Limitations
 
-- **Asking prices, not transaction prices** — Listings are what sellers want, not what they get
-- **Single snapshot in time** — Scraped in early 2026
-- **Apartments only** — Villas, chalets, and commercial properties not yet supported
-- **9 cities** — Coverage limited to major Egyptian cities
-- **AI estimation** — Not a substitute for certified appraisal
+We document our limitations transparently:
+
+- **Asking prices, not transaction prices** — Listings represent what sellers want, not final sale prices
+- **Single snapshot** — Data scraped in early 2026, not continuously updated
+- **Apartments only** — Villas, chalets, and commercial properties are not yet supported
+- **9 cities** — Coverage limited to major Egyptian cities; smaller cities are not included
+- **AI estimation** — This is a research tool, not a substitute for certified appraisal
 
 ---
 
 ## 🔮 Roadmap
 
-- [ ] Expand to 15+ Egyptian cities
-- [ ] Support villas, chalets, and commercial units
-- [ ] Integrate Arabic NLP transformer (AraBERT)
-- [ ] Add time-series price forecasting per district
-- [ ] Computer vision for property image analysis
-- [ ] User accounts with saved properties
+Planned improvements and future features:
+
+| Status | Feature | Priority |
+|:------:|---------|:--------:|
+| ⏳ | Expand to 15+ Egyptian cities | High |
+| ⏳ | Support villas, chalets, and commercial units | High |
+| ⏳ | Integrate Arabic NLP transformer (AraBERT) | Medium |
+| ⏳ | Time-series price forecasting per district | Medium |
+| ⏳ | Computer vision for property images | Low |
+| ⏳ | User accounts with saved properties | Low |
 
 ---
 
-## 📊 Project Stats
+## 📊 Project Statistics
 
-<div align="center">
-
-| **Metric** | **Value** |
-|:----------:|:---------:|
-| Lines of code | ~2,000+ |
-| Python files | 8 |
-| Unit tests | 28 (100% passing) |
-| Real listings used | 7,749 |
-| Features engineered | 64 |
-| Cities covered | 9 |
-| Districts | 43 |
-| Compounds | 890 |
-| Model size | 534 KB |
-| Project size | 22.4 MB |
-
-</div>
+| Metric | Value |
+|:------:|:-----:|
+| **Lines of Code** | ~2,000+ |
+| **Python Files** | 8 |
+| **Unit Tests** | 28 (100% passing) |
+| **Real Listings Used** | 7,749 |
+| **Engineered Features** | 64 |
+| **Cities Covered** | 9 |
+| **Districts** | 43 |
+| **Compounds** | 890 |
+| **Model Size** | 534 KB |
+| **Project Size** | 22.4 MB |
+| **Screenshots** | 8 |
+| **Commits** | 30+ |
 
 ---
 
 ## 📄 License
 
-This project is licensed under the **MIT License** — see [LICENSE](LICENSE) for details.
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for full details.
 
 ---
 
 ## 🙏 Acknowledgments
 
-- **Data source:** [PropertyFinder Egypt](https://www.propertyfinder.eg) (CC0-1.0 license)
-- **Deployment:** [Streamlit Cloud](https://share.streamlit.io)
-- **Kaggle dataset:** [mohammedhassan1112/egypt-property-finder](https://www.kaggle.com/datasets/mohammedhassan1112/egypt-property-finder)
-- **Tools:** XGBoost, scikit-learn, SHAP, Plotly, Flask
+Special thanks to:
+
+| Resource | Purpose |
+|----------|---------|
+| [PropertyFinder Egypt](https://www.propertyfinder.eg) | Data source (CC0-1.0) |
+| [Kaggle](https://www.kaggle.com/datasets/mohammedhassan1112/egypt-property-finder) | Dataset hosting |
+| [Streamlit Cloud](https://share.streamlit.io) | Free deployment |
+| [XGBoost](https://xgboost.readthedocs.io) | ML framework |
+| [SHAP](https://shap.readthedocs.io) | Explainability |
+| [Plotly](https://plotly.com) | Interactive charts |
 
 ---
 
@@ -561,11 +543,25 @@ This project is licensed under the **MIT License** — see [LICENSE](LICENSE) fo
 
 ### ⭐ If you found this project helpful, please give it a star!
 
+It means a lot and helps the project reach more people.
+
+<br>
+
 <a href="https://smartprice-egypt.streamlit.app">
-  <img src="https://img.shields.io/badge/🚀%20Try%20the%20App-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" />
+  <img src="https://img.shields.io/badge/🚀_Try_the_App-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" alt="Try the App" />
+</a>
+&nbsp;
+<a href="https://github.com/qamarsobhy7-source/Smart-House-Price-Predictor/stargazers">
+  <img src="https://img.shields.io/badge/⭐_Star_the_Repo-181717?style=for-the-badge&logo=github&logoColor=white" alt="Star the Repo" />
 </a>
 
+<br>
+
 **Made with ❤️ for the Egyptian real estate market**
+
+<sub>Built with Python, XGBoost, SHAP, and Streamlit</sub>
+
+<br>
 
 [⬆ Back to top](#-smart-house-price-predictor)
 
