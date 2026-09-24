@@ -285,7 +285,7 @@ print(format_price(price))  # 6.83M EGP
 ### REST API
 
 ```bash
-curl -X POST https://smart-house-price-predictor.streamlit.app/api/predict \
+curl -X POST http://localhost:5000/api/predict \
   -H "Content-Type: application/json" \
   -d '{"area": 150, "bedrooms": "3", "bathrooms": 2,
        "city": "Cairo", "district": "New Cairo City",
@@ -306,6 +306,10 @@ curl -X POST https://smart-house-price-predictor.streamlit.app/api/predict \
   }
 }
 ```
+
+---
+
+> **Note:** The Streamlit Cloud app hosts the UI only. The REST API requires running the Flask server (`app.py`) locally or deploying to a service like Render/Railway.
 
 ---
 
