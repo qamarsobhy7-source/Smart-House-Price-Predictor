@@ -84,8 +84,8 @@ def validate_input(area, bedrooms, bathrooms, city, district, compound,
         area_val = float(area)
         if not np.isfinite(area_val) or area_val <= 0:
             errors.append("Area must be a positive number.")
-        elif area_val < 40 or area_val > 500:
-            errors.append("Area must be between 40 and 500 sqm.")
+        elif area_val < 80 or area_val > 500:
+            errors.append("Area must be between 80 and 500 sqm.")
     except (TypeError, ValueError):
         errors.append("Area is invalid.")
 

@@ -246,9 +246,9 @@ with col_left:
 
     c1, c2, c3 = st.columns(3)
     with c1:
-        area = st.slider("Area (m²)", 40, 500, 150, 5, key="s_area")
+        area = st.slider("Area (m²)", 80, 500, 150, 5, key="s_area")
     with c2:
-        bedrooms = st.selectbox("Bedrooms", ["studio","1","2","3","4","5","6"], index=3, key="s_beds")
+        bedrooms = st.selectbox("Bedrooms", ["1","2","3","4","5","6"], index=2, key="s_beds")
     with c3:
         bathrooms = st.slider("Bathrooms", 1, 5, 2, key="s_baths")
 
