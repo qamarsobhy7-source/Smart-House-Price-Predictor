@@ -31,3 +31,6 @@ _gif_frames/
 
 # Large archives
 *.zip
+
+# Test screenshots
+screenshots/_*
