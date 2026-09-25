@@ -8,12 +8,49 @@ from pathlib import Path
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import joblib
+
+# Load time series forecasts
+@st.cache_resource
+def _load_forecasts():
+    """Load time series forecasts (cached)."""
+    try:
+        from pathlib import Path
+        ts_path = Path(__file__).resolve().parent / "models" / "time_series_forecasts.joblib"
+        if ts_path.exists():
+            return joblib.load(ts_path)
+    except Exception:
+        pass
+    return None
+
+
+# Load map data
+@st.cache_resource
+def _load_map_data():
+    """Load map data (cached)."""
+    try:
+        from pathlib import Path
+        map_path = Path(__file__).resolve().parent / "data" / "real_data" / "map_data.csv"
+        if map_path.exists():
+            return pd.read_csv(map_path)
+    except Exception:
+        pass
+    return None
+
 from predictor import (
     load_artifacts, get_category_values, validate_input,
     build_features, predict_with_confidence, format_price,
     calculate_roi, recommend_similar_properties,
 )
-from sentiment_helper import analyze_sentiment
+# Use AraBERT for Arabic sentiment analysis
+try:
+    from arabert_helper import analyze_sentiment, get_sentiment_emoji
+    ARABERT_AVAILABLE = True
+except ImportError:
+    from sentiment_helper import analyze_sentiment
+    ARABERT_AVAILABLE = False
+    def get_sentiment_emoji(label):
+        return {"positive": "😊", "negative": "😟", "neutral": "😐"}.get(label, "😐")
 
 try:
     from pdf_report import generate_pdf_report
@@ -301,14 +338,17 @@ with col_left:
 
     sentiment = analyze_sentiment(description) if description else None
     if sentiment and sentiment['label'] != 'neutral':
-        emoji = "😊" if sentiment['label'] == 'positive' else "😟"
+        emoji = get_sentiment_emoji(sentiment['label'])
         color = "#10b981" if sentiment['label'] == 'positive' else "#ef4444"
         score_str = f'{sentiment["score"]:+.2f}'
+        source = sentiment.get('source', 'keywords')
+        source_label = "AraBERT" if source in ['araBERT', 'blended'] else "Keywords"
         sent_html = (
             '<div style="background:' + color + '10;border-left:4px solid ' + color
             + ';padding:0.6rem 0.85rem;border-radius:8px;margin-top:0.5rem;color:' + color
             + ';font-weight:600;font-size:0.82rem;">'
             + emoji + ' ' + sentiment["label"].title() + ' sentiment (' + score_str + ')'
+            + ' <span style="opacity:0.7;font-size:0.72rem;">via ' + source_label + '</span>'
             + '</div>'
         )
         st.markdown(sent_html, unsafe_allow_html=True)
@@ -476,8 +516,9 @@ if predict_btn:
         st.markdown("<br>", unsafe_allow_html=True)
         st.markdown("## 🔍 Dive Deeper")
 
-        tab1, tab2, tab3, tab4, tab5 = st.tabs([
-            "Why This Price", "Market", "Similar", "Compare", "Investment"
+        tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
+            "🧠 Why This Price", "🗺️ Market", "🏘️ Similar",
+            "⚖️ Compare", "💰 Investment", "📈 Forecast", "📍 Map"
         ])
 
         with tab1:
@@ -619,6 +660,243 @@ if predict_btn:
             fig_roi.add_trace(go.Bar(x=years_arr, y=appr, name='Appreciation', marker_color='#6366f1'))
             fig_roi.update_layout(barmode='stack', height=320, xaxis_title="Year", yaxis_title="Million EGP", plot_bgcolor='white')
             st.plotly_chart(fig_roi, use_container_width=True)
+
+        # ---------- TAB 6: FORECAST ----------
+        with tab6:
+            st.markdown("#### 📈 12-Month Price Forecast")
+            st.caption("Prophet-based time series forecast per city")
+
+            forecasts = _load_forecasts()
+
+            if forecasts is None:
+                st.warning("⚠️ Time series model not available")
+            else:
+                import plotly.graph_objects as go
+
+                # Chart: Historical + Forecast for all cities
+                fig_ts = go.Figure()
+
+                colors_ts = [
+                    '#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6',
+                    '#ec4899', '#06b6d4', '#84cc16', '#f97316',
+                ]
+
+                for i, (city_name, data) in enumerate(forecasts.items()):
+                    color = colors_ts[i % len(colors_ts)]
+                    hist = pd.DataFrame(data['historical'])
+                    preds = pd.DataFrame(data['all_predictions'])
+
+                    # Historical line
+                    fig_ts.add_trace(go.Scatter(
+                        x=hist['ds'], y=hist['y'],
+                        mode='lines',
+                        name=f"{city_name} (hist)",
+                        line=dict(color=color, width=1.5),
+                        legendgroup=city_name,
+                    ))
+
+                    # Forecast line (dashed)
+                    forecast_only = preds[preds['ds'] > hist['ds'].max()]
+                    fig_ts.add_trace(go.Scatter(
+                        x=forecast_only['ds'], y=forecast_only['yhat'],
+                        mode='lines',
+                        name=f"{city_name} (forecast)",
+                        line=dict(color=color, width=2.5, dash='dash'),
+                        legendgroup=city_name,
+                    ))
+
+                fig_ts.update_layout(
+                    height=550,
+                    margin=dict(l=10, r=10, t=30, b=10),
+                    xaxis_title="Date",
+                    yaxis_title="Price (EGP/m²)",
+                    hovermode='x unified',
+                    plot_bgcolor='white',
+                    legend=dict(orientation="h", yanchor="bottom", y=-0.3, xanchor="center", x=0.5),
+                )
+
+                # Add vertical line for "today"
+                fig_ts.add_vline(
+                    x=pd.Timestamp('2026-01-01').timestamp() * 1000,
+                    line_dash="dot",
+                    line_color="gray",
+                    annotation_text="Today",
+                    annotation_position="top",
+                )
+
+                st.plotly_chart(fig_ts, use_container_width=True)
+
+                # Table: Growth per city
+                st.markdown("#### 📊 Expected 12-Month Growth")
+                growth_data = []
+                for city_name, data in sorted(
+                    forecasts.items(),
+                    key=lambda x: -x[1]['growth_12m_pct']
+                ):
+                    growth_data.append({
+                        'City': city_name,
+                        'Current (EGP/m²)': f"{data['current_price']:,.0f}",
+                        'Forecast +12M': f"{data['forecast_12m']:,.0f}",
+                        'Growth': f"+{data['growth_12m_pct']:.1f}%",
+                    })
+
+                growth_df = pd.DataFrame(growth_data)
+                st.dataframe(growth_df, hide_index=True, use_container_width=True)
+
+                # Summary metrics
+                avg_growth = np.mean([d['growth_12m_pct'] for d in forecasts.values()])
+                best_city = max(forecasts.items(), key=lambda x: x[1]['growth_12m_pct'])
+
+                c1, c2, c3 = st.columns(3)
+                with c1:
+                    st.markdown(f'<div class="metric-card"><div class="metric-value">+{avg_growth:.1f}%</div><div class="metric-label">Avg Growth</div></div>', unsafe_allow_html=True)
+                with c2:
+                    st.markdown(f'<div class="metric-card"><div class="metric-value">{best_city[0]}</div><div class="metric-label">Best City</div></div>', unsafe_allow_html=True)
+                with c3:
+                    st.markdown(f'<div class="metric-card"><div class="metric-value">{len(forecasts)}</div><div class="metric-label">Cities Covered</div></div>', unsafe_allow_html=True)
+
+        # ---------- TAB 7: INTERACTIVE MAP ----------
+        with tab7:
+            st.markdown("#### 📍 Interactive Property Map")
+            st.caption(f"Real listings from PropertyFinder Egypt with location & pricing")
+
+            map_data = _load_map_data()
+
+            if map_data is None:
+                st.warning("⚠️ Map data not available")
+            else:
+                import folium
+                from streamlit_folium import st_folium
+
+                # Filters
+                col_a, col_b, col_c = st.columns(3)
+
+                with col_a:
+                    cities_in_map = sorted(map_data['city'].unique())
+                    selected_cities = st.multiselect(
+                        "Filter by City",
+                        cities_in_map,
+                        default=cities_in_map,
+                        key="map_cities",
+                    )
+
+                with col_b:
+                    if len(selected_cities) > 0:
+                        filtered = map_data[map_data['city'].isin(selected_cities)]
+                    else:
+                        filtered = map_data
+
+                    if len(filtered) > 0:
+                        price_min = float(filtered['price_m'].min())
+                        price_max = float(filtered['price_m'].max())
+                    else:
+                        price_min, price_max = 0.0, 50.0
+
+                    price_range = st.slider(
+                        "Price Range (Million EGP)",
+                        min_value=0.0,
+                        max_value=float(map_data['price_m'].max()),
+                        value=(price_min, price_max),
+                        step=0.5,
+                        key="map_price_range",
+                    )
+
+                with col_c:
+                    size_max = int(map_data['size'].max())
+                    size_range = st.slider(
+                        "Size Range (m²)",
+                        min_value=40,
+                        max_value=size_max,
+                        value=(80, min(400, size_max)),
+                        key="map_size_range",
+                    )
+
+                # Apply filters
+                filtered_map = map_data[
+                    (map_data['city'].isin(selected_cities)) &
+                    (map_data['price_m'] >= price_range[0]) &
+                    (map_data['price_m'] <= price_range[1]) &
+                    (map_data['size'] >= size_range[0]) &
+                    (map_data['size'] <= size_range[1])
+                ].copy()
+
+                st.caption(f"📍 Showing **{len(filtered_map):,}** properties")
+
+                if len(filtered_map) == 0:
+                    st.warning("⚠️ No properties match the filters")
+                else:
+                    # Color by price
+                    def get_color(p):
+                        if p < 5: return '#43A047'
+                        elif p < 10: return '#FB8C00'
+                        else: return '#E53935'
+
+                    # Center map on Egypt
+                    m = folium.Map(
+                        location=[27, 31],
+                        zoom_start=6,
+                        tiles='cartodbpositron',
+                    )
+
+                    # Add markers
+                    for _, row in filtered_map.iterrows():
+                        color = get_color(row['price_m'])
+                        radius = 6 + min(row['price_m'] / 3, 10)
+
+                        popup_html = f"""
+                        <div style="font-family: Arial; width: 200px;">
+                            <h4 style="margin: 0 0 5px 0; color: #6366f1;">{row['district']}</h4>
+                            <p style="margin: 3px 0; font-size: 11px; color: #666;">
+                                📍 {row['city']} · {row['district']}
+                            </p>
+                            <hr style="margin: 5px 0;">
+                            <p style="margin: 3px 0; font-size: 12px;">
+                                📐 <b>{int(row['size'])} m²</b>
+                            </p>
+                            <p style="margin: 3px 0; font-size: 12px;">
+                                🛏️ {int(row['bedrooms']) if pd.notna(row['bedrooms']) else 'N/A'} BR
+                                · 🚿 {int(row['bathrooms']) if pd.notna(row['bathrooms']) else 'N/A'} BA
+                            </p>
+                            <p style="margin: 8px 0 3px 0; font-size: 16px; color: #10b981; font-weight: bold;">
+                                {row['price_m']:.2f}M EGP
+                            </p>
+                            <p style="margin: 0; font-size: 10px; color: #888;">
+                                {row['price_per_sqm']:,.0f} EGP/m²
+                            </p>
+                        </div>
+                        """
+
+                        folium.CircleMarker(
+                            location=[row['latitude'], row['longitude']],
+                            radius=radius,
+                            color=color,
+                            fill=True,
+                            fill_color=color,
+                            fill_opacity=0.65,
+                            weight=1.5,
+                            popup=folium.Popup(popup_html, max_width=220),
+                            tooltip=f"{row['district']}: {row['price_m']:.2f}M EGP",
+                        ).add_to(m)
+
+                    st_folium(m, width=None, height=600, returned_objects=[])
+
+                    # Legend
+                    st.markdown("""
+                    <div style="background:#f9fafb; padding:1rem; border-radius:10px; margin-top:0.75rem; display:flex; gap:1.5rem; flex-wrap:wrap; justify-content:center;">
+                        <div><span style="color:#43A047; font-size:1.5rem;">●</span> Under 5M EGP</div>
+                        <div><span style="color:#FB8C00; font-size:1.5rem;">●</span> 5M - 10M EGP</div>
+                        <div><span style="color:#E53935; font-size:1.5rem;">●</span> Over 10M EGP</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+
+                    # Stats per city
+                    st.markdown("#### 📊 Properties by City")
+                    city_stats = filtered_map.groupby('city').agg({
+                        'price_m': ['count', 'mean', 'min', 'max']
+                    }).round(2)
+                    city_stats.columns = ['Count', 'Avg Price (M)', 'Min (M)', 'Max (M)']
+                    city_stats = city_stats.sort_values('Count', ascending=False)
+                    st.dataframe(city_stats, use_container_width=True)
 
 else:
     empty_html = (

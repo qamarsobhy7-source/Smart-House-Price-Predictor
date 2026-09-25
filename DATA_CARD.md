@@ -6,12 +6,12 @@
 |-------|-------|
 | **Name** | Egypt Property Finder Real Estate Dataset |
 | **Source** | PropertyFinder Egypt (public listings) |
-| **Platform** | Kaggle: mohammedhassan1112/egypt-property-finder |
+| **Platform** | Kaggle: `mohammedhassan1112/egypt-property-finder` |
 | **License** | CC0-1.0 |
-| **Size (raw)** | 64106 listings |
-| **Size (final training)** | 7749 apartments |
-| **Scrape Date** | 2026-02-19 |
-| **Format** | CSV / JSONL |
+| **Raw Size** | 64,106 listings |
+| **Final Size** | 7,749 apartments |
+| **Scrape Date** | February 2026 |
+| **Format** | CSV, JSONL |
 
 ---
 
@@ -26,27 +26,28 @@ We chose to use **real scraped listings** instead of synthetic data because:
 
 ---
 
+## Data Funnel
+
+| Stage | Records | Filter Applied |
+|-------|--------:|----------------|
+| Raw scrape | 64,106 | All buy + rent listings |
+| Buy only | 19,967 | Excluded rentals |
+| Apartments only | 10,277 | Excluded villas, chalets, commercial |
+| Price filter | 10,248 | 500K - 50M EGP |
+| Size filter | 9,459 | 40 - 500 m² |
+| Bedroom filter | 9,089 | 1-6 bedrooms |
+| **Final cleaned** | **7,749** | IQR outlier removal |
+
+---
+
 ## Composition
-
-### Data Funnel
-
-| Stage | Records | Removed |
-|-------|---------|---------|
-| Raw scrape (buy + rent + commercial) | 64106 | - |
-| Buy only (residential + commercial) | 19967 | 44139 |
-| Apartments only | 10277 | 9690 |
-| Remove suspicious_low price flag | 10276 | 1 |
-| Price 500K-50M filter | 10248 | 28 |
-| Size 40-500 sqm filter | 9459 | 789 |
-| Bedrooms 1-6 filter | 9089 | 370 |
-| 5th-95th percentile on price & price/sqm | 7749 | 1340 |
 
 ### Cities (9)
 
 | City | Listings |
-|------|----------|
-| Cairo | 5504 |
-| Giza | 2259 |
+|------|---------:|
+| Cairo | 5,504 |
+| Giza | 2,259 |
 | Red Sea | 855 |
 | Alexandria | 236 |
 | North Coast | 104 |
@@ -55,29 +56,35 @@ We chose to use **real scraped listings** instead of synthetic data because:
 | Matrouh | 4 |
 | Al Daqahlya | 3 |
 
-### Top Districts (43 total)
+### Geographic Coverage
 
-New Cairo City, Sheikh Zayed City, 6 October City, Hurghada, Mostakbal City, New Capital City, Madinaty, Shorouk City, Hay Sharq, Hay El Maadi, etc.
+- **Cities:** 9
+- **Districts:** 43
+- **Compounds:** 890
+- **All with GPS coordinates**
 
-### Price Statistics (after cleaning)
+### Price Statistics
 
-- **Min:** about 650000 EGP
-- **Median:** 7500000 EGP
-- **Max:** about 18500000 EGP
-- **Median price/sqm:** 52398 EGP/sqm
+| Metric | Value |
+|--------|-------|
+| Minimum | ~650,000 EGP |
+| Median | 7,500,000 EGP |
+| Mean | 6,736,055 EGP |
+| Maximum | ~18,500,000 EGP |
+| Median price/m² | 52,398 EGP/m² |
+
+---
 
 ### Features (64 total)
 
 #### Numeric (61)
 
-- latitude, longitude, size, log_size, sqrt_size
-- bedrooms, bathrooms, bed_bath_ratio, area_per_bedroom, rooms_total
-- amenity_* (32 flags): balcony, pool, garden, security, gym, etc.
-- nlp_* (12 flags from titles): sea_view, garden, luxury, etc.
-- title_length, title_word_count
-- geo_cluster (15 clusters via KMeans on GPS)
-- distance_to_cairo
-- amenity_count
+- **GPS:** latitude, longitude, geo_cluster, distance_to_cairo
+- **Core:** size, log_size, sqrt_size, bedrooms, bathrooms
+- **Interactions:** bed_bath_ratio, area_per_bedroom, rooms_total, area_per_room
+- **Amenities:** 32 binary flags (pool, gym, garden, parking, security)
+- **NLP:** 12 features (sea_view, garden, luxury, furnished)
+- **Target Encodings:** city_ppm, district_ppm, compound_ppm
 
 #### Categorical (3)
 
@@ -87,16 +94,25 @@ New Cairo City, Sheikh Zayed City, 6 October City, Hurghada, Mostakbal City, New
 
 ## Preprocessing
 
-1. Filtered to apartments only
-2. Removed suspicious_low price flags
-3. Price range limited to 500K-50M EGP
-4. Size range limited to 40-500 sqm
-5. Bedrooms limited to 1-6
-6. IQR outlier removal on price and price/sqm
-7. Location parsing - split location string into city/district/compound
-8. Amenity decoding - codes (BA, SE) to binary features
-9. NLP feature extraction - keyword matching on titles
-10. Target encoding - median price/sqm per city, district, compound
+1. **Filtered** to apartments only
+2. **Removed** suspicious_low price flags
+3. **Price range** 500K - 50M EGP
+4. **Size range** 40 - 500 m²
+5. **Bedrooms** 1-6
+6. **IQR outlier removal** on price and price/sqm
+7. **Location parsing** — split into city/district/compound
+8. **Amenity decoding** — codes → binary features
+9. **NLP extraction** — keyword matching on titles
+10. **Target encoding** — median price/sqm per group
+
+---
+
+## Data Sources
+
+| Source | Purpose |
+|--------|---------|
+| [PropertyFinder Egypt](https://www.propertyfinder.eg) | Primary listings |
+| [Kaggle](https://www.kaggle.com/datasets/mohammedhassan1112/egypt-property-finder) | Dataset hosting |
 
 ---
 
@@ -104,18 +120,18 @@ New Cairo City, Sheikh Zayed City, 6 October City, Hurghada, Mostakbal City, New
 
 ### Known Biases
 
-- **Geographic:** Cairo + Giza = 77% of listings
-- **Property type:** Apartments only (villas, chalets, land excluded)
-- **Listing bias:** Asking prices, not final sale prices
-- **Time snapshot:** All listings scraped on 2026-02-19
-- **Platform bias:** Only PropertyFinder Egypt listings
+- **Geographic:** Cairo + Giza = 77% of data
+- **Property type:** Apartments only
+- **Listing bias:** Asking prices, not final sales
+- **Time snapshot:** All scraped in Feb 2026
+- **Platform bias:** Only PropertyFinder listings
 
 ### Not Represented
 
 - Off-market sales
 - Distressed sales
-- Older buildings (many listings are new developments)
 - Informal settlements
+- Buildings older than 30 years
 
 ---
 
@@ -123,25 +139,30 @@ New Cairo City, Sheikh Zayed City, 6 October City, Hurghada, Mostakbal City, New
 
 | Aspect | Status |
 |--------|--------|
-| Personal data | None |
-| Data source | Public listings |
-| Consent | Public web scrape (ToS-compliant) |
-| Transparency | Full funnel documented |
-| Reproducibility | random_state=42 |
+| Personal data | ✅ None |
+| Source | ✅ Public listings |
+| Transparency | ✅ Full funnel documented |
+| Reproducibility | ✅ Fixed random seeds |
 
 ---
 
 ## Splits
 
 | Split | Records | Purpose |
-|-------|---------|---------|
-| Train | 6199 | Model fitting + CV |
-| Test | 1550 | Held-out evaluation |
+|-------|--------:|---------|
+| Train | 6,199 | Model fitting |
+| Test | 1,550 | Held-out evaluation |
 
 ---
 
 ## Citation
 
-Egypt Property Finder Dataset (2026)
-Source: PropertyFinder Egypt
-Kaggle: mohammedhassan1112/egypt-property-finder
+```bibtex
+@misc{egypt_property_finder_2026,
+  title={Egypt Property Finder Dataset},
+  author={PropertyFinder Egypt},
+  year={2026},
+  publisher={Kaggle},
+  howpublished={\url{https://www.kaggle.com/datasets/mohammedhassan1112/egypt-property-finder}}
+}
+```
