@@ -75,57 +75,126 @@
 
 ## 📸 Screenshots
 
-### 🏠 Homepage
+### 🌐 Bilingual Interface — English & Arabic
 
-<p align="center">
-  <img src="screenshots/01_homepage.png" alt="Homepage" width="90%" />
-</p>
+*The entire UI switches languages with one click.*
 
-### 💰 Price Prediction Result
+<table>
+<tr>
+<td width="50%" align="center">
 
-<p align="center">
-  <img src="screenshots/05_prediction_result.png" alt="Prediction Result" width="90%" />
-</p>
+**🇬🇧 English**
+
+<img src="screenshots/01_en_homepage.png" alt="English Homepage" width="100%" />
+
+</td>
+<td width="50%" align="center">
+
+**🇸🇦 العربية**
+
+<img src="screenshots/10_ar_homepage.png" alt="Arabic Homepage" width="100%" />
+
+</td>
+</tr>
+</table>
 
 <details>
-<summary><b>📷 View all 6 more screenshots — click to expand</b></summary>
+<summary><b>📷 View all 16 more screenshots — click to expand</b></summary>
 
 <br>
 
-### 📝 Property Form
+### 🇬🇧 English Interface
+
+#### 📝 Property Form
 
 <p align="center">
-  <img src="screenshots/02_form.png" alt="Property Form" width="90%" />
+  <img src="screenshots/02_en_form_top.png" alt="Form Top" width="90%" />
 </p>
 
-### ✨ Features & Amenities
-
 <p align="center">
-  <img src="screenshots/03_features.png" alt="Features" width="90%" />
+  <img src="screenshots/03_en_form_mid.png" alt="Form Mid" width="90%" />
 </p>
 
-### 📊 Analysis Tabs (SHAP / Market / Similar / Compare / ROI)
-
 <p align="center">
-  <img src="screenshots/06_analysis_tabs.png" alt="Analysis Tabs" width="90%" />
+  <img src="screenshots/04_en_form_end.png" alt="Form End" width="90%" />
 </p>
 
-### 📈 Time Series Forecast (NEW)
+#### 💰 Prediction Result
 
 <p align="center">
-  <img src="screenshots/07_forecast_tab.png" alt="Forecast" width="90%" />
+  <img src="screenshots/05_en_result.png" alt="Result" width="90%" />
 </p>
 
-### 🗺️ Interactive Property Map (NEW)
+#### 📊 Metrics & Analysis
 
 <p align="center">
-  <img src="screenshots/08_map_tab.png" alt="Map" width="90%" />
+  <img src="screenshots/06_en_metrics.png" alt="Metrics" width="90%" />
 </p>
 
-### 📄 Homepage Footer
+#### 🧠 SHAP Explanation
 
 <p align="center">
-  <img src="screenshots/04_homepage_end.png" alt="Homepage Footer" width="90%" />
+  <img src="screenshots/07_en_shap.png" alt="SHAP" width="90%" />
+</p>
+
+#### 📈 Time Series Forecast
+
+<p align="center">
+  <img src="screenshots/08_en_forecast.png" alt="Forecast" width="90%" />
+</p>
+
+#### 🗺️ Interactive Map
+
+<p align="center">
+  <img src="screenshots/09_en_map.png" alt="Map" width="90%" />
+</p>
+
+---
+
+### 🇸🇦 Arabic Interface (واجهة عربية)
+
+#### 📝 نموذج البيانات
+
+<p align="center">
+  <img src="screenshots/11_ar_form_top.png" alt="نموذج البيانات" width="90%" />
+</p>
+
+<p align="center">
+  <img src="screenshots/12_ar_form_mid.png" alt="نموذج البيانات" width="90%" />
+</p>
+
+<p align="center">
+  <img src="screenshots/13_ar_form_end.png" alt="نموذج البيانات" width="90%" />
+</p>
+
+#### 💰 نتيجة التوقع
+
+<p align="center">
+  <img src="screenshots/14_ar_result.png" alt="نتيجة التوقع" width="90%" />
+</p>
+
+#### 📊 المقاييس والتحليل
+
+<p align="center">
+  <img src="screenshots/15_ar_metrics.png" alt="المقاييس" width="90%" />
+</p>
+
+#### 🧠 شرح SHAP
+
+<p align="center">
+  <img src="screenshots/16_ar_shap.png" alt="شرح SHAP" width="90%" />
+</p>
+
+#### 📈 توقعات الأسعار
+
+<p align="center">
+  <img src="screenshots/17_ar_forecast.png" alt="توقعات الأسعار" width="90%" />
+</p>
+
+#### 🗺️ الخريطة التفاعلية
+
+<p align="center">
+  <img src="screenshots/18_ar_map.png" alt="الخريطة التفاعلية" width="90%" />
 </p>
 
 </details>

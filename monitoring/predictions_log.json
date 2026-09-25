@@ -1,5 +1,5 @@
 {
-  "total_predictions": 15,
+  "total_predictions": 17,
   "predictions": [
     {
       "timestamp": "2026-09-24T20:32:27.261100",
@@ -180,7 +180,31 @@
       "predicted_price": 5741413.746323776,
       "confidence_lower": 4685529.326350061,
       "confidence_upper": 6797298.166297492
+    },
+    {
+      "timestamp": "2026-09-25T12:38:40.793366",
+      "area": 150.0,
+      "bedrooms": "3",
+      "bathrooms": 2,
+      "city": "Al Daqahlya",
+      "district": "6 October City",
+      "compound": "None",
+      "predicted_price": 5655027.16915966,
+      "confidence_lower": 4615029.818983144,
+      "confidence_upper": 6695024.519336176
+    },
+    {
+      "timestamp": "2026-09-25T12:41:01.201761",
+      "area": 150.0,
+      "bedrooms": "3",
+      "bathrooms": 2,
+      "city": "Al Daqahlya",
+      "district": "6 October City",
+      "compound": "None",
+      "predicted_price": 5643336.340642624,
+      "confidence_lower": 4605489.012086763,
+      "confidence_upper": 6681183.669198484
     }
   ],
-  "last_updated": "2026-09-25T11:17:24.690273"
+  "last_updated": "2026-09-25T12:41:01.201794"
 }

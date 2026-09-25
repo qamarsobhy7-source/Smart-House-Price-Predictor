@@ -42,6 +42,9 @@ from predictor import (
     build_features, predict_with_confidence, format_price,
     calculate_roi, recommend_similar_properties,
 )
+# Translations
+from translations import TRANSLATIONS
+
 # Use AraBERT for Arabic sentiment analysis
 try:
     from arabert_helper import analyze_sentiment, get_sentiment_emoji
@@ -211,6 +214,31 @@ st.markdown("""<style>
     
     .main .block-container { padding: 0.75rem 0.75rem 2rem 0.75rem !important; }
 }
+
+/* RTL Support for Arabic */
+body[data-lang="ar"] .main .block-container {
+    direction: rtl;
+    text-align: right;
+}
+body[data-lang="ar"] .form-card-title,
+body[data-lang="ar"] .section-title,
+body[data-lang="ar"] .metric-label,
+body[data-lang="ar"] .step-title {
+    direction: rtl;
+    text-align: right;
+}
+body[data-lang="ar"] .hero h1,
+body[data-lang="ar"] .hero p {
+    direction: rtl;
+}
+body[data-lang="ar"] .stTabs [data-baseweb="tab"] {
+    direction: rtl;
+}
+body[data-lang="ar"] .form-step {
+    margin-left: 0.75rem;
+    margin-right: 0;
+}
+
 </style>""", unsafe_allow_html=True)
 
 
@@ -225,6 +253,24 @@ except Exception as e:
     st.error(f"Model loading error: {e}")
     st.stop()
 
+
+# ============================================================
+# LANGUAGE SELECTOR
+# ============================================================
+lang_cols = st.columns([1, 1, 1, 1, 1, 1])
+with lang_cols[5]:
+    lang_option = st.selectbox(
+        "🌐 Language / اللغة",
+        ["🇬🇧 English", "🇸🇦 العربية"],
+        key="lang_selector",
+        label_visibility="collapsed",
+    )
+
+lang = "ar" if "العربية" in lang_option else "en"
+L = TRANSLATIONS[lang]
+is_rtl = (lang == "ar")
+
+# ============================================================
 m = metadata["metrics"]
 
 
@@ -244,13 +290,13 @@ total_str = f"{metadata['training_info']['n_total']:,}"
 
 hero_html = (
     '<div class="hero">'
-    "<h1>Find Your Property's True Value</h1>"
-    '<p>AI-powered estimates for the Egyptian real estate market</p>'
+    '<h1>' + L['hero_title'] + '</h1>'
+    '<p>' + L['hero_subtitle'] + '</p>'
     '<div class="hero-badges">'
-    '<span class="hero-badge">🎯 Accuracy ' + r2_str + '</span>'
-    '<span class="hero-badge">📊 Avg Error ' + mape_str + '%</span>'
-    '<span class="hero-badge">🏙️ ' + cities_str + ' Cities</span>'
-    '<span class="hero-badge">📊 ' + total_str + ' Real Listings</span>'
+    '<span class="hero-badge">🎯 ' + L['b_accuracy'] + ' ' + r2_str + '</span>'
+    '<span class="hero-badge">📊 ' + L['b_error'] + ' ' + mape_str + '%</span>'
+    '<span class="hero-badge">🏙️ ' + cities_str + ' ' + L['b_cities'] + '</span>'
+    '<span class="hero-badge">📊 ' + total_str + ' ' + L['b_listings'] + '</span>'
     '</div></div>'
 )
 st.markdown(hero_html, unsafe_allow_html=True)
@@ -263,14 +309,14 @@ col_left, col_right = st.columns([6, 4], gap="large")
 
 with col_left:
     # STEP 1: LOCATION
-    step1_title = '<div class="form-card-title"><div class="form-step">1</div>📍 Location</div>'
+    step1_title = '<div class="form-card-title"><div class="form-step">1</div>📍 ' + L['step1'] + '</div>'
     st.markdown('<div class="form-card">' + step1_title, unsafe_allow_html=True)
 
     c1, c2 = st.columns(2)
     with c1:
-        city = st.selectbox("City", categories["city"], key="s_city")
+        city = st.selectbox(L["city"], categories["city"], key="s_city")
     with c2:
-        district = st.selectbox("District", categories["district"], key="s_district")
+        district = st.selectbox(L["district"], categories["district"], key="s_district")
 
     # Compound options with search fallback
     _all_compounds = categories["compound"]
@@ -284,37 +330,37 @@ with col_left:
     _clean_compounds.sort(key=str.lower)
     compound_options = ["None"] + _clean_compounds
     compound = st.selectbox(
-        "Known Compound (optional) — skip if unknown",
+        L["compound"],
         compound_options,
         key="s_compound",
-        help="Many areas are districts, not compounds. Try the District field first (e.g., Madinaty, Rehab)."
+        help="Try the District field first (e.g., Madinaty, Rehab)." if lang == "en" else "جرب حقل الحي الأول (مثل: مدينتي، الرحاب)."
     )
 
     st.markdown('</div>', unsafe_allow_html=True)
 
     # STEP 2: SIZE & ROOMS
-    step2_title = '<div class="form-card-title"><div class="form-step">2</div>📐 Size & Rooms</div>'
+    step2_title = '<div class="form-card-title"><div class="form-step">2</div>📐 ' + L['step2'] + '</div>'
     st.markdown('<div class="form-card">' + step2_title, unsafe_allow_html=True)
 
     c1, c2, c3 = st.columns(3)
     with c1:
-        area = st.slider("Area (m²)", 80, 500, 150, 5, key="s_area")
+        area = st.slider(L["area"], 80, 500, 150, 5, key="s_area")
     with c2:
-        bedrooms = st.selectbox("Bedrooms", ["1","2","3","4","5","6"], index=2, key="s_beds")
+        bedrooms = st.selectbox(L["bedrooms"], ["1","2","3","4","5","6"], index=2, key="s_beds")
     with c3:
-        bathrooms = st.slider("Bathrooms", 1, 5, 2, key="s_baths")
+        bathrooms = st.slider(L["bathrooms"], 1, 5, 2, key="s_baths")
 
     st.markdown('</div>', unsafe_allow_html=True)
 
     # STEP 3: AMENITIES
-    step3_title = '<div class="form-card-title"><div class="form-step">3</div>✨ Features & Amenities</div>'
+    step3_title = '<div class="form-card-title"><div class="form-step">3</div>✨ ' + L['step3'] + '</div>'
     st.markdown('<div class="form-card">' + step3_title, unsafe_allow_html=True)
 
     AMENITY_UI = {
-        "Balcony": "BA", "Built-in Wardrobes": "BW", "Covered Parking": "CP",
-        "Private Garden": "PG", "Shared Pool": "SP", "Security": "SE",
-        "Air Conditioning": "AC", "Kitchen": "BK", "Maid Room": "MR",
-        "Storage": "ST", "Children Area": "CO", "Gym": "GY",
+        L["am_ba"]: "BA", L["am_bw"]: "BW", L["am_cp"]: "CP",
+        L["am_pg"]: "PG", L["am_sp"]: "SP", L["am_se"]: "SE",
+        L["am_ac"]: "AC", L["am_bk"]: "BK", L["am_mr"]: "MR",
+        L["am_st"]: "ST", L["am_co"]: "CO", L["am_gy"]: "GY",
     }
     selected_amenities = []
     cols = st.columns(3)
@@ -326,12 +372,12 @@ with col_left:
     st.markdown('</div>', unsafe_allow_html=True)
 
     # STEP 4: DESCRIPTION
-    step4_title = '<div class="form-card-title"><div class="form-step">4</div>📝 Description (optional)</div>'
+    step4_title = '<div class="form-card-title"><div class="form-step">4</div>📝 ' + L['step4'] + '</div>'
     st.markdown('<div class="form-card">' + step4_title, unsafe_allow_html=True)
 
     description = st.text_area(
-        "Description",
-        placeholder="Example: Sea view apartment, fully furnished, super lux",
+        L["description"],
+        placeholder=L["desc_placeholder"],
         height=80, key="s_desc",
         label_visibility="collapsed",
     )
@@ -358,28 +404,28 @@ with col_left:
 
 # RIGHT: LIVE PREVIEW
 with col_right:
-    bd_text = "Studio" if bedrooms == "studio" else f"{bedrooms} Bedrooms"
+    bd_text = L["studio"] if bedrooms == "studio" else f"{bedrooms} {L['br']}"
     compound_text = compound if compound != "None" else "—"
     amenity_count = len(selected_amenities)
 
     preview_html = (
         '<div class="property-preview">'
         '<div class="property-image">🏢'
-        '<div class="property-badge">LIVE PREVIEW</div>'
+        '<div class="property-badge">' + L['live_preview'] + '</div>'
         '<div class="property-heart">♡</div></div>'
         '<div class="property-content">'
         '<div class="property-title">' + f'{area}' + ' m² · ' + bd_text + '</div>'
         '<div class="property-location">📍 ' + city + ' → ' + district + '</div>'
         '<div class="property-stats">'
-        '<div class="property-stat"><div class="property-stat-value">' + f'{bathrooms}' + '</div><div class="property-stat-label">Bathrooms</div></div>'
-        '<div class="property-stat"><div class="property-stat-value">' + f'{amenity_count}' + '</div><div class="property-stat-label">Amenities</div></div>'
-        '<div class="property-stat"><div class="property-stat-value">' + compound_text + '</div><div class="property-stat-label">Compound</div></div>'
-        '<div class="property-stat"><div class="property-stat-value">Real</div><div class="property-stat-label">Data</div></div>'
+        '<div class="property-stat"><div class="property-stat-value">' + f'{bathrooms}' + '</div><div class="property-stat-label">' + L['bath_label'] + '</div></div>'
+        '<div class="property-stat"><div class="property-stat-value">' + f'{amenity_count}' + '</div><div class="property-stat-label">' + L['amen_label'] + '</div></div>'
+        '<div class="property-stat"><div class="property-stat-value">' + compound_text + '</div><div class="property-stat-label">' + L['comp_label'] + '</div></div>'
+        '<div class="property-stat"><div class="property-stat-value">' + ('Real' if lang == 'en' else 'حقيقي') + '</div><div class="property-stat-label">' + ('Data' if lang == 'en' else 'بيانات') + '</div></div>'
         '</div></div></div>'
     )
     st.markdown(preview_html, unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
-    predict_btn = st.button("🔮  Get Price Estimate", type="primary", use_container_width=True)
+    predict_btn = st.button("🔮  " + L["cta"], type="primary", use_container_width=True)
 
 
 
@@ -424,16 +470,17 @@ if predict_btn:
                 pass
 
         st.markdown("<br>", unsafe_allow_html=True)
-        st.markdown("## 📊 Your Property Valuation")
+        st.markdown("## 📊 " + L["result_title"])
 
         res_left, res_right = st.columns([5, 5], gap="large")
 
         with res_left:
             price_html = (
                 '<div class="price-hero">'
-                '<div class="price-label">Estimated Market Value</div>'
+                '<div class="price-label">' + L['est_value'] + '</div>'
                 '<div class="price-value">' + f'{price/1_000_000:.2f}M' + '</div>'
                 '<div class="price-egp">' + f'{price:,.0f}' + ' EGP</div>'
+                '<div style="font-size:0.72rem;color:#6b7280;margin-top:0.35rem;">' + L['range'] + '</div>'
                 '<div class="price-range-bar"><div class="price-range-fill"></div></div>'
                 '<div class="price-range-labels">'
                 '<span>' + format_price(result['lower_bound']) + '</span>'
@@ -450,9 +497,9 @@ if predict_btn:
 
             monthly_html = (
                 '<div class="monthly-card">'
-                '<div class="monthly-title">Est. Monthly Payment</div>'
+                '<div class="monthly-title">' + L['monthly_title'] + '</div>'
                 '<div class="monthly-value">' + f'{monthly_payment:,.0f}' + ' EGP</div>'
-                '<div class="monthly-detail">20% down, 20 years, 10% interest</div>'
+                '<div class="monthly-detail">' + L['monthly_detail'] + '</div>'
                 '</div>'
             )
             st.markdown(monthly_html, unsafe_allow_html=True)
@@ -470,20 +517,23 @@ if predict_btn:
                          'mape': m['mape'], 'n_train': metadata['training_info']['n_train']},
                     )
                     st.download_button(
-                        "Download PDF Report", data=pdf_buf,
+                        "📄 " + L["pdf_btn"], data=pdf_buf,
                         file_name="property_report.pdf",
                         mime="application/pdf", use_container_width=True,
                     )
                 except Exception:
                     pass
 
-            share_text = f"Estimated property price: {price:,.0f} EGP for {area} m2 in {district}, {city}."
+            if lang == "ar":
+                share_text = f"السعر المتوقع للعقار: {price:,.0f} جنيه لمساحة {area} م² في {district}، {city}."
+            else:
+                share_text = f"Estimated property price: {price:,.0f} EGP for {area} m2 in {district}, {city}."
             share_url = "https://wa.me/?text=" + share_text.replace(' ', '%20')
             share_html = (
                 '<a href="' + share_url + '" target="_blank" style="display:block;width:100%;text-align:center;'
                 'background:#25D366;color:white;padding:0.85rem 1.5rem;border-radius:12px;font-weight:800;'
                 'text-decoration:none;font-size:0.95rem;margin-top:0.5rem;">'
-                'Share on WhatsApp</a>'
+                '' + L['share_wa'] + '</a>'
             )
             st.markdown(share_html, unsafe_allow_html=True)
 
@@ -494,18 +544,18 @@ if predict_btn:
 
             m1, m2, m3 = st.columns(3)
             with m1:
-                st.markdown('<div class="metric-card"><div class="metric-value">' + f'{ppm:,.0f}' + '</div><div class="metric-label">Price / m2</div></div>', unsafe_allow_html=True)
+                st.markdown('<div class="metric-card"><div class="metric-value">' + f'{ppm:,.0f}' + '</div><div class="metric-label">' + L['ppm'] + '</div></div>', unsafe_allow_html=True)
             with m2:
-                st.markdown('<div class="metric-card"><div class="metric-value">' + f'{district_ppm:,.0f}' + '</div><div class="metric-label">District Avg</div></div>', unsafe_allow_html=True)
+                st.markdown('<div class="metric-card"><div class="metric-value">' + f'{district_ppm:,.0f}' + '</div><div class="metric-label">' + L['dist_avg'] + '</div></div>', unsafe_allow_html=True)
             with m3:
-                st.markdown('<div class="metric-card"><div class="metric-value">' + f'{diff_pct:+.1f}' + '%</div><div class="metric-label">vs District</div></div>', unsafe_allow_html=True)
+                st.markdown('<div class="metric-card"><div class="metric-value">' + f'{diff_pct:+.1f}' + '%</div><div class="metric-label">' + L['vs_dist'] + '</div></div>', unsafe_allow_html=True)
 
             city_growth = {"Cairo": 15.2, "Giza": 17.2, "Alexandria": 13.1, "Red Sea": 12.0, "North Coast": 14.5, "Suez": 16.0}
             growth = city_growth.get(city, 15.0)
             history_html = (
                 '<div style="background:#fef3c7;border:1px solid #fde68a;border-radius:12px;padding:0.85rem;margin-top:0.75rem;">'
-                '<div style="font-weight:800;color:#78350f;font-size:0.8rem;">12-Month Trend</div>'
-                '<div style="color:#92400e;font-size:0.72rem;margin-top:0.15rem;">Prices in ' + city + ' rose ' + f'{growth:.1f}' + '% this year</div>'
+                '<div style="font-weight:800;color:#78350f;font-size:0.8rem;">' + L['trend_title'] + '</div>'
+                '<div style="color:#92400e;font-size:0.72rem;margin-top:0.15rem;">' + L['trend_text'].format(city=city, g=f'{growth:.1f}') + '</div>'
                 '<div style="font-size:1.3rem;font-weight:900;color:#78350f;margin-top:0.35rem;">+' + f'{growth:.1f}' + '%</div>'
                 '</div>'
             )
@@ -514,11 +564,11 @@ if predict_btn:
 
 
         st.markdown("<br>", unsafe_allow_html=True)
-        st.markdown("## 🔍 Dive Deeper")
+        st.markdown("## 🔍 " + L["dive"])
 
         tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
-            "🧠 Why This Price", "🗺️ Market", "🏘️ Similar",
-            "⚖️ Compare", "💰 Investment", "📈 Forecast", "📍 Map"
+            "🧠 " + L["tab1"], "🗺️ " + L["tab2"], "🏘️ " + L["tab3"],
+            "⚖️ " + L["tab4"], "💰 " + L["tab5"], "📈 " + L["tab6"], "📍 " + L["tab7"]
         ])
 
         with tab1:
@@ -832,7 +882,7 @@ if predict_btn:
                         else: return '#E53935'
 
                     # Center map on Egypt
-                    m = folium.Map(
+                    map_obj = folium.Map(
                         location=[27, 31],
                         zoom_start=6,
                         tiles='cartodbpositron',
@@ -876,9 +926,9 @@ if predict_btn:
                             weight=1.5,
                             popup=folium.Popup(popup_html, max_width=220),
                             tooltip=f"{row['district']}: {row['price_m']:.2f}M EGP",
-                        ).add_to(m)
+                        ).add_to(map_obj)
 
-                    st_folium(m, width=None, height=600, returned_objects=[])
+                    st_folium(map_obj, width=None, height=600, returned_objects=[])
 
                     # Legend
                     st.markdown("""
@@ -902,8 +952,8 @@ else:
     empty_html = (
         '<div class="empty-box">'
         '<div class="empty-icon">🏠</div>'
-        '<div class="empty-title">Ready to estimate your property</div>'
-        '<div class="empty-text">Fill in the details above and click <b>Get Price Estimate</b></div>'
+        '<div class="empty-title">' + L['empty_title'] + '</div>'
+        '<div class="empty-text">' + L['empty_text'] + ' <b>' + L['empty_text2'] + '</b></div>'
         '</div>'
     )
     st.markdown(empty_html, unsafe_allow_html=True)
@@ -933,21 +983,15 @@ st.markdown(market_html, unsafe_allow_html=True)
 # FAQ CARDS
 # ============================================================
 st.markdown("<br>", unsafe_allow_html=True)
-st.markdown("## ❓ Frequently Asked Questions")
+st.markdown("## ❓ " + L["faq_title"])
 
 faq_items = [
-    ("Is this data real?",
-     "Yes. Our model is trained on 7,749 real property listings from PropertyFinder Egypt - the largest real estate platform in Egypt. Every listing has verified location, GPS coordinates, size, rooms, and amenities."),
-    ("How accurate are the estimates?",
-     "The model achieves 68.4% accuracy (R-squared = 0.68) with an average error margin of 18.4%. This is honest performance on real market data - many listings differ in condition, floor, view, and negotiation room, which are not captured in the data."),
-    ("Can I use this as an official appraisal?",
-     "No. This is an AI estimation tool for reference and research purposes. For official property valuation - especially for buying, selling, or legal matters - please consult a certified real estate appraiser."),
-    ("Which cities are covered?",
-     "The model covers 9 Egyptian cities: Cairo, Giza, Alexandria, Red Sea, North Coast, Suez, Qalyubia, Matrouh, and Al Daqahlya - with 43 districts and 890 compounds."),
-    ("How does the AI calculate the price?",
-     "We use XGBoost, a powerful gradient-boosting algorithm. It analyzes 64 features including size, location, GPS coordinates, amenities, and NLP-extracted keywords from listing titles. Every prediction comes with a SHAP explanation showing what drove the price."),
-    ("Is my data stored anywhere?",
-     "We only log anonymized predictions (area, city, predicted price) to monitor model performance. No personal information is collected."),
+    (L['faq_q1'], L['faq_a1']),
+    (L['faq_q2'], L['faq_a2']),
+    (L['faq_q3'], L['faq_a3']),
+    (L['faq_q4'], L['faq_a4']),
+    (L['faq_q5'], L['faq_a5']),
+    (L['faq_q6'], L['faq_a6']),
 ]
 
 faq_css = """<style>
@@ -1023,11 +1067,11 @@ st.markdown("<br>", unsafe_allow_html=True)
 agent_html = (
     '<div class="agent-cta">'
     '<div style="font-size:2rem;margin-bottom:0.35rem;">🤝</div>'
-    '<h3 style="font-size:1.3rem;font-weight:900;margin:0 0 0.5rem 0;">Want a Professional Valuation?</h3>'
-    '<p style="opacity:0.95;font-size:0.88rem;margin:0 0 1.25rem 0;">Our AI gives fast estimates. For certified appraisals, connect with a trusted local real estate agent.</p>'
+    '<h3 style="font-size:1.3rem;font-weight:900;margin:0 0 0.5rem 0;">' + L['agent_title'] + '</h3>'
+    '<p style="opacity:0.95;font-size:0.88rem;margin:0 0 1.25rem 0;">' + L['agent_text'] + '</p>'
     '<div style="display:flex;justify-content:center;gap:0.5rem;flex-wrap:wrap;">'
-    '<a href="https://www.propertyfinder.eg" target="_blank" style="background:white;color:#6366f1;padding:0.7rem 1.25rem;border-radius:100px;font-weight:800;text-decoration:none;font-size:0.85rem;">Browse PropertyFinder</a>'
-    '<a href="https://wa.me/?text=Hi%2C%20I%20need%20a%20property%20valuation" target="_blank" style="background:rgba(255,255,255,0.2);color:white;padding:0.7rem 1.25rem;border-radius:100px;font-weight:800;text-decoration:none;font-size:0.85rem;border:1px solid rgba(255,255,255,0.3);">Contact an Agent</a>'
+    '<a href="https://www.propertyfinder.eg" target="_blank" style="background:white;color:#6366f1;padding:0.7rem 1.25rem;border-radius:100px;font-weight:800;text-decoration:none;font-size:0.85rem;">' + L['agent_browse'] + '</a>'
+    '<a href="https://wa.me/?text=Hi%2C%20I%20need%20a%20property%20valuation" target="_blank" style="background:rgba(255,255,255,0.2);color:white;padding:0.7rem 1.25rem;border-radius:100px;font-weight:800;text-decoration:none;font-size:0.85rem;border:1px solid rgba(255,255,255,0.3);">' + L['agent_contact'] + '</a>'
     '</div></div>'
 )
 st.markdown(agent_html, unsafe_allow_html=True)
@@ -1038,13 +1082,13 @@ st.markdown(agent_html, unsafe_allow_html=True)
 # ============================================================
 footer_html = (
     '<div class="footer-box">'
-    '<b>Smart House Price Predictor</b> v11.0 - '
-    + metadata['model_name'] + ' - '
-    + f"R2 {m['r2']:.4f}" + ' - '
+    '<b>Smart House Price Predictor</b> v11.0 · '
+    + metadata['model_name'] + ' · '
+    + f"R² {m['r2']:.4f}" + ' · '
     + f"MAPE {m['mape']:.2f}%" + '<br>'
-    'Trained on <b>' + f"{metadata['training_info']['n_total']:,}" + ' real property listings</b> from PropertyFinder Egypt'
-    '<br><br>'
-    'AI estimation tool - not a certified appraisal.'
-    '</div>'
+    + L['footer_trained']
+    + '<br><br>'
+    + L['footer_disclaimer']
+    + '</div>'
 )
 st.markdown(footer_html, unsafe_allow_html=True)
