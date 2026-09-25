@@ -89,6 +89,9 @@ FEATURE_MAP = {
     'title word count': 'feat_word_count', 'city': 'feat_city', 'district': 'feat_district',
     'gps': 'feat_gps', 'compound': 'feat_compound', 'age': 'feat_age',
     'area per bedroom': 'feat_area_bed',
+    'geo cluster': 'geo_cluster', 'rooms total': 'rooms_total',
+    'latitude': 'latitude', 'longitude': 'longitude',
+    'amenity count': 'feat_amenity', 'amenity study': 'feat_study',
 }
 
 
@@ -361,9 +364,11 @@ with col_left:
 
     c1, c2 = st.columns(2)
     with c1:
-        city = st.selectbox(L["city"], categories["city"], key="s_city")
+        city = st.selectbox(L["city"], categories["city"], key="s_city",
+                     format_func=lambda x: CITY_NAMES.get(x, x) if lang == "ar" else x)
     with c2:
-        district = st.selectbox(L["district"], categories["district"], key="s_district")
+        district = st.selectbox(L["district"], categories["district"], key="s_district",
+                         format_func=lambda x: CITY_NAMES.get(x, x) if lang == "ar" else x)
 
     # Compound options with search fallback
     _all_compounds = categories["compound"]
@@ -599,7 +604,7 @@ if predict_btn:
             history_html = (
                 '<div style="background:#fef3c7;border:1px solid #fde68a;border-radius:12px;padding:0.85rem;margin-top:0.75rem;">'
                 '<div style="font-weight:800;color:#78350f;font-size:0.8rem;">' + L['trend_title'] + '</div>'
-                '<div style="color:#92400e;font-size:0.72rem;margin-top:0.15rem;">' + L['trend_text'].format(city=city, g=f'{growth:.1f}') + '</div>'
+                '<div style="color:#92400e;font-size:0.72rem;margin-top:0.15rem;">' + L['trend_text'].format(city=CITY_NAMES.get(city, city), g=f'{growth:.1f}') + '</div>'
                 '<div style="font-size:1.3rem;font-weight:900;color:#78350f;margin-top:0.35rem;">+' + f'{growth:.1f}' + '%</div>'
                 '</div>'
             )
@@ -643,6 +648,8 @@ if predict_btn:
             st.markdown(f"#### {L['t2_title']}")
             price_data = mappings['price_mappings']['district_price_per_sqm']
             ppm_series = pd.Series(price_data).sort_values(ascending=True).tail(20)
+            if lang == 'ar':
+                ppm_series.index = [CITY_NAMES.get(x, x) for x in ppm_series.index]
             fig = go.Figure(go.Bar(
                 x=ppm_series.values, y=ppm_series.index, orientation='h',
                 marker=dict(color=ppm_series.values, colorscale='RdYlGn_r', showscale=False),
@@ -664,7 +671,7 @@ if predict_btn:
                     top_n=5, price_range=price_range,
                 )
                 if recs:
-                    st.caption(f"Found {len(recs)} similar properties")
+                    st.caption(L["t3_found"].format(n=len(recs)))
                     for i, r in enumerate(recs, 1):
                         sim_pct = r['similarity'] * 100
                         bd = L["studio"] if r.get('is_studio') == 1 else f"{r['bedrooms_clean']} {L['br']}"
@@ -673,12 +680,12 @@ if predict_btn:
                             '<div style="display:flex;justify-content:space-between;align-items:center;">'
                             '<div>'
                             '<b style="color:#6366f1;">#' + str(i) + '</b> '
-                            '<b>' + f"{r['area_value']:.0f}" + ' m2 | ' + bd + '</b>'
-                            '<div style="color:#6b7280;font-size:0.82rem;margin-top:0.2rem;">' + r['city'] + ' - ' + r['district'] + '</div>'
-                            '<div style="margin-top:0.3rem;"><span class="sim-match">' + f'{sim_pct:.0f}' + '% match</span></div>'
+                            '<b>' + f"{r['area_value']:.0f}" + (' م² | ' if lang == 'ar' else ' m2 | ') + bd + '</b>'
+                            '<div style="color:#6b7280;font-size:0.82rem;margin-top:0.2rem;">' + CITY_NAMES.get(r['city'], r['city']) + ' - ' + CITY_NAMES.get(r['district'], r['district']) + '</div>'
+                            '<div style="margin-top:0.3rem;"><span class="sim-match">' + f'{sim_pct:.0f}' + L['t3_match'] + '</span></div>'
                             '</div>'
                             '<div style="text-align:right;">'
-                            '<div style="font-size:1.3rem;font-weight:800;color:#10b981;">' + f"{r['predicted_price']/1e6:.2f}" + 'M</div>'
+                            '<div style="font-size:1.3rem;font-weight:800;color:#10b981;">' + f"{r['predicted_price']/1e6:.2f}" + (' مليون' if lang == 'ar' else 'M') + '</div>'
                             '<div style="font-size:0.68rem;color:#9ca3af;">EGP</div>'
                             '</div></div></div>'
                         )
@@ -691,14 +698,17 @@ if predict_btn:
             colA, colB = st.columns(2)
             with colA:
                 st.markdown(f"**{L['t4_a']}**")
+                _area_unit = ' م²<br>' if lang == 'ar' else ' m2<br>'
+                _city_ar = CITY_NAMES.get(city, city)
+                _dist_ar = CITY_NAMES.get(district, district)
                 a_html = (
                     '<div class="metric-card">'
                     '<div class="metric-value" style="color:#10b981;">' + f'{price:,.0f}' + ' EGP</div>'
                     '<div style="margin-top:0.5rem;font-size:0.82rem;">'
-                    f'{L["t4_area"]}: ' + f'{area}' + ' m2<br>'
-                    f'{L["bedrooms"]}: ' + str(bedrooms) + '<br>'
-                    f'{L["bathrooms"]}: ' + str(bathrooms) + '<br>'
-                    f'{L["t4_location"]}: ' + city + ' - ' + district + '</div></div>'
+                    + f'{L["t4_area"]}: ' + f'{area}' + _area_unit
+                    + f'{L["bedrooms"]}: ' + str(bedrooms) + '<br>'
+                    + f'{L["bathrooms"]}: ' + str(bathrooms) + '<br>'
+                    + f'{L["t4_location"]}: ' + _city_ar + ' - ' + _dist_ar + '</div></div>'
                 )
                 st.markdown(a_html, unsafe_allow_html=True)
             with colB:
@@ -706,8 +716,10 @@ if predict_btn:
                 b_area = st.number_input(L["t4_area"], 40, 500, 200, 5, key="cmp_area")
                 b_bedrooms = st.selectbox(L["bedrooms"], ["1","2","3","4","5"], index=3, key="cmp_bed")
                 b_bathrooms = st.slider(L["bathrooms"], 1, 5, 3, key="cmp_bath")
-                b_district = st.selectbox(L["district"], categories["district"], key="cmp_dist")
-                b_city = st.selectbox(L["city"], categories["city"], key="cmp_city")
+                b_district = st.selectbox(L["district"], categories["district"], key="cmp_dist",
+                           format_func=lambda x: CITY_NAMES.get(x, x) if lang == "ar" else x)
+                b_city = st.selectbox(L["city"], categories["city"], key="cmp_city",
+                       format_func=lambda x: CITY_NAMES.get(x, x) if lang == "ar" else x)
 
                 prop_b = {
                     'area': b_area, 'bedrooms': b_bedrooms, 'bathrooms': b_bathrooms,
@@ -716,35 +728,37 @@ if predict_btn:
                 }
                 feat_b = build_features(**prop_b, mappings=mappings)
                 price_b = predict_with_confidence(model, feat_b, m["mape"])['price']
+                _b_city_ar = CITY_NAMES.get(b_city, b_city)
+                _b_dist_ar = CITY_NAMES.get(b_district, b_district)
                 b_html = (
                     '<div class="metric-card">'
                     '<div class="metric-value" style="color:#6366f1;">' + f'{price_b:,.0f}' + ' EGP</div>'
                     '<div style="margin-top:0.5rem;font-size:0.82rem;">'
-                    f'{L["t4_area"]}: ' + f'{b_area}' + ' m2<br>'
-                    f'{L["bedrooms"]}: ' + b_bedrooms + '<br>'
-                    f'{L["bathrooms"]}: ' + str(b_bathrooms) + '<br>'
-                    f'{L["t4_location"]}: ' + b_city + ' - ' + b_district + '</div></div>'
+                    + f'{L["t4_area"]}: ' + f'{b_area}' + _area_unit
+                    + f'{L["bedrooms"]}: ' + b_bedrooms + '<br>'
+                    + f'{L["bathrooms"]}: ' + str(b_bathrooms) + '<br>'
+                    + f'{L["t4_location"]}: ' + _b_city_ar + ' - ' + _b_dist_ar + '</div></div>'
                 )
                 st.markdown(b_html, unsafe_allow_html=True)
 
             diff = price - price_b
             if diff < 0:
-                st.success(f"Property A is cheaper by {abs(diff):,.0f} EGP")
+                st.success(L["t4_cheaper_a"].format(d=f"{abs(diff):,.0f}"))
             else:
-                st.info(f"Property B is cheaper by {abs(diff):,.0f} EGP")
+                st.info(L["t4_cheaper_b"].format(d=f"{abs(diff):,.0f}"))
 
         with tab5:
             st.markdown(f"#### {L['t5_title']}")
             roi = calculate_roi(price, years=5)
             i1, i2, i3, i4 = st.columns(4)
             with i1:
-                st.markdown('<div class="metric-card"><div class="metric-value">' + f"{roi['roi_pct']:.0f}" + '%</div><div class="metric-label">Total ROI</div></div>', unsafe_allow_html=True)
+                st.markdown('<div class="metric-card"><div class="metric-value">' + f"{roi['roi_pct']:.0f}" + '%</div><div class="metric-label">' + L["roi_total"] + '</div></div>', unsafe_allow_html=True)
             with i2:
-                st.markdown('<div class="metric-card"><div class="metric-value">' + f"{roi['annualized_roi_pct']:.1f}" + '%</div><div class="metric-label">Annualized</div></div>', unsafe_allow_html=True)
+                st.markdown('<div class="metric-card"><div class="metric-value">' + f"{roi['annualized_roi_pct']:.1f}" + '%</div><div class="metric-label">' + L["roi_annual"] + '</div></div>', unsafe_allow_html=True)
             with i3:
-                st.markdown('<div class="metric-card"><div class="metric-value">' + f"{roi['total_rental_income']/1e6:.2f}" + 'M</div><div class="metric-label">Rental</div></div>', unsafe_allow_html=True)
+                st.markdown('<div class="metric-card"><div class="metric-value">' + f"{roi['total_rental_income']/1e6:.2f}" + (' مليون' if lang == 'ar' else 'M') + '</div><div class="metric-label">' + L["roi_rental"] + '</div></div>', unsafe_allow_html=True)
             with i4:
-                st.markdown('<div class="metric-card"><div class="metric-value">' + f"{roi['appreciation_gain']/1e6:.2f}" + 'M</div><div class="metric-label">Appreciation</div></div>', unsafe_allow_html=True)
+                st.markdown('<div class="metric-card"><div class="metric-value">' + f"{roi['appreciation_gain']/1e6:.2f}" + (' مليون' if lang == 'ar' else 'M') + '</div><div class="metric-label">' + L["roi_appr"] + '</div></div>', unsafe_allow_html=True)
 
             years_arr = np.arange(6)
             rental = [price * 0.005 * 12 * y / 1e6 for y in years_arr]
@@ -752,7 +766,7 @@ if predict_btn:
             fig_roi = go.Figure()
             fig_roi.add_trace(go.Bar(x=years_arr, y=rental, name=L['t5_rental'], marker_color='#10b981'))
             fig_roi.add_trace(go.Bar(x=years_arr, y=appr, name=L['t5_appr'], marker_color='#6366f1'))
-            fig_roi.update_layout(barmode='stack', height=320, xaxis_title=L["t5_year"], yaxis_title=L["t5_millions"] + " EGP", plot_bgcolor='white')
+            fig_roi.update_layout(barmode='stack', height=320, xaxis_title=L["t5_year"], yaxis_title=L["million_egp"] + "P", plot_bgcolor='white')
             st.plotly_chart(fig_roi, use_container_width=True)
 
         # ---------- TAB 6: FORECAST ----------
@@ -784,7 +798,7 @@ if predict_btn:
                     fig_ts.add_trace(go.Scatter(
                         x=hist['ds'], y=hist['y'],
                         mode='lines',
-                        name=f"{city_name} (hist)",
+                        name=f"{CITY_NAMES.get(city_name, city_name)} ({L['hist']})",
                         line=dict(color=color, width=1.5),
                         legendgroup=city_name,
                     ))
@@ -794,7 +808,7 @@ if predict_btn:
                     fig_ts.add_trace(go.Scatter(
                         x=forecast_only['ds'], y=forecast_only['yhat'],
                         mode='lines',
-                        name=f"{city_name} (forecast)",
+                        name=f"{CITY_NAMES.get(city_name, city_name)} ({L['forecast_short']})",
                         line=dict(color=color, width=2.5, dash='dash'),
                         legendgroup=city_name,
                     ))
@@ -917,7 +931,7 @@ if predict_btn:
                 st.caption(f"📍 Showing **{len(filtered_map):,}** properties")
 
                 if len(filtered_map) == 0:
-                    st.warning("⚠️ No properties match the filters")
+                    st.warning("⚠️ " + L["t7_no_match"])
                 else:
                     # Color by price
                     def get_color(p):
@@ -969,7 +983,7 @@ if predict_btn:
                             fill_opacity=0.65,
                             weight=1.5,
                             popup=folium.Popup(popup_html, max_width=220),
-                            tooltip=f"{row['district']}: {row['price_m']:.2f}M EGP",
+                            tooltip=f"{CITY_NAMES.get(row['district'], row['district'])}: {row['price_m']:.2f}M EGP",
                         ).add_to(map_obj)
 
                     st_folium(map_obj, width=None, height=600, returned_objects=[])
@@ -977,9 +991,9 @@ if predict_btn:
                     # Legend
                     st.markdown("""
                     <div style="background:#f9fafb; padding:1rem; border-radius:10px; margin-top:0.75rem; display:flex; gap:1.5rem; flex-wrap:wrap; justify-content:center;">
-                        <div><span style="color:#43A047; font-size:1.5rem;">●</span> Under 5M EGP</div>
-                        <div><span style="color:#FB8C00; font-size:1.5rem;">●</span> 5M - 10M EGP</div>
-                        <div><span style="color:#E53935; font-size:1.5rem;">●</span> Over 10M EGP</div>
+                        <div><span style="color:#43A047; font-size:1.5rem;">●</span> ' + L["t7_under5"] + '</div>
+                        <div><span style="color:#FB8C00; font-size:1.5rem;">●</span> ' + L["t7_5to10"] + '</div>
+                        <div><span style="color:#E53935; font-size:1.5rem;">●</span> ' + L["t7_over10"] + '</div>
                     </div>
                     """, unsafe_allow_html=True)
 
@@ -1015,7 +1029,7 @@ avg_ppm = mappings['price_mappings']['global_mean_ppm']
 
 market_html = (
     '<div class="market-strip">'
-    '<div class="market-item"><div class="market-label">' + L["market_avg"] + '</div><div class="market-value">' + f'{avg_ppm:,.0f}' + ' EGP/m2</div></div>'
+    '<div class="market-item"><div class="market-label">' + L["market_avg"] + '</div><div class="market-value">' + f'{avg_ppm:,.0f}' + (' جنيه/م²' if lang == 'ar' else ' EGP/m2') + '</div></div>'
     '<div class="market-item"><div class="market-label">' + L["top_city"] + '</div><div class="market-value">' + CITY_NAMES.get(top_cities[0][0], top_cities[0][0]) + '</div></div>'
     '<div class="market-item"><div class="market-label">' + L["data_source"] + '</div><div class="market-value">PropertyFinder</div></div>'
     '</div>'

@@ -1,5 +1,5 @@
 {
-  "total_predictions": 26,
+  "total_predictions": 28,
   "predictions": [
     {
       "timestamp": "2026-09-24T20:32:27.261100",
@@ -312,7 +312,31 @@
       "predicted_price": 5741413.746323776,
       "confidence_lower": 4685529.326350061,
       "confidence_upper": 6797298.166297492
+    },
+    {
+      "timestamp": "2026-09-25T15:15:30.381885",
+      "area": 150.0,
+      "bedrooms": "3",
+      "bathrooms": 2,
+      "city": "Giza",
+      "district": "6 October City",
+      "compound": "None",
+      "predicted_price": 5285889.821541773,
+      "confidence_lower": 4313779.300533372,
+      "confidence_upper": 6258000.342550174
+    },
+    {
+      "timestamp": "2026-09-25T15:20:39.369862",
+      "area": 150.0,
+      "bedrooms": "3",
+      "bathrooms": 2,
+      "city": "Al Daqahlya",
+      "district": "6 October City",
+      "compound": "None",
+      "predicted_price": 5741413.746323776,
+      "confidence_lower": 4685529.326350061,
+      "confidence_upper": 6797298.166297492
     }
   ],
-  "last_updated": "2026-09-25T14:34:21.099813"
+  "last_updated": "2026-09-25T15:20:39.369893"
 }
