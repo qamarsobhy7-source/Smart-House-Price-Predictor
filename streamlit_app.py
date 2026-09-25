@@ -1038,7 +1038,7 @@ st.markdown(agent_html, unsafe_allow_html=True)
 # ============================================================
 footer_html = (
     '<div class="footer-box">'
-    '<b>Smart House Price Predictor</b> v10.0 - '
+    '<b>Smart House Price Predictor</b> v11.0 - '
     + metadata['model_name'] + ' - '
     + f"R2 {m['r2']:.4f}" + ' - '
     + f"MAPE {m['mape']:.2f}%" + '<br>'

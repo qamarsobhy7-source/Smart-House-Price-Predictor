@@ -16,20 +16,26 @@ _sentiment_pipeline = None
 ARABERT_CONFIDENCE_THRESHOLD = 0.85
 
 
+_load_attempted = False
+
+
 def _load_pipeline():
-    """Lazy-load AraBERT on first call."""
-    global _sentiment_pipeline
-    if _sentiment_pipeline is None:
-        try:
-            _sentiment_pipeline = pipeline(
-                "sentiment-analysis",
-                model=MODEL_NAME,
-                tokenizer=MODEL_NAME,
-                device=-1,
-            )
-        except Exception as e:
-            print(f"Warning: Could not load AraBERT: {e}")
-            _sentiment_pipeline = None
+    """Lazy-load AraBERT on first call. Falls back gracefully if loading fails."""
+    global _sentiment_pipeline, _load_attempted
+    if _load_attempted:
+        return _sentiment_pipeline
+    _load_attempted = True
+    try:
+        _sentiment_pipeline = pipeline(
+            "sentiment-analysis",
+            model=MODEL_NAME,
+            tokenizer=MODEL_NAME,
+            device=-1,  # CPU
+        )
+        print("✅ AraBERT loaded successfully")
+    except Exception as e:
+        print(f"⚠️  AraBERT unavailable, using keywords: {e}")
+        _sentiment_pipeline = None
     return _sentiment_pipeline
 
 
