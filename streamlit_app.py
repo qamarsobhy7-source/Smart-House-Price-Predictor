@@ -37,6 +37,21 @@ def _load_map_data():
         pass
     return None
 
+from location_selector import render_hierarchical_selector
+from theme import get_global_css, get_hero_html, get_section_header_html, get_step_header_html
+from neighborhood_insights import render_neighborhood_insights
+from popular_areas import render_popular_areas
+from property_types import render_property_types, get_coefficient, get_note
+from dark_theme import get_css as get_theme_css
+from featured_properties import render_featured_properties
+from filters_chips import render_quick_filters
+from auth_login import render_auth
+from saved_searches import render_save_search_button, render_saved_searches
+from discover_section import render_discover_section
+from nearby_transport import render_transport
+from safety_schools import render_safety_schools
+from mortgage_calculator import render_mortgage_calculator
+from save_favorites import render_save_button, render_saved_list
 from predictor import (
     load_artifacts, get_category_values, validate_input,
     build_features, predict_with_confidence, format_price,
@@ -46,40 +61,49 @@ from predictor import (
 from translations import TRANSLATIONS
 
 
-def _translate_feat_name(name, L, FEATURE_MAP):
+def _translate_feat_name(name, L, FEATURE_MAP, lang='ar'):
     """Translate a feature name from the model to the current language."""
     raw = name.replace('num__','').replace('cat__','')
     if raw.startswith('city_'):
         val = raw.replace('city_','').replace('_',' ').title()
-        val_ar = CITY_NAMES.get(val, val)
-        return L.get('feat_city','City') + ': ' + val_ar
+        if lang == 'ar':
+            val = CITY_NAMES.get(val, val)
+            prefix = L.get('feat_city','City')
+        else:
+            prefix = 'City'
+        return prefix + ': ' + val
     if raw.startswith('district_'):
         val = raw.replace('district_','').replace('_',' ').title()
-        val_ar = CITY_NAMES.get(val, val)
-        return L.get('feat_district','District') + ': ' + val_ar
+        if lang == 'ar':
+            val = CITY_NAMES.get(val, val)
+            prefix = L.get('feat_district','District')
+        else:
+            prefix = 'District'
+        return prefix + ': ' + val
     if raw.startswith('compound_'):
         val = raw.replace('compound_','').replace('_',' ').title()
-        val_ar = CITY_NAMES.get(val, val)
-        return L.get('feat_compound','Compound') + ': ' + val_ar
+        if lang == 'ar':
+            val = CITY_NAMES.get(val, val)
+            prefix = L.get('feat_compound','Compound')
+        else:
+            prefix = 'Compound'
+        return prefix + ': ' + val
     clean = raw.replace('_',' ').title()
     key = FEATURE_MAP.get(clean.lower(), '')
     return L.get(key, clean)
 
-CITY_NAMES = {
-    'Cairo': 'القاهرة', 'Giza': 'الجيزة', 'Alexandria': 'الإسكندرية',
-    'Red Sea': 'البحر الأحمر', 'North Coast': 'الساحل الشمالي',
-    'Suez': 'السويس', 'Qalyubia': 'القليوبية', 'Matrouh': 'مطروح',
-    'Al Daqahlya': 'الدقهلية',
-    'New Cairo City': 'القاهرة الجديدة', '6 October City': '6 أكتوبر',
-    'Sheikh Zayed': 'الشيخ زايد', 'Madinaty': 'مدينتي',
-    'Rehab': 'الرحاب', 'Nasr City': 'مدينة نصر',
-    'Heliopolis': 'مصر الجديدة', 'Maadi': 'المعادي',
-    'Zamalek': 'الزمالك', 'Downtown': 'وسط البلد',
-    'Smouha': 'سموحة', 'Sidi Gaber': 'سيدي جابر',
-    'Miami': 'ميامي', 'Montazah': 'المنتزة',
-    'Haram': 'الهرم', 'Faisal': 'فيصل', 'Dokki': 'الدقي',
-    'Mohandessin': 'المهندسين', 'Agouza': 'العجوزة',
-}
+# Load place name translations from JSON
+import json as _json
+_CITY_MAP_PATH = Path(__file__).resolve().parent / "data" / "place_translations.json"
+try:
+    CITY_NAMES = _json.loads(_CITY_MAP_PATH.read_text(encoding='utf-8'))
+    # Alias للحفاظ على التوافق
+    CITY_NAMES.update({
+        'Al Daqahlya': 'الدقهلية',
+        'New Cairo City': 'القاهرة الجديدة',
+    })
+except Exception as _e:
+    CITY_NAMES = {'Cairo': 'القاهرة', 'Giza': 'الجيزة', 'Alexandria': 'الإسكندرية'}
 
 # Feature name translation map
 FEATURE_MAP = {
@@ -122,174 +146,8 @@ st.set_page_config(
     page_title="Smart House Price Predictor",
     page_icon="🏠",
     layout="wide",
-    initial_sidebar_state="collapsed",
+    initial_sidebar_state="expanded",
 )
-
-
-st.markdown("""<style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-* { font-family: 'Inter', -apple-system, sans-serif !important; }
-.main .block-container { max-width: 1200px !important; padding: 1rem 1rem 3rem 1rem !important; }
-#MainMenu, footer, header, .stDeployButton { display: none !important; }
-
-/* NAVBAR */
-.nav { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid #e5e7eb; margin-bottom: 1.5rem; }
-.nav-logo { font-size: 1.2rem; font-weight: 900; color: #111827; }
-.nav-logo span { color: #6366f1; }
-.nav-tag { background: #eef2ff; color: #6366f1; padding: 0.3rem 0.75rem; border-radius: 8px; font-size: 0.7rem; font-weight: 800; }
-
-/* HERO */
-.hero { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%); padding: 2rem 1.5rem; border-radius: 20px; color: white; text-align: center; margin-bottom: 1.5rem; box-shadow: 0 15px 40px rgba(99,102,241,0.25); }
-.hero h1 { font-size: 1.9rem; font-weight: 900; margin: 0 0 0.5rem 0; letter-spacing: -0.5px; line-height: 1.2; }
-.hero p { font-size: 0.95rem; opacity: 0.95; margin: 0 0 1rem 0; }
-.hero-badges { display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap; }
-.hero-badge { background: rgba(255,255,255,0.22); padding: 0.4rem 0.85rem; border-radius: 100px; font-weight: 700; font-size: 0.72rem; }
-
-/* FORM CARD */
-.form-card { background: white; border-radius: 14px; padding: 1.15rem; margin-bottom: 0.75rem; border: 1px solid #e5e7eb; }
-.form-card-title { display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem; font-weight: 800; color: #111827; margin-bottom: 0.85rem; padding-bottom: 0.65rem; border-bottom: 2px solid #f3f4f6; }
-.form-step { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; border-radius: 7px; font-size: 0.72rem; font-weight: 800; flex-shrink: 0; }
-
-/* PROPERTY PREVIEW */
-.property-preview { background: white; border-radius: 16px; border: 1px solid #e5e7eb; box-shadow: 0 10px 30px rgba(0,0,0,0.06); overflow: hidden; }
-.property-image { height: 160px; background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); display: flex; align-items: center; justify-content: center; font-size: 4rem; position: relative; }
-.property-badge { position: absolute; top: 0.85rem; left: 0.85rem; background: white; color: #6366f1; padding: 0.3rem 0.7rem; border-radius: 100px; font-size: 0.65rem; font-weight: 800; }
-.property-heart { position: absolute; top: 0.85rem; right: 0.85rem; background: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
-.property-content { padding: 1rem; }
-.property-title { font-size: 1.05rem; font-weight: 900; color: #111827; margin-bottom: 0.3rem; }
-.property-location { color: #6b7280; font-size: 0.82rem; margin-bottom: 0.85rem; }
-.property-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
-.property-stat { background: #f9fafb; border-radius: 8px; padding: 0.55rem; text-align: center; }
-.property-stat-value { font-size: 0.95rem; font-weight: 800; color: #111827; }
-.property-stat-label { font-size: 0.62rem; color: #6b7280; margin-top: 0.15rem; font-weight: 700; text-transform: uppercase; }
-
-/* PRICE CARD */
-.price-hero { background: white; border-radius: 16px; padding: 1.5rem; border: 1px solid #e5e7eb; box-shadow: 0 10px 30px rgba(0,0,0,0.06); margin-bottom: 1rem; }
-.price-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 2px; color: #6b7280; font-weight: 700; margin-bottom: 0.4rem; }
-.price-value { font-size: 2.75rem; font-weight: 900; color: #10b981; line-height: 1; letter-spacing: -1.5px; }
-.price-egp { font-size: 1rem; color: #6b7280; margin-top: 0.2rem; font-weight: 600; }
-.price-range-bar { margin-top: 1rem; height: 7px; background: #f3f4f6; border-radius: 100px; overflow: hidden; }
-.price-range-fill { height: 100%; background: linear-gradient(90deg, #10b981, #059669); border-radius: 100px; }
-.price-range-labels { display: flex; justify-content: space-between; margin-top: 0.4rem; font-size: 0.72rem; color: #6b7280; font-weight: 600; }
-
-/* MONTHLY */
-.monthly-card { background: #f0fdf4; border-radius: 12px; padding: 1rem; border: 1px solid #bbf7d0; margin-bottom: 0.85rem; }
-.monthly-title { font-size: 0.75rem; color: #15803d; font-weight: 800; margin-bottom: 0.35rem; text-transform: uppercase; }
-.monthly-value { font-size: 1.5rem; font-weight: 900; color: #166534; line-height: 1; }
-.monthly-detail { font-size: 0.72rem; color: #15803d; margin-top: 0.35rem; }
-
-/* METRIC CARD */
-.metric-card { background: white; border-radius: 12px; padding: 0.85rem 0.6rem; text-align: center; border: 1px solid #e5e7eb; }
-.metric-value { font-size: 1.15rem; font-weight: 900; color: #6366f1; line-height: 1; }
-.metric-label { font-size: 0.62rem; color: #6b7280; margin-top: 0.3rem; font-weight: 800; text-transform: uppercase; }
-
-/* BUTTONS */
-.stButton > button { border-radius: 12px !important; font-weight: 800 !important; font-size: 1rem !important; padding: 0.9rem 1.5rem !important; border: none !important; }
-.stButton > button[kind="primary"] { background: linear-gradient(90deg, #6366f1, #8b5cf6) !important; color: white !important; box-shadow: 0 10px 24px rgba(99,102,241,0.35) !important; }
-
-/* TABS */
-.stTabs [data-baseweb="tab-list"] { gap: 0.3rem; background: white; padding: 0.4rem; border-radius: 12px; border: 1px solid #e5e7eb; flex-wrap: wrap; }
-.stTabs [data-baseweb="tab"] { border-radius: 8px; padding: 0.55rem 0.85rem; font-weight: 700; font-size: 0.8rem; color: #6b7280; }
-.stTabs [aria-selected="true"] { background: linear-gradient(135deg, #6366f1, #8b5cf6) !important; color: white !important; }
-
-/* SIMILAR CARD */
-.sim-card { background: white; border-radius: 12px; padding: 0.85rem 1rem; margin-bottom: 0.5rem; border: 1px solid #e5e7eb; }
-.sim-match { background: #ede9fe; color: #6366f1; padding: 0.15rem 0.55rem; border-radius: 100px; font-size: 0.68rem; font-weight: 800; }
-
-/* EMPTY STATE */
-.empty-box { background: #f9fafb; border: 2px dashed #e5e7eb; border-radius: 16px; padding: 2.5rem 1.25rem; text-align: center; }
-.empty-icon { font-size: 3rem; margin-bottom: 0.5rem; }
-.empty-title { font-size: 1.05rem; font-weight: 800; color: #374151; margin-bottom: 0.3rem; }
-.empty-text { color: #6b7280; font-size: 0.85rem; }
-
-/* MARKET STRIP */
-.market-strip { background: linear-gradient(90deg, #eff6ff, #f0f9ff); border: 1px solid #bfdbfe; border-radius: 12px; padding: 0.85rem 1rem; margin-bottom: 1rem; display: flex; justify-content: space-around; flex-wrap: wrap; gap: 0.75rem; }
-.market-item { text-align: center; }
-.market-label { font-size: 0.65rem; color: #1e40af; font-weight: 800; text-transform: uppercase; }
-.market-value { font-size: 1rem; font-weight: 900; color: #1e3a8a; }
-
-/* FAQ CARD */
-.faq-card { background: white; border-radius: 12px; padding: 1rem 1.15rem; margin-bottom: 0.6rem; border: 1px solid #e5e7eb; }
-.faq-q { font-weight: 800; color: #111827; font-size: 0.9rem; margin-bottom: 0.35rem; }
-.faq-a { color: #4b5563; font-size: 0.82rem; line-height: 1.55; }
-
-/* AGENT CTA */
-.agent-cta { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); border-radius: 16px; padding: 1.75rem 1.25rem; color: white; text-align: center; box-shadow: 0 15px 35px rgba(99,102,241,0.25); }
-
-/* FOOTER */
-.footer-box { text-align: center; color: #9ca3af; font-size: 0.75rem; padding: 2rem 1rem 1rem 1rem; border-top: 1px solid #e5e7eb; margin-top: 2rem; }
-
-/* Mobile responsive */
-@media (max-width: 768px) {
-    .hero { padding: 1.5rem 1rem; border-radius: 16px; }
-    .hero h1 { font-size: 1.5rem; letter-spacing: -0.5px; }
-    .hero p { font-size: 0.85rem; margin-bottom: 0.85rem; }
-    .hero-badge { font-size: 0.65rem; padding: 0.35rem 0.7rem; }
-    .nav { padding: 0.6rem 0; margin-bottom: 1rem; }
-    .nav-logo { font-size: 1.05rem; }
-    .nav-tag { font-size: 0.62rem; padding: 0.25rem 0.6rem; }
-    
-    .form-card { padding: 0.95rem; border-radius: 12px; }
-    .form-card-title { font-size: 0.88rem; margin-bottom: 0.7rem; }
-    
-    .property-image { height: 200px; font-size: 4.5rem; }
-    .property-title { font-size: 1.15rem; }
-    .property-location { font-size: 0.9rem; }
-    .property-stat-value { font-size: 1.05rem; }
-    .property-stat-label { font-size: 0.68rem; }
-    
-    .price-value { font-size: 2.4rem; letter-spacing: -1px; }
-    .price-label { font-size: 0.68rem; }
-    .price-egp { font-size: 0.95rem; }
-    .monthly-value { font-size: 1.3rem; }
-    
-    .metric-value { font-size: 1rem; }
-    .metric-label { font-size: 0.58rem; }
-    
-    .market-strip { flex-direction: column; gap: 0.5rem; padding: 0.75rem; }
-    .market-item { width: 100%; text-align: center; padding: 0.5rem 0; border-bottom: 1px solid #e0e7ff; }
-    .market-item:last-child { border-bottom: none; }
-    .market-label { font-size: 0.62rem; }
-    .market-value { font-size: 0.95rem; }
-    
-    .faq-card { padding: 0.85rem 1rem; }
-    .faq-q { font-size: 0.85rem; }
-    .faq-a { font-size: 0.78rem; }
-    
-    .agent-cta { padding: 1.5rem 1rem; }
-    .agent-cta h3 { font-size: 1.1rem; }
-    .agent-cta p { font-size: 0.82rem; }
-    
-    .footer-box { font-size: 0.7rem; padding: 1.5rem 0.75rem 0.75rem 0.75rem; }
-    
-    .main .block-container { padding: 0.75rem 0.75rem 2rem 0.75rem !important; }
-}
-
-/* RTL Support for Arabic */
-body[data-lang="ar"] .main .block-container {
-    direction: rtl;
-    text-align: right;
-}
-body[data-lang="ar"] .form-card-title,
-body[data-lang="ar"] .section-title,
-body[data-lang="ar"] .metric-label,
-body[data-lang="ar"] .step-title {
-    direction: rtl;
-    text-align: right;
-}
-body[data-lang="ar"] .hero h1,
-body[data-lang="ar"] .hero p {
-    direction: rtl;
-}
-body[data-lang="ar"] .stTabs [data-baseweb="tab"] {
-    direction: rtl;
-}
-body[data-lang="ar"] .form-step {
-    margin-left: 0.75rem;
-    margin-right: 0;
-}
-
-</style>""", unsafe_allow_html=True)
 
 
 @st.cache_resource
@@ -305,10 +163,19 @@ except Exception as e:
 
 
 # ============================================================
-# LANGUAGE SELECTOR
+# DARK MODE + LANGUAGE SELECTOR
 # ============================================================
-lang_cols = st.columns([1, 1, 1, 1, 1, 1])
-with lang_cols[5]:
+top_cols = st.columns([1, 1, 1, 1, 1, 1])
+
+with top_cols[4]:
+    dark_mode = st.toggle(
+        "🌙 Dark",
+        value=False,
+        key="dark_mode_toggle",
+        help="Dark mode / الوضع الليلي",
+    )
+
+with top_cols[5]:
     lang_option = st.selectbox(
         "Language / اللغة",
         ["English", "العربية"],
@@ -319,6 +186,57 @@ with lang_cols[5]:
 lang = "ar" if "العربية" in lang_option else "en"
 L = TRANSLATIONS[lang]
 is_rtl = (lang == "ar")
+
+# ═══════════════════════════════════════════════════════
+# GLOBAL CSS — Light/Dark theme
+# ═══════════════════════════════════════════════════════
+st.markdown(get_theme_css(dark=dark_mode, lang=lang), unsafe_allow_html=True)
+
+# ═══════════════════════════════════════════════════════
+# SIDEBAR — Auth + Saved Properties
+# ═══════════════════════════════════════════════════════
+with st.sidebar:
+    # ─── Auth Section ───
+    _auth_title = "👤 الحساب" if lang == "ar" else "👤 Account"
+    st.markdown(f"### {_auth_title}")
+
+    try:
+        _auth_result = render_auth(lang=lang)
+        if _auth_result and _auth_result[0]:
+            _authenticator, _cfg = _auth_result
+            _name = st.session_state.get("name", "")
+            _auth_status = st.session_state.get("authentication_status", False)
+
+            if _auth_status:
+                _welcome = f"أهلاً، {_name}" if lang == "ar" else f"Welcome, {_name}"
+                st.success(f"✅ {_welcome}")
+                _authenticator.logout(
+                    "🚪 خروج" if lang == "ar" else "🚪 Logout",
+                    location="sidebar",
+                )
+            elif _auth_status is False:
+                st.error("❌ اسم المستخدم أو كلمة المرور غلط" if lang == "ar"
+                        else "❌ Wrong username or password")
+            else:
+                st.caption("سجل دخول لحفظ العقارات" if lang == "ar"
+                          else "Login to save properties")
+    except Exception as _e:
+        st.caption("ℹ️ " + ("الحساب مش متاح مؤقتاً" if lang == "ar"
+                           else "Account temporarily unavailable"))
+
+    st.markdown("---")
+
+    # ─── Saved Properties ───
+    try:
+        render_saved_list(lang=lang)
+    except Exception:
+        pass
+
+    # ─── Saved Searches ───
+    try:
+        render_saved_searches(lang=lang)
+    except Exception:
+        pass
 
 # ============================================================
 m = metadata["metrics"]
@@ -338,18 +256,36 @@ mape_str = f"{m['mape']:.2f}"
 cities_str = str(len(categories["city"]))
 total_str = f"{metadata['training_info']['n_total']:,}"
 
-hero_html = (
-    '<div class="hero">'
-    '<h1>' + L['hero_title'] + '</h1>'
-    '<p>' + L['hero_subtitle'] + '</p>'
-    '<div class="hero-badges">'
-    '<span class="hero-badge">🎯 ' + L['b_accuracy'] + ' ' + r2_str + '</span>'
-    '<span class="hero-badge">📊 ' + L['b_error'] + ' ' + mape_str + '%</span>'
-    '<span class="hero-badge">🏙️ ' + cities_str + ' ' + L['b_cities'] + '</span>'
-    '<span class="hero-badge">📊 ' + total_str + ' ' + L['b_listings'] + '</span>'
-    '</div></div>'
+hero_html = get_hero_html(
+    lang=lang,
+    accuracy=r2_str,
+    error=mape_str + "%",
+    cities=len(categories["city"]),
+    listings=int(metadata['training_info']['n_total']),
 )
 st.markdown(hero_html, unsafe_allow_html=True)
+
+# ═══════════════════════════════════════════════════════
+# FEATURED PROPERTIES (like Property Finder)
+# ═══════════════════════════════════════════════════════
+render_featured_properties(lang=lang)
+
+
+# ═══════════════════════════════════════════════════════
+# POPULAR AREAS (like Property Finder)
+# ═══════════════════════════════════════════════════════
+render_popular_areas(lang=lang)
+
+# ═══════════════════════════════════════════════════════
+# PROPERTY TYPES (like Property Finder)
+# ═══════════════════════════════════════════════════════
+render_property_types(lang=lang)
+
+
+# ═══════════════════════════════════════════════════════
+# QUICK FILTERS (like Property Finder)
+# ═══════════════════════════════════════════════════════
+render_quick_filters(lang=lang)
 
 
 # ============================================================
@@ -359,53 +295,189 @@ col_left, col_right = st.columns([6, 4], gap="large")
 
 with col_left:
     # STEP 1: LOCATION
-    step1_title = '<div class="form-card-title"><div class="form-step">1</div>📍 ' + L['step1'] + '</div>'
+    step1_title = get_step_header_html(1, "📍", L['step1'], "اختار المحافظة والمدينة والحي" if lang=="ar" else "Choose governorate, city, district")
     st.markdown('<div class="form-card">' + step1_title, unsafe_allow_html=True)
 
-    c1, c2 = st.columns(2)
-    with c1:
-        city = st.selectbox(L["city"], categories["city"], key="s_city",
-                     format_func=lambda x: CITY_NAMES.get(x, x) if lang == "ar" else x)
-    with c2:
-        district = st.selectbox(L["district"], categories["district"], key="s_district",
-                         format_func=lambda x: CITY_NAMES.get(x, x) if lang == "ar" else x)
+    # ═══════════════════════════════════════════════
+    # 5-LEVEL HIERARCHICAL SELECTOR
+    # ═══════════════════════════════════════════════
+    _loc = render_hierarchical_selector(lang=lang)
+    if _loc is None:
+        st.stop()
 
-    # Compound options with search fallback
-    _all_compounds = categories["compound"]
-    _seen = set()
-    _clean_compounds = []
-    for _c in _all_compounds:
-        _ck = str(_c).strip().lower()
-        if _ck and _ck not in _seen:
-            _seen.add(_ck)
-            _clean_compounds.append(str(_c).strip())
-    _clean_compounds.sort(key=str.lower)
-    compound_options = ["None"] + _clean_compounds
-    compound = st.selectbox(
-        L["compound"],
-        compound_options,
-        key="s_compound",
-        help="Try the District field first (e.g., Madinaty, Rehab)." if lang == "en" else "جرب حقل الحي الأول (مثل: مدينتي، الرحاب)."
-    )
+    city = _loc["city"]
+    district = _loc["district"]
+    compound = _loc["compound"]
+    _gov_selected = _loc["governorate_en"]
+    _gov_status = _loc["data_status"]
+
+    # ── Fallbacks لو المستخدم اختار "الكل" ──
+    if city == "all":
+        # نختار أول مدينة حقيقية في المحافظة دي
+        import json as _json
+        _h = _json.loads((Path(__file__).resolve().parent / "data" / "egypt_hierarchy.json").read_text(encoding="utf-8"))
+        for _g in _h["governorates"]:
+            if _g["en"] == _gov_selected:
+                _real = list({c["source_city"] for c in _g["cities_with_data"]})
+                city = _real[0] if _real else "Cairo"
+                break
+    if district == "all":
+        import json as _json
+        _h = _json.loads((Path(__file__).resolve().parent / "data" / "egypt_hierarchy.json").read_text(encoding="utf-8"))
+        for _g in _h["governorates"]:
+            if _g["en"] == _gov_selected:
+                _d = [c for c in _g["cities_with_data"] if c["source_city"] == city]
+                district = _d[0]["en"] if _d else "New Cairo City"
+                break
+
+    # Warning for sparse data
+    if _gov_status in ("low", "minimal"):
+        _warn_txt = (
+            f"⚠️ البيانات المتاحة لمحافظة **{_loc['governorate_ar']}** محدودة — التوقعات تقريبية."
+            if lang == "ar"
+            else f"⚠️ Data for **{_loc['governorate_en']}** is limited — estimates are approximate."
+        )
+        st.warning(_warn_txt)
 
     st.markdown('</div>', unsafe_allow_html=True)
 
     # STEP 2: SIZE & ROOMS
-    step2_title = '<div class="form-card-title"><div class="form-step">2</div>📐 ' + L['step2'] + '</div>'
+    step2_title = get_step_header_html(2, "📐", L['step2'], "المساحة وعدد الغرف" if lang=="ar" else "Area and rooms count")
     st.markdown('<div class="form-card">' + step2_title, unsafe_allow_html=True)
 
+    # ═══════════════════════════════════════════════════════
+    # ROW 1: Area + Bedrooms + Bathrooms (expanded)
+    # ═══════════════════════════════════════════════════════
     c1, c2, c3 = st.columns(3)
     with c1:
-        area = st.slider(L["area"], 80, 500, 150, 5, key="s_area")
+        area = st.slider(L["area"], 20, 600, 150, 5, key="s_area")
     with c2:
-        bedrooms = st.selectbox(L["bedrooms"], ["1","2","3","4","5","6"], index=2, key="s_beds")
+        bedrooms = st.selectbox(
+            L["bedrooms"],
+            ["Studio", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+            index=3, key="s_beds",
+        )
     with c3:
-        bathrooms = st.slider(L["bathrooms"], 1, 5, 2, key="s_baths")
+        bathrooms = st.slider(L["bathrooms"], 1, 8, 2, key="s_baths")
+
+    # ═══════════════════════════════════════════════════════
+    # ROW 2: Reception + Kitchen + Floor (like Property Finder)
+    # ═══════════════════════════════════════════════════════
+    st.markdown("<br>", unsafe_allow_html=True)
+    d1, d2, d3 = st.columns(3)
+    with d1:
+        reception = st.selectbox(
+            L.get("reception", "Reception / صالة"),
+            ["1", "2", "3", "4", "5"],
+            index=0, key="s_reception",
+            help="عدد الصالات / الريسبشن" if lang == "ar" else "Number of reception rooms",
+        )
+    with d2:
+        kitchen = st.selectbox(
+            L.get("kitchen", "Kitchen / مطبخ"),
+            ["1", "2", "3"],
+            index=0, key="s_kitchen",
+            help="عدد المطابخ" if lang == "ar" else "Number of kitchens",
+        )
+    with d3:
+        floor = st.selectbox(
+            L.get("floor", "Floor / الدور"),
+            ["Basement", "Ground", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"],
+            index=2, key="s_floor",
+            help="الطابق" if lang == "ar" else "Floor number",
+        )
+
+    # ═══════════════════════════════════════════════════════
+    # ROW 3: Property Type + Finishing + Furnished (like Aqarmap)
+    # ═══════════════════════════════════════════════════════
+    st.markdown("<br>", unsafe_allow_html=True)
+    e1, e2, e3 = st.columns(3)
+    with e1:
+        prop_type = st.selectbox(
+            L.get("prop_type", "Property Type / نوع العقار"),
+            [
+                ("Apartment", "شقة"),
+                ("Villa", "فيلا"),
+                ("Duplex", "دوبلكس"),
+                ("Penthouse", "بنتهاوس"),
+                ("Townhouse", "تاون هاوس"),
+                ("Studio", "ستوديو"),
+                ("Chalet", "شاليه"),
+            ],
+            format_func=lambda x: x[1] if lang == "ar" else x[0],
+            index=0, key="s_ptype",
+        )
+    with e2:
+        finishing = st.selectbox(
+            L.get("finishing", "Finishing / التشطيب"),
+            [
+                ("N/A", "غير محدد"),
+                ("Semi-Finished", "نصف تشطيب"),
+                ("Finished", "تشطيب عادي"),
+                ("Lux", "لوكس"),
+                ("Super Lux", "سوبر لوكس"),
+                ("Extra Super Lux", "إكسترا سوبر لوكس"),
+            ],
+            format_func=lambda x: x[1] if lang == "ar" else x[0],
+            index=4, key="s_finish",
+        )
+    with e3:
+        furnished = st.selectbox(
+            L.get("furnished", "Furnished / التأثيث"),
+            [
+                ("Unfurnished", "غير مفروش"),
+                ("Semi-Furnished", "نص مفروش"),
+                ("Fully Furnished", "مفروش بالكامل"),
+            ],
+            format_func=lambda x: x[1] if lang == "ar" else x[0],
+            index=0, key="s_furnish",
+        )
+
+    # ═══════════════════════════════════════════════════════
+    # ROW 4: Year Built + Parking + View
+    # ═══════════════════════════════════════════════════════
+    st.markdown("<br>", unsafe_allow_html=True)
+    f1, f2, f3 = st.columns(3)
+    with f1:
+        year_built = st.slider(
+            L.get("year_built", "Year Built / سنة البناء"),
+            1950, 2026, 2020, 1, key="s_year",
+        )
+    with f2:
+        parking = st.selectbox(
+            L.get("parking", "Parking / مواقف"),
+            ["0", "1", "2", "3", "4", "5"],
+            index=1, key="s_parking",
+            help="عدد مواقف السيارات" if lang == "ar" else "Number of parking spaces",
+        )
+    with f3:
+        view = st.selectbox(
+            L.get("view", "View / الإطلالة"),
+            [
+                ("Street", "شارع"),
+                ("Garden", "حديقة"),
+                ("Pool", "حمام سباحة"),
+                ("Sea", "بحر"),
+                ("Nile", "النيل"),
+                ("Open", "مفتوحة"),
+                ("Landmark", "معلم سياحي"),
+            ],
+            format_func=lambda x: x[1] if lang == "ar" else x[0],
+            index=0, key="s_view",
+        )
+
+    # ── For model compatibility ──
+    _bedrooms_num = "1" if bedrooms == "Studio" else str(bedrooms)
+    _prop_type_en = prop_type[0]
+    _finishing_en = finishing[0]
+    _furnished_en = furnished[0]
+    _view_en = view[0]
+
 
     st.markdown('</div>', unsafe_allow_html=True)
 
     # STEP 3: AMENITIES
-    step3_title = '<div class="form-card-title"><div class="form-step">3</div>✨ ' + L['step3'] + '</div>'
+    step3_title = get_step_header_html(3, "✨", L['step3'], "اختار المميزات المتاحة" if lang=="ar" else "Select available amenities")
     st.markdown('<div class="form-card">' + step3_title, unsafe_allow_html=True)
 
     AMENITY_UI = {
@@ -424,7 +496,7 @@ with col_left:
     st.markdown('</div>', unsafe_allow_html=True)
 
     # STEP 4: DESCRIPTION
-    step4_title = '<div class="form-card-title"><div class="form-step">4</div>📝 ' + L['step4'] + '</div>'
+    step4_title = get_step_header_html(4, "📝", L['step4'], "تفاصيل إضافية (اختياري)" if lang=="ar" else "Additional details (optional)")
     st.markdown('<div class="form-card">' + step4_title, unsafe_allow_html=True)
 
     description = st.text_area(
@@ -460,24 +532,124 @@ with col_right:
     compound_text = compound if compound != "None" else "—"
     amenity_count = len(selected_amenities)
 
+    # اسم نوع العقار
+    _ptype_label = prop_type[1] if lang == "ar" else prop_type[0]
+    _finish_label = finishing[1] if lang == "ar" else finishing[0]
+    _furnish_label = furnished[1] if lang == "ar" else furnished[0]
+    _view_label = view[1] if lang == "ar" else view[0]
+    _floor_label = floor if floor not in ("Ground", "Basement") else ("أرضي" if floor == "Ground" and lang == "ar" else "بدروم" if lang == "ar" else floor)
+
+    # ═══════════════════════════════════════════════════════
+    # Modern Live Preview Card (Property Finder style)
+    # ═══════════════════════════════════════════════════════
     preview_html = (
-        '<div class="property-preview">'
-        '<div class="property-image">🏢'
-        '<div class="property-badge">' + L['live_preview'] + '</div>'
-        '<div class="property-heart">♡</div></div>'
-        '<div class="property-content">'
-        '<div class="property-title">' + f'{area}' + ' m² · ' + bd_text + '</div>'
-        '<div class="property-location">📍 ' + city + ' → ' + district + '</div>'
-        '<div class="property-stats">'
-        '<div class="property-stat"><div class="property-stat-value">' + f'{bathrooms}' + '</div><div class="property-stat-label">' + L['bath_label'] + '</div></div>'
-        '<div class="property-stat"><div class="property-stat-value">' + f'{amenity_count}' + '</div><div class="property-stat-label">' + L['amen_label'] + '</div></div>'
-        '<div class="property-stat"><div class="property-stat-value">' + compound_text + '</div><div class="property-stat-label">' + L['comp_label'] + '</div></div>'
-        '<div class="property-stat"><div class="property-stat-value">' + ('Real' if lang == 'en' else 'حقيقي') + '</div><div class="property-stat-label">' + ('Data' if lang == 'en' else 'بيانات') + '</div></div>'
-        '</div></div></div>'
+        '<div style="background:white;border:1px solid #e5e7eb;'
+        'border-radius:20px;overflow:hidden;'
+        'box-shadow:0 8px 32px rgba(99,102,241,0.10);">'
+
+        # ── Header Image ──
+        '<div style="height:130px;'
+        'background:linear-gradient(135deg,#667eea,#764ba2,#f093fb);'
+        'display:flex;align-items:center;justify-content:center;'
+        'font-size:52px;position:relative;">🏢'
+        '<div style="position:absolute;top:12px;right:12px;'
+        'background:rgba(255,255,255,0.28);backdrop-filter:blur(10px);'
+        'padding:5px 12px;border-radius:100px;'
+        'font-size:10px;font-weight:800;color:white;letter-spacing:0.5px;">'
+        + L['live_preview'] + '</div></div>'
+
+        # ── Body ──
+        '<div style="padding:18px;">'
+
+        # Title
+        '<div style="font-size:16px;font-weight:900;color:#1f2937;'
+        'margin-bottom:4px;">'
+        + _ptype_label + ' · ' + f'{area}' + ' م² · ' + bd_text + '</div>'
+
+        # Location
+        '<div style="font-size:11px;color:#6b7280;font-weight:600;'
+        'margin-bottom:14px;">📍 '
+        + (CITY_NAMES.get(city, city) if lang == 'ar' else city)
+        + ' → '
+        + (CITY_NAMES.get(district, district) if lang == 'ar' else district) + '</div>'
+
+        # ── Stats Grid (3 core) ──
+        '<div style="display:grid;grid-template-columns:repeat(3,1fr);'
+        'gap:8px;margin-bottom:14px;">'
+        '<div style="background:#eef2ff;border-radius:10px;padding:9px 4px;text-align:center;">'
+        '<div style="font-size:17px;font-weight:900;color:#6366f1;">' + f'{bathrooms}' + '</div>'
+        '<div style="font-size:9px;color:#6b7280;font-weight:700;'
+        'text-transform:uppercase;margin-top:2px;">' + L['bath_label'] + '</div></div>'
+
+        '<div style="background:#f0fdf4;border-radius:10px;padding:9px 4px;text-align:center;">'
+        '<div style="font-size:17px;font-weight:900;color:#10b981;">' + f'{amenity_count}' + '</div>'
+        '<div style="font-size:9px;color:#6b7280;font-weight:700;'
+        'text-transform:uppercase;margin-top:2px;">' + L['amen_label'] + '</div></div>'
+
+        '<div style="background:#fff7ed;border-radius:10px;padding:9px 4px;text-align:center;">'
+        '<div style="font-size:12px;font-weight:900;color:#f59e0b;'
+        'line-height:1.3;overflow:hidden;text-overflow:ellipsis;'
+        'white-space:nowrap;padding:0 2px;">' + compound_text + '</div>'
+        '<div style="font-size:9px;color:#6b7280;font-weight:700;'
+        'text-transform:uppercase;margin-top:2px;">' + L['comp_label'] + '</div></div>'
+        '</div>'
+
+        # ── Extra details ──
+        '<div style="border-top:1px solid #f3f4f6;padding-top:12px;">'
+        '<div style="font-size:10px;font-weight:800;color:#9ca3af;'
+        'text-transform:uppercase;letter-spacing:0.6px;margin-bottom:8px;">'
+        + ('تفاصيل إضافية' if lang == 'ar' else 'EXTRA DETAILS') + '</div>'
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;'
+        'font-size:11px;color:#1f2937;">'
+        '<div style="display:flex;justify-content:space-between;">'
+        '<span style="color:#6b7280;">🛋️ ' + L['reception'] + '</span>'
+        '<b>' + reception + '</b></div>'
+        '<div style="display:flex;justify-content:space-between;">'
+        '<span style="color:#6b7280;">🍳 ' + L['kitchen'] + '</span>'
+        '<b>' + kitchen + '</b></div>'
+        '<div style="display:flex;justify-content:space-between;">'
+        '<span style="color:#6b7280;">🏢 ' + L['floor'] + '</span>'
+        '<b>' + _floor_label + '</b></div>'
+        '<div style="display:flex;justify-content:space-between;">'
+        '<span style="color:#6b7280;">🚗 ' + L['parking'] + '</span>'
+        '<b>' + parking + '</b></div>'
+        '<div style="display:flex;justify-content:space-between;">'
+        '<span style="color:#6b7280;">📅 ' + L['year_built'] + '</span>'
+        '<b>' + str(year_built) + '</b></div>'
+        '<div style="display:flex;justify-content:space-between;">'
+        '<span style="color:#6b7280;">🛋️ ' + L['furnished'] + '</span>'
+        '<b>' + _furnish_label + '</b></div>'
+        '<div style="display:flex;justify-content:space-between;">'
+        '<span style="color:#6b7280;">🎨 ' + L['finishing'] + '</span>'
+        '<b>' + _finish_label + '</b></div>'
+        '<div style="display:flex;justify-content:space-between;">'
+        '<span style="color:#6b7280;">👁️ ' + L['view'] + '</span>'
+        '<b>' + _view_label + '</b></div>'
+        '</div></div>'
+        '</div></div>'
     )
     st.markdown(preview_html, unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
-    predict_btn = st.button("🔮  " + L["cta"], type="primary", use_container_width=True)
+
+    # ═══════════════════════════════════════════════════════
+    # SAVE SEARCH + PREDICT BUTTONS
+    # ═══════════════════════════════════════════════════════
+    _bs1, _bs2 = st.columns([1, 3])
+    with _bs1:
+        try:
+            _search_filters = {
+                "governorate": _loc.get("governorate_ar" if lang == "ar" else "governorate_en", ""),
+                "district": district,
+                "bedrooms": bedrooms,
+                "price_range": f"{area} m²",
+            }
+            render_save_search_button(_search_filters, lang=lang)
+        except Exception as _e:
+            pass
+    with _bs2:
+        predict_btn = st.button("🔮  " + L["cta"], type="primary", use_container_width=True)
+if predict_btn:
+    st.session_state["show_result"] = True
 
 
 
@@ -502,13 +674,22 @@ input_features = build_features(
 )
 
 
-if predict_btn:
+if st.session_state.get("show_result", False):
     errors = validate_input(area, bedrooms, bathrooms, city, district, compound)
     if errors:
         st.error("WARNING: " + " | ".join(errors))
     else:
         result = predict_with_confidence(model, input_features, m["mape"])
-        price = result["price"]
+        _base_price = result["price"]
+
+        # ═══════════════════════════════════════════════════════
+        # PROPERTY TYPE COEFFICIENT
+        # ═══════════════════════════════════════════════════════
+        _pt_key = prop_type[0] if isinstance(prop_type, tuple) else "Apartment"
+        _coef = get_coefficient(_pt_key)
+        price = _base_price * _coef
+        result["lower_bound"] = result["lower_bound"] * _coef
+        result["upper_bound"] = result["upper_bound"] * _coef
         ppm = price / area
 
         if MONITORING_AVAILABLE:
@@ -541,6 +722,16 @@ if predict_btn:
             )
             st.markdown(price_html, unsafe_allow_html=True)
 
+            # ═══ Transparency note for non-Apartment types ═══
+            if _pt_key != "Apartment":
+                _note = get_note(_pt_key, lang=lang)
+                _warn = (
+                    f"ℹ️ **{_note}**: تقدير **{_pt_key}** مبني على بيانات الشقق + معامل سوقي ×{_coef}. للتقييم الدقيق، اتصل بمثمّن عقاري."
+                    if lang == "ar"
+                    else f"ℹ️ **{_note}**: {_pt_key} estimate is based on Apartment data + market coefficient ×{_coef}. For precise valuation, consult a certified appraiser."
+                )
+                st.info(_warn)
+
             monthly_rate = 0.10 / 12
             n_payments = 20 * 12
             down_payment = price * 0.20
@@ -555,6 +746,17 @@ if predict_btn:
                 '</div>'
             )
             st.markdown(monthly_html, unsafe_allow_html=True)
+
+            # Save property button
+            st.markdown("<br>", unsafe_allow_html=True)
+            _save_data = {
+                "area": int(area), "bedrooms": str(bedrooms), "bathrooms": int(bathrooms),
+                "city": city, "district": district, "compound": compound,
+                "price": float(price),
+                "lower": float(result['lower_bound']),
+                "upper": float(result['upper_bound']),
+            }
+            render_save_button(_save_data, lang=lang)
 
             if PDF_AVAILABLE:
                 try:
@@ -604,7 +806,7 @@ if predict_btn:
             history_html = (
                 '<div style="background:#fef3c7;border:1px solid #fde68a;border-radius:12px;padding:0.85rem;margin-top:0.75rem;">'
                 '<div style="font-weight:800;color:#78350f;font-size:0.8rem;">' + L['trend_title'] + '</div>'
-                '<div style="color:#92400e;font-size:0.72rem;margin-top:0.15rem;">' + L['trend_text'].format(city=CITY_NAMES.get(city, city), g=f'{growth:.1f}') + '</div>'
+                '<div style="color:#92400e;font-size:0.72rem;margin-top:0.15rem;">' + L['trend_text'].format(city=(CITY_NAMES.get(city, city) if lang == 'ar' else city), g=f'{growth:.1f}') + '</div>'
                 '<div style="font-size:1.3rem;font-weight:900;color:#78350f;margin-top:0.35rem;">+' + f'{growth:.1f}' + '%</div>'
                 '</div>'
             )
@@ -615,9 +817,10 @@ if predict_btn:
         st.markdown("<br>", unsafe_allow_html=True)
         st.markdown("## 🔍 " + L["dive"])
 
-        tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
+        tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9 = st.tabs([
             "🧠 " + L["tab1"], "🗺️ " + L["tab2"], "🏘️ " + L["tab3"],
-            "⚖️ " + L["tab4"], "💰 " + L["tab5"], "📈 " + L["tab6"], "📍 " + L["tab7"]
+            "⚖️ " + L["tab4"], "💰 " + L["tab5"], "📈 " + L["tab6"], "📍 " + L["tab7"],
+            "🏘️ " + L["tab8"], "🏦 " + L["tab9"]
         ])
 
         with tab1:
@@ -630,7 +833,7 @@ if predict_btn:
                 sv = np.array(explainer.shap_values(X_t)).flatten()
                 top_n = 10
                 idx = np.argsort(np.abs(sv))[-top_n:][::-1]
-                clean_names = [_translate_feat_name(feat_names[i], L, FEATURE_MAP) for i in idx]
+                clean_names = [_translate_feat_name(feat_names[i], L, FEATURE_MAP, lang=lang) for i in idx]
                 colors = ['#10b981' if v > 0 else '#ef4444' for v in sv[idx]]
                 fig = go.Figure(go.Bar(
                     x=sv[idx], y=clean_names, orientation='h',
@@ -649,7 +852,7 @@ if predict_btn:
             price_data = mappings['price_mappings']['district_price_per_sqm']
             ppm_series = pd.Series(price_data).sort_values(ascending=True).tail(20)
             if lang == 'ar':
-                ppm_series.index = [CITY_NAMES.get(x, x) for x in ppm_series.index]
+                ppm_series.index = [(CITY_NAMES.get(x, x) if lang == 'ar' else x) for x in ppm_series.index]
             fig = go.Figure(go.Bar(
                 x=ppm_series.values, y=ppm_series.index, orientation='h',
                 marker=dict(color=ppm_series.values, colorscale='RdYlGn_r', showscale=False),
@@ -681,7 +884,7 @@ if predict_btn:
                             '<div>'
                             '<b style="color:#6366f1;">#' + str(i) + '</b> '
                             '<b>' + f"{r['area_value']:.0f}" + (' م² | ' if lang == 'ar' else ' m2 | ') + bd + '</b>'
-                            '<div style="color:#6b7280;font-size:0.82rem;margin-top:0.2rem;">' + CITY_NAMES.get(r['city'], r['city']) + ' - ' + CITY_NAMES.get(r['district'], r['district']) + '</div>'
+                            '<div style="color:#6b7280;font-size:0.82rem;margin-top:0.2rem;">' + (CITY_NAMES.get(r['city'], r['city']) if lang == 'ar' else r['city']) + ' - ' + (CITY_NAMES.get(r['district'], r['district']) if lang == 'ar' else r['district']) + '</div>'
                             '<div style="margin-top:0.3rem;"><span class="sim-match">' + f'{sim_pct:.0f}' + L['t3_match'] + '</span></div>'
                             '</div>'
                             '<div style="text-align:right;">'
@@ -699,8 +902,8 @@ if predict_btn:
             with colA:
                 st.markdown(f"**{L['t4_a']}**")
                 _area_unit = ' م²<br>' if lang == 'ar' else ' m2<br>'
-                _city_ar = CITY_NAMES.get(city, city)
-                _dist_ar = CITY_NAMES.get(district, district)
+                _city_ar = CITY_NAMES.get(city, city) if lang == 'ar' else city
+                _dist_ar = CITY_NAMES.get(district, district) if lang == 'ar' else district
                 a_html = (
                     '<div class="metric-card">'
                     '<div class="metric-value" style="color:#10b981;">' + f'{price:,.0f}' + ' EGP</div>'
@@ -728,8 +931,8 @@ if predict_btn:
                 }
                 feat_b = build_features(**prop_b, mappings=mappings)
                 price_b = predict_with_confidence(model, feat_b, m["mape"])['price']
-                _b_city_ar = CITY_NAMES.get(b_city, b_city)
-                _b_dist_ar = CITY_NAMES.get(b_district, b_district)
+                _b_city_ar = CITY_NAMES.get(b_city, b_city) if lang == 'ar' else b_city
+                _b_dist_ar = CITY_NAMES.get(b_district, b_district) if lang == 'ar' else b_district
                 b_html = (
                     '<div class="metric-card">'
                     '<div class="metric-value" style="color:#6366f1;">' + f'{price_b:,.0f}' + ' EGP</div>'
@@ -798,7 +1001,7 @@ if predict_btn:
                     fig_ts.add_trace(go.Scatter(
                         x=hist['ds'], y=hist['y'],
                         mode='lines',
-                        name=f"{CITY_NAMES.get(city_name, city_name)} ({L['hist']})",
+                        name=f"{(CITY_NAMES.get(city_name, city_name) if lang == 'ar' else city_name)} ({L['hist']})",
                         line=dict(color=color, width=1.5),
                         legendgroup=city_name,
                     ))
@@ -808,7 +1011,7 @@ if predict_btn:
                     fig_ts.add_trace(go.Scatter(
                         x=forecast_only['ds'], y=forecast_only['yhat'],
                         mode='lines',
-                        name=f"{CITY_NAMES.get(city_name, city_name)} ({L['forecast_short']})",
+                        name=f"{(CITY_NAMES.get(city_name, city_name) if lang == 'ar' else city_name)} ({L['forecast_short']})",
                         line=dict(color=color, width=2.5, dash='dash'),
                         legendgroup=city_name,
                     ))
@@ -983,7 +1186,7 @@ if predict_btn:
                             fill_opacity=0.65,
                             weight=1.5,
                             popup=folium.Popup(popup_html, max_width=220),
-                            tooltip=f"{CITY_NAMES.get(row['district'], row['district'])}: {row['price_m']:.2f}M EGP",
+                            tooltip=f"{(CITY_NAMES.get(row['district'], row['district']) if lang == 'ar' else row['district'])}: {row['price_m']:.2f}M EGP",
                         ).add_to(map_obj)
 
                     st_folium(map_obj, width=None, height=600, returned_objects=[])
@@ -1005,6 +1208,45 @@ if predict_btn:
                     city_stats.columns = [L['count'], L['avg_price_m'], L['min_m'], L['max_m']]
                     city_stats = city_stats.sort_values(L['count'], ascending=False)
                     st.dataframe(city_stats, use_container_width=True)
+
+        # ---------- TAB 8: NEIGHBORHOOD INSIGHTS ----------
+        with tab8:
+            st.markdown(f"#### 🏘️ {L['t8_title']}")
+            _nb_caption = (
+                "معلومات تفصيلية عن الحي — مدارس، مستشفيات، مواصلات، تاريخ الأسعار، والتكاليف"
+                if lang == "ar"
+                else "Detailed neighborhood info — schools, hospitals, transport, price history, and costs"
+            )
+            st.caption(_nb_caption)
+
+            # Transport
+            try:
+                render_transport(district, lang=lang)
+            except Exception as _e:
+                st.warning(f"Transport: {_e}")
+
+            st.markdown("<br>", unsafe_allow_html=True)
+
+            # Safety & Schools
+            try:
+                render_safety_schools(district, lang=lang)
+            except Exception as _e:
+                st.warning(f"Safety: {_e}")
+
+            st.markdown("<br>", unsafe_allow_html=True)
+
+            # Full neighborhood insights
+            try:
+                render_neighborhood_insights(city, district, price, area, lang=lang)
+            except Exception as _e:
+                st.error(f"Neighborhood error: {_e}")
+
+        # ---------- TAB 9: MORTGAGE CALCULATOR ----------
+        with tab9:
+            try:
+                render_mortgage_calculator(price, lang=lang)
+            except Exception as _e:
+                st.error(f"Mortgage error: {_e}")
 
 else:
     empty_html = (
@@ -1030,7 +1272,7 @@ avg_ppm = mappings['price_mappings']['global_mean_ppm']
 market_html = (
     '<div class="market-strip">'
     '<div class="market-item"><div class="market-label">' + L["market_avg"] + '</div><div class="market-value">' + f'{avg_ppm:,.0f}' + (' جنيه/م²' if lang == 'ar' else ' EGP/m2') + '</div></div>'
-    '<div class="market-item"><div class="market-label">' + L["top_city"] + '</div><div class="market-value">' + CITY_NAMES.get(top_cities[0][0], top_cities[0][0]) + '</div></div>'
+    '<div class="market-item"><div class="market-label">' + L["top_city"] + '</div><div class="market-value">' + (CITY_NAMES.get(top_cities[0][0], top_cities[0][0]) if lang == 'ar' else top_cities[0][0]) + '</div></div>'
     '<div class="market-item"><div class="market-label">' + L["data_source"] + '</div><div class="market-value">PropertyFinder</div></div>'
     '</div>'
 )

@@ -1,0 +1,2160 @@
+{
+  "governorates": [
+    {
+      "code": "CAI",
+      "en": "Cairo",
+      "ar": "القاهرة",
+      "listings": 4861,
+      "data_status": "high",
+      "cities_from_egydata": [
+        {
+          "en": "Nasr City",
+          "ar": "مدينة نصر"
+        },
+        {
+          "en": "Heliopolis",
+          "ar": "مصر الجديدة"
+        },
+        {
+          "en": "Maadi",
+          "ar": "المعادي"
+        },
+        {
+          "en": "Old Cairo",
+          "ar": "مصر القديمة"
+        },
+        {
+          "en": "Shubra",
+          "ar": "شبرا"
+        },
+        {
+          "en": "Ain Shams",
+          "ar": "عين شمس"
+        },
+        {
+          "en": "Helwan",
+          "ar": "حلوان"
+        },
+        {
+          "en": "Fifth Settlement",
+          "ar": "التجمع الخامس"
+        },
+        {
+          "en": "New Cairo",
+          "ar": "القاهرة الجديدة"
+        },
+        {
+          "en": "Mokattam",
+          "ar": "المقطم"
+        },
+        {
+          "en": "New Administrative Capital",
+          "ar": "العاصمة الإدارية الجديدة"
+        },
+        {
+          "en": "El Shorouk",
+          "ar": "الشروق"
+        },
+        {
+          "en": "Badr City",
+          "ar": "بدر"
+        },
+        {
+          "en": "Madinaty",
+          "ar": "مدينتي"
+        },
+        {
+          "en": "Al Rehab",
+          "ar": "مدينة الرحاب"
+        },
+        {
+          "en": "15 May City",
+          "ar": "15 مايو"
+        }
+      ],
+      "cities_with_data": [
+        {
+          "source_city": "Cairo",
+          "en": "El Khalifa",
+          "ar": "El Khalifa",
+          "listings": 3,
+          "compounds": [
+            "Uptown Cairo Road"
+          ]
+        },
+        {
+          "source_city": "Cairo",
+          "en": "El Nozha",
+          "ar": "El Nozha",
+          "listings": 42,
+          "compounds": [
+            "Aljar Sheraton",
+            "Ezz Al Deen Mohamed Attia St.",
+            "Heliopolis Square",
+            "Isola Sheraton",
+            "Masaken Sheraton",
+            "Mohamed Refaat St.",
+            "Rock Yard",
+            "Sheraton Al Matar",
+            "Stoda",
+            "Valore"
+          ]
+        },
+        {
+          "source_city": "Cairo",
+          "en": "Hay El Maadi",
+          "ar": "Hay El Maadi",
+          "listings": 86,
+          "compounds": [
+            "3rd Sector",
+            "50th Street",
+            "7th Sector",
+            "Al Esraa St.",
+            "Al Forsan City",
+            "Al Golf St.",
+            "Al Nady St.",
+            "Al Nahda St.",
+            "Al Nasr St.",
+            "Bavaria Town",
+            "Cornish El Nile St.",
+            "Crystal Plaza",
+            "Degla",
+            "Degla Square",
+            "Degla View",
+            "El Laselky",
+            "El Mearag City",
+            "Italian City Compound",
+            "Maadi Gate",
+            "Maadi Station Square",
+            "Masaken Nerco St.",
+            "Misr Helwan Agriculture Road",
+            "Nasr St.",
+            "Rayhanah Avenue",
+            "Road Inside Compound Al Safwa",
+            "Sarayat Al Maadi",
+            "Souk Zahraa Al Maadi St.",
+            "Street 10 B",
+            "Street 106",
+            "Street 198",
+            "Street 199",
+            "Street 200",
+            "Street 213",
+            "Street 218",
+            "Street 23",
+            "Street 232",
+            "Street 254",
+            "Street 259",
+            "Street 6",
+            "Street 7",
+            "Street 76",
+            "Street 9",
+            "Tabarak",
+            "Thirteenth Sector",
+            "Tijan",
+            "Togary St.",
+            "Unknown",
+            "Zahraa Al Maadi St.",
+            "Zahraa El Maadi"
+          ]
+        },
+        {
+          "source_city": "Cairo",
+          "en": "Hay El Manial",
+          "ar": "Hay El Manial",
+          "listings": 3,
+          "compounds": [
+            "Abd Al Aziz Aal Seoud St.",
+            "El Manial",
+            "Unknown"
+          ]
+        },
+        {
+          "source_city": "Cairo",
+          "en": "Hay Torah",
+          "ar": "Hay Torah",
+          "listings": 1,
+          "compounds": [
+            "Cornish Al Nile St."
+          ]
+        },
+        {
+          "source_city": "Cairo",
+          "en": "Heliopolis - Masr El Gedida",
+          "ar": "Heliopolis - Masr El Gedida",
+          "listings": 39,
+          "compounds": [
+            "Abou Bakr Al Sedeek St.",
+            "Al Baroon St.",
+            "Al Hegaz St.",
+            "Al Horeya St.",
+            "Al Merghany St.",
+            "Al Qes Sergius St.",
+            "Al Sayed Al Marghany St.",
+            "Al Thawra St.",
+            "Almaza St.",
+            "Almazah",
+            "Ard El Golf",
+            "Asmaa Fahmy St.",
+            "Aswan St.",
+            "Beirut St.",
+            "El Khalifa El Maamoun St.",
+            "Hassan Sadek St.",
+            "Marriott Residence Heliopolis",
+            "Mokhtar Al Masry St.",
+            "Mourad Bek St.",
+            "Nehro St.",
+            "Omar Ibn Al Khattab St."
+          ]
+        },
+        {
+          "source_city": "Cairo",
+          "en": "Madinaty",
+          "ar": "Madinaty",
+          "listings": 230,
+          "compounds": [
+            "Privado",
+            "Unknown"
+          ]
+        },
+        {
+          "source_city": "Cairo",
+          "en": "Mokattam",
+          "ar": "Mokattam",
+          "listings": 37,
+          "compounds": [
+            "Al Hadaba Al Olya",
+            "Al Mokattam El Katameya Road",
+            "Alto",
+            "Aurora",
+            "Cairo Hills St.",
+            "Fountain Side",
+            "Golf Side",
+            "The Fourteen Golf Residences",
+            "The Sierras",
+            "The key"
+          ]
+        },
+        {
+          "source_city": "Cairo",
+          "en": "Mostakbal City - Future City",
+          "ar": "Mostakbal City - Future City",
+          "listings": 537,
+          "compounds": [
+            "Alaire",
+            "Beta Greens",
+            "Bloomfields",
+            "Capital Gardens   Palm Hills",
+            "Central Park",
+            "Cityzen",
+            "Croons Sarai",
+            "Elan Sarai",
+            "Elm Tree Park",
+            "Esse Residence",
+            "Green Square",
+            "HAP Town",
+            "IL Bosco City",
+            "L'avenir",
+            "La Mirada El Mostakbal",
+            "Mivida Gardens",
+            "MonteNapoleone",
+            "Mostakbal City Compounds",
+            "Mountain View Mostakbal City",
+            "Neopolis   Wadi Degla",
+            "Park Central",
+            "Park View Haptown",
+            "S1",
+            "S2",
+            "Sarai",
+            "The 101",
+            "The Butterfly",
+            "Valda Village",
+            "Zizinia Al Mostakbal"
+          ]
+        },
+        {
+          "source_city": "Cairo",
+          "en": "Nasr City",
+          "ar": "Nasr City",
+          "listings": 30,
+          "compounds": [
+            "10th Zone",
+            "1st Zone",
+            "Abbas Al Akkad St.",
+            "Abdel Razek Al Sanhouri St.",
+            "Abdelhakim Al Refaey St.",
+            "Abou Dawoud Al Zahery St.",
+            "Ahmed Abou Al Ela St.",
+            "Ahmed Fakhry St.",
+            "Al Moussals St.",
+            "Al Nadi Al Ahly",
+            "Al Tayaran St.",
+            "Degla Landmark",
+            "Dr Al Batrawy St.",
+            "Emtedad Makram Ebeid St.",
+            "Gardenia City Compound Nasr City",
+            "Go Heliopolis",
+            "Hassan Aflaton St.",
+            "Ibn Al Nafis St.",
+            "Ibn Ketebaa St.",
+            "Makram Ebeid St.",
+            "Mohamed Hassan Al Gamal St.",
+            "Mostafa Al Nahas St.",
+            "Nagy Essa Al Tahawy St.",
+            "Omarat Melisa St.",
+            "Unknown"
+          ]
+        },
+        {
+          "source_city": "Cairo",
+          "en": "New Cairo City",
+          "ar": "New Cairo City",
+          "listings": 3371,
+          "compounds": [
+            "1st Settlement Post office St.",
+            "5th Settlement Compounds",
+            "90 Avenue",
+            "Abdel Halim Hafez St.",
+            "Abou El Houl",
+            "Acasa",
+            "Acasa Mia",
+            "Ahmed Moharam St.",
+            "Ahmed Shawky Axis",
+            "AiAngle City Mall",
+            "Akhnaton St.",
+            "Al Amn Al Aam Compound",
+            "Al Andalus Buildings",
+            "Al Andalus District",
+            "Al Andalus El Gedida",
+            "Al Andalus Family",
+            "Al Arabiya Gate",
+            "Al Ashrafiya",
+            "Al Diyar",
+            "Al Gezira St.",
+            "Al Katameya Plaza",
+            "Al Narges",
+            "Al Narges 2",
+            "Al Narges 3",
+            "Al Narges 6",
+            "Al Narges 7",
+            "Al Shaimaa St.",
+            "Al Sheikh Hassan Maamoun St.",
+            "Al Sheikh Selim El Beshry St.",
+            "Al Shouyfat",
+            "Al masrawya",
+            "Alca compound",
+            "Amara",
+            "American University Housing District",
+            "Amorada New Cairo",
+            "Amorada Park View",
+            "Arabella",
+            "Arabeya",
+            "Area B",
+            "Area D",
+            "Area G",
+            "Aria Compound",
+            "Aster Compound",
+            "Avelin",
+            "Azad",
+            "Bait Alwatan",
+            "Baron City",
+            "Begonia",
+            "Bluetree Compound",
+            "Boutique Village",
+            "Cairo Festival City",
+            "Cattleya",
+            "Cavali Residence",
+            "Century City",
+            "City Gate",
+            "Club Park",
+            "Creek Town",
+            "Crescent Walk",
+            "Dar Masr 2 - elandalus",
+            "Dijar",
+            "District 1",
+            "District 2",
+            "District 3",
+            "District 4",
+            "District 5",
+            "District 5 Residences",
+            "Doctor Ahmed Okasha St.",
+            "Doctor Ali Mosharafa St.",
+            "Doctor Yassin Abdel Ghaffar St.",
+            "Durrat Al Qahira",
+            "Dyar Compound",
+            "East The Academy",
+            "Eastmain New Cairo",
+            "Eastown",
+            "El Banafseg 1",
+            "El Banafseg 11",
+            "El Banafseg 12",
+            "El Banafseg 3",
+            "El Banafseg 6",
+            "El Banafseg 9",
+            "El Banafseg Apartment Buildings",
+            "El Diplomaseen",
+            "El Koronfel",
+            "El Lotus",
+            "El Nakheel",
+            "El Narges Buildings",
+            "El Patio 7",
+            "El Patio Oro",
+            "El Patio Riva",
+            "El Patio Town",
+            "El Rehab Extension",
+            "El Yasmeen 1",
+            "El Yasmeen 2",
+            "El Yasmeen 3",
+            "El Yasmeen 5",
+            "El Yasmeen 6",
+            "El Yasmeen 8",
+            "Fatma Al Sharbatly Mosque",
+            "Fifth Square",
+            "Galleria Moon Valley",
+            "Galleria Residences",
+            "Gamal Abdel Nasser Axis",
+            "Ganoob El Acadimia",
+            "Garden Residence",
+            "Gardenia Springs",
+            "Glen",
+            "Grand Lane",
+            "Hayati Residence",
+            "Home Residence",
+            "Hyde Park",
+            "Hyde Park Business District Mall",
+            "Hyde Park Central",
+            "Il Cazar",
+            "Isola Centra",
+            "Ivoire East",
+            "J East",
+            "JAYD Residence",
+            "Jadie Residence",
+            "Janna",
+            "Jiwar",
+            "Katameya Dunes",
+            "Katameya Heights",
+            "La Fontaine Province",
+            "La Mirada Compound",
+            "La Terra",
+            "La Vie",
+            "Lagoon Beach Park",
+            "Lake View",
+            "Lake View Residence",
+            "Lake View Residence 2",
+            "Layan Residence",
+            "Leila",
+            "Leila Mourad St.",
+            "Loaloa El Ahram",
+            "Lotus Compound",
+            "M Square Gardens",
+            "Madinet Al Sahafeyeen",
+            "Mena Residence",
+            "Midtown",
+            "Mirage City",
+            "Mirage Residence",
+            "Mivida",
+            "Modon Golf Town",
+            "Mohamed Naguib Axis",
+            "Moon Residences",
+            "Mostafa Al Nahas St.",
+            "Mostafa Kamel Axis",
+            "Mostashareen",
+            "Mountain View 1",
+            "Mountain View 1.1",
+            "Mountain View Hyde Park",
+            "Mountain View iCity",
+            "Musab Bin Omair St.",
+            "Najm",
+            "Nest Cairo",
+            "New Lotus",
+            "New Narges",
+            "Nile Boulevard",
+            "Noll",
+            "North House",
+            "North Lotus",
+            "North Rehab",
+            "Notion New Cairo",
+            "Omar Ibn Al Khattab St.",
+            "Omar Makram St.",
+            "One Kattameya",
+            "One Ninety Mall",
+            "Orla Residence",
+            "Orouba Axis",
+            "Palm Hills Kattameya",
+            "Palm Hills New Cairo",
+            "Palm Hills Village Avenue",
+            "Palm Hills Village Gate",
+            "Park Corner",
+            "Park View",
+            "Porto New Cairo",
+            "Promenade New Cairo",
+            "Qonsoa Al Ghoury St.",
+            "Reedy",
+            "Regent's Square",
+            "Regents Park",
+            "Rehab City Second Phase",
+            "Retaj",
+            "Rivali",
+            "Rock Vera",
+            "Sakan",
+            "Sama Al Qahera",
+            "Sarayat El-Kattameya",
+            "Sephora Heights",
+            "Shababeek compound",
+            "Shalya Taj City",
+            "Silver Palm",
+            "Silvia Compound",
+            "Solana East",
+            "Solay",
+            "South Lotus",
+            "Stei8ht",
+            "Stone Park",
+            "Stone Residence",
+            "Street 17",
+            "Street 42",
+            "Street 43",
+            "Street 47",
+            "Street28",
+            "Street70",
+            "Suez Road",
+            "Suleiman Al Halabi St.",
+            "Swan Lake Residence",
+            "TRIO",
+            "Taj City",
+            "Tamr Hena",
+            "Telal East",
+            "The 1st Settlement",
+            "The Address East",
+            "The Ark Business District",
+            "The Crest",
+            "The Icon Residence",
+            "The Icon Residence II",
+            "The Lark Residence",
+            "The MarQ Gardens",
+            "The Median Residences",
+            "The Residences",
+            "The Square",
+            "The Village",
+            "The Water Way",
+            "The Waterway View",
+            "The brooks",
+            "Tolip El Narges",
+            "Unknown",
+            "V Residences",
+            "Valencia Valley",
+            "Villa Square",
+            "Village Gardens Katameya",
+            "Villette",
+            "W Signature By Waterway",
+            "WUUD",
+            "Wasef Ghaly Basha St.",
+            "West Arabella",
+            "West Golf",
+            "White Residence",
+            "YARDIN",
+            "Yellow Residence",
+            "Youssef Al Sebaey St.",
+            "Zed East",
+            "Zizinia St."
+          ]
+        },
+        {
+          "source_city": "Cairo",
+          "en": "New Capital City",
+          "ar": "New Capital City",
+          "listings": 246,
+          "compounds": [
+            "Al Maqsad",
+            "Armonia",
+            "Atika",
+            "Bleu Vert",
+            "Boardwalk",
+            "Canyon 8",
+            "Capital Heights",
+            "Catalan",
+            "Celia",
+            "De Joya",
+            "De Joya 2",
+            "DeJoya 4",
+            "Diplo East",
+            "Entrada",
+            "Green Avenue",
+            "Havana Hills",
+            "IL Bosco",
+            "ION",
+            "Jade Park",
+            "La Capitale",
+            "La Capitale Suite Lagoons",
+            "La Verde Casette",
+            "La Vista City",
+            "Lumia Lagoons",
+            "Lumia Residence",
+            "Midtown Condo",
+            "Midtown Sky",
+            "New Capital Compounds",
+            "New Garden City",
+            "Oia",
+            "Park Lane",
+            "Pukka",
+            "Qamary",
+            "R3",
+            "R4",
+            "R5",
+            "Ravie",
+            "Ray Residence",
+            "Rhodes",
+            "Rivan",
+            "Sage Lakes Residence",
+            "Scenario",
+            "Scene 7",
+            "Sky Capital",
+            "Stau",
+            "Suli Golf Residence",
+            "The Capital Way",
+            "The City",
+            "The Curve",
+            "The Islands",
+            "The Loft",
+            "Unknown",
+            "Vinci",
+            "il Mondo"
+          ]
+        },
+        {
+          "source_city": "Cairo",
+          "en": "New Heliopolis",
+          "ar": "New Heliopolis",
+          "listings": 54,
+          "compounds": [
+            "Korba Heights",
+            "La Vida",
+            "Sodic East",
+            "Talala"
+          ]
+        },
+        {
+          "source_city": "Cairo",
+          "en": "Noor City",
+          "ar": "Noor City",
+          "listings": 19,
+          "compounds": [
+            "Unknown"
+          ]
+        },
+        {
+          "source_city": "Cairo",
+          "en": "Ring Road",
+          "ar": "Ring Road",
+          "listings": 19,
+          "compounds": [
+            "Tag Sultan"
+          ]
+        },
+        {
+          "source_city": "Cairo",
+          "en": "Shorouk City",
+          "ar": "Shorouk City",
+          "listings": 132,
+          "compounds": [
+            "2nd Neighborhood",
+            "4th Neighborhood",
+            "Al Burouj Compound",
+            "Al Patio 5",
+            "Aljar",
+            "El Patio Sola",
+            "Granda Life",
+            "Heliopolis Residence",
+            "Ivy Residence",
+            "Maadi View",
+            "Palencia Al Shorouk",
+            "Panorama Al Shorouk",
+            "Parkside El Shorouk",
+            "Patio Casa",
+            "Unknown",
+            "Wesal City"
+          ]
+        },
+        {
+          "source_city": "Cairo",
+          "en": "Zamalek",
+          "ar": "Zamalek",
+          "listings": 12,
+          "compounds": [
+            "Abou Al Feda St.",
+            "Ahmed Heshmat St.",
+            "Al Kamel Mohamed St.",
+            "Al Mansour Mohamed St.",
+            "El Gezirah St.",
+            "Hassan Assem St.",
+            "Mohamed Anis St.",
+            "Mohamed Maraashly St.",
+            "Mohamed Mazhar St.",
+            "Sri Lanka St."
+          ]
+        }
+      ]
+    },
+    {
+      "code": "ALX",
+      "en": "Alexandria",
+      "ar": "الإسكندرية",
+      "listings": 210,
+      "data_status": "medium",
+      "cities_from_egydata": [
+        {
+          "en": "Montaza",
+          "ar": "المنتزه"
+        },
+        {
+          "en": "Downtown Alexandria",
+          "ar": "وسط الإسكندرية"
+        },
+        {
+          "en": "Agami",
+          "ar": "العجمي"
+        },
+        {
+          "en": "Sidi Bishr",
+          "ar": "سيدي بشر"
+        },
+        {
+          "en": "Borg El Arab",
+          "ar": "برج العرب"
+        },
+        {
+          "en": "Amreya",
+          "ar": "العامرية"
+        },
+        {
+          "en": "New Borg El Arab",
+          "ar": "برج العرب الجديدة"
+        }
+      ],
+      "cities_with_data": [
+        {
+          "source_city": "Alexandria",
+          "en": "Alexandria Compounds",
+          "ar": "Alexandria Compounds",
+          "listings": 42,
+          "compounds": [
+            "Alex West",
+            "Palm Hills",
+            "Sawary",
+            "Vee Sawari"
+          ]
+        },
+        {
+          "source_city": "Alexandria",
+          "en": "Hay Awal El Montazah",
+          "ar": "Hay Awal El Montazah",
+          "listings": 7,
+          "compounds": [
+            "Al Sebaey St.",
+            "Al Shahid Mohamed Youssef Ghaly St. (45 Previous)",
+            "Ali Abadi St.",
+            "Branched from Mohamed Awad Jebril St.",
+            "Kaaed Asrab Al Behar St.",
+            "Miami",
+            "Saraya"
+          ]
+        },
+        {
+          "source_city": "Alexandria",
+          "en": "Hay Sharq",
+          "ar": "Hay Sharq",
+          "listings": 141,
+          "compounds": [
+            "14th of May Bridge",
+            "14th of May Bridge Road",
+            "Abd Al Fattah El Taweel St.",
+            "Abdel Moneim Al Dalel St.",
+            "Abdel Salam Aref St.",
+            "Abdelhamid Al Abady St.",
+            "Abo Qir St.",
+            "Abou Quer Road",
+            "Ahmed Shawky St.",
+            "Al Ekbal St.",
+            "Al Fath St.",
+            "Al Geish Road",
+            "Al Hedaya Mosque St.",
+            "Al Horreya Road",
+            "Al Lewaa Abdel Tawab Hadeb St.",
+            "Al Sayeda Sakina Bint Al Hussein St.",
+            "Albert Al Awal St.",
+            "Ali Zou Al Fekar St.",
+            "Aziz Kaheel St.",
+            "El Riada School St.",
+            "Glim",
+            "Grand View",
+            "Ibn Hokal St.",
+            "Ismail Al Habrouk St.",
+            "Ivory Muruj",
+            "Janaklees",
+            "Kafr Abdo St.",
+            "Kamal Eldin Salah St.",
+            "Kasr Al Safa St.",
+            "Kerdahy St.",
+            "Khalil Mutran St.",
+            "Laurent",
+            "Maarouf Al Rusafi St.",
+            "Mohamed Fawzy Moaz St.",
+            "Mostafa Fahmy St.",
+            "Mostafa Kamel Mosque St.",
+            "Mostafa Kamel St.",
+            "Muruj",
+            "Nady Smouha Al Riyadi St.",
+            "New Smouha",
+            "Port Said St.",
+            "Roushdy",
+            "Roushdy St.",
+            "Saba Basha",
+            "San Stefano",
+            "Shaarawy St.",
+            "Sidi Gaber",
+            "Sidi Gaber St.",
+            "Sky line",
+            "Smouha",
+            "Smouha Square",
+            "Stanley Bridge",
+            "Syria St.",
+            "The One",
+            "Tout Ankh Amoun St.",
+            "Valore Antoniades",
+            "Valore Smouha",
+            "Vee Muruj",
+            "Victor Ammanuel Square",
+            "Zaki Ragab St."
+          ]
+        },
+        {
+          "source_city": "Alexandria",
+          "en": "Hay Than El Montazah",
+          "ar": "Hay Than El Montazah",
+          "listings": 6,
+          "compounds": [
+            "Al Maamoura",
+            "Corniche Al Maamoura",
+            "Hassan Kamel Street",
+            "Mohamed Anwar Al Sadat St.   Forty Five St.",
+            "Mohammed Saleh Harb St.",
+            "Mostafa Kamel St."
+          ]
+        },
+        {
+          "source_city": "Alexandria",
+          "en": "Hay Wasat",
+          "ar": "Hay Wasat",
+          "listings": 14,
+          "compounds": [
+            "Camp Chezar",
+            "Ibrahimia",
+            "Istanbul - Salah Mostafa - El Soltan Hussein St.",
+            "Latin Quarter",
+            "Mahatet Al Miyah St.",
+            "Moharam Bek",
+            "Moharam Bek St.",
+            "Port Said St.",
+            "Sohag St.",
+            "Zakaria Ghoneim St."
+          ]
+        }
+      ]
+    },
+    {
+      "code": "GIZ",
+      "en": "Giza",
+      "ar": "الجيزة",
+      "listings": 1874,
+      "data_status": "high",
+      "cities_from_egydata": [
+        {
+          "en": "Dokki",
+          "ar": "الدقي"
+        },
+        {
+          "en": "Mohandessin",
+          "ar": "المهندسين"
+        },
+        {
+          "en": "Agouza",
+          "ar": "العجوزة"
+        },
+        {
+          "en": "Haram",
+          "ar": "الهرم"
+        },
+        {
+          "en": "Faisal",
+          "ar": "فيصل"
+        },
+        {
+          "en": "6th of October",
+          "ar": "6 أكتوبر"
+        },
+        {
+          "en": "Sheikh Zayed",
+          "ar": "الشيخ زايد"
+        },
+        {
+          "en": "Imbaba",
+          "ar": "إمبابة"
+        },
+        {
+          "en": "New Sphinx",
+          "ar": "سفنكس الجديدة"
+        },
+        {
+          "en": "Hadayek October",
+          "ar": "حدائق أكتوبر"
+        }
+      ],
+      "cities_with_data": [
+        {
+          "source_city": "Giza",
+          "en": "6 October City",
+          "ar": "6 October City",
+          "listings": 769,
+          "compounds": [
+            "1st District",
+            "2nd District",
+            "31WEST",
+            "3rd District",
+            "6 October Compounds",
+            "Aeon",
+            "Al Hay Al Thalith St.",
+            "Al Hosary",
+            "Al Mehwar Al Markazi",
+            "Al Motamayez District",
+            "Al Nabatat St.",
+            "Al Nawadi St",
+            "Al Thawra El Khadra",
+            "Aqmar",
+            "Ashgar City",
+            "Ashgar Heights",
+            "Ashgar Residence",
+            "Astoria Park",
+            "BETA Residence",
+            "Badya Palm Hills",
+            "Beit Alwatan",
+            "Beta Greens",
+            "Brix",
+            "Carnell Park",
+            "City View",
+            "Cleopatra Square",
+            "Club Hills",
+            "Compound Club Hills",
+            "Degla Gardens",
+            "Degla Palms",
+            "Diar 2",
+            "District 300",
+            "Doctor Kamal Hamdi St.",
+            "Dream Land St.",
+            "Ever",
+            "Garden Gate",
+            "Garden Hills",
+            "Garden Lakes",
+            "Grand Heights",
+            "Green 5",
+            "Green 6",
+            "Green City",
+            "Hadayek October",
+            "Hayah October Residence",
+            "Ishraqa",
+            "Jannat October",
+            "Joulz",
+            "Joya",
+            "Kingsway",
+            "LandPeak",
+            "Mountain View October Park",
+            "Mountain View iCity October",
+            "New Giza",
+            "New Uptown October",
+            "Nyoum October",
+            "O NINE by Miqaat Developments",
+            "O West",
+            "October Plaza",
+            "One33",
+            "PX Palm Hills",
+            "Palm Hills October",
+            "Palm Parks   Palm Hills",
+            "Promenade Residence",
+            "Pyramids Heights",
+            "River Residence",
+            "Rock Eden",
+            "Royal Hills",
+            "Soleya",
+            "Spanish District",
+            "Sun Capital",
+            "Sun October Gardens",
+            "Swan Lake West",
+            "Tala",
+            "Tawny Hyde Park",
+            "Tesla Residence",
+            "The Axis",
+            "The Crown",
+            "Tiba Gardens",
+            "Touristic Zone 3",
+            "Touristic Zone 4",
+            "Touristic Zone 6",
+            "Viena",
+            "Wahat Al Rayhan Square",
+            "West Hills Residence",
+            "West Leaves",
+            "West Somid",
+            "West Somid Road",
+            "West days",
+            "ZAT"
+          ]
+        },
+        {
+          "source_city": "Giza",
+          "en": "Al Agouza",
+          "ar": "Al Agouza",
+          "listings": 7,
+          "compounds": [
+            "Abd Al Hameed Soliman St.",
+            "Abou Al Karamat St.",
+            "Abou al mahasen al shazli St.",
+            "Aswan Square",
+            "Nile Corniche St."
+          ]
+        },
+        {
+          "source_city": "Giza",
+          "en": "Cairo Alexandria Desert Road",
+          "ar": "Cairo Alexandria Desert Road",
+          "listings": 2,
+          "compounds": [
+            "Ivy",
+            "Tawny"
+          ]
+        },
+        {
+          "source_city": "Giza",
+          "en": "Dokki",
+          "ar": "Dokki",
+          "listings": 26,
+          "compounds": [
+            "Al Mesaha St.",
+            "Al Sadd Al Aali St.",
+            "Boulos Hanna St.",
+            "Charles De Gaulle St.",
+            "Feini Square",
+            "Ibn Al Akhshid St.",
+            "Iran St.",
+            "Mohi Al Din Abou El Ezz St.",
+            "Mosadak St.",
+            "Shooting Club Street"
+          ]
+        },
+        {
+          "source_city": "Giza",
+          "en": "Ganoub El Giza",
+          "ar": "Ganoub El Giza",
+          "listings": 5,
+          "compounds": [
+            "Al Bahr Al Aazam  St.",
+            "Al Nile  St.",
+            "Morad  St.",
+            "Wissa Wassef  St."
+          ]
+        },
+        {
+          "source_city": "Giza",
+          "en": "Hadayek El Ahram",
+          "ar": "Hadayek El Ahram",
+          "listings": 1,
+          "compounds": [
+            "Gate 4 - Mena"
+          ]
+        },
+        {
+          "source_city": "Giza",
+          "en": "Meet Okba",
+          "ar": "Meet Okba",
+          "listings": 1,
+          "compounds": [
+            "Abdel Aziz Gawish St."
+          ]
+        },
+        {
+          "source_city": "Giza",
+          "en": "Mohandessin",
+          "ar": "Mohandessin",
+          "listings": 27,
+          "compounds": [
+            "26th Of July Corridor",
+            "Ahmed Orabi St.",
+            "Al Hegaz St.",
+            "Al Quds Al Sharif St.",
+            "Dimashq St.",
+            "Gameat Al Dewal Al Arabeya St.",
+            "Geziret Al Arab St. (El Mohandes Mohamed Hassan Helmy)",
+            "Lebanon Square",
+            "Lebanon St.",
+            "Shehab St.",
+            "Sudan St.",
+            "Syria St."
+          ]
+        },
+        {
+          "source_city": "Giza",
+          "en": "Sheikh Zayed City",
+          "ar": "Sheikh Zayed City",
+          "listings": 1036,
+          "compounds": [
+            "10th District",
+            "11th District",
+            "16th District",
+            "1st District",
+            "5th District",
+            "7th District",
+            "8th District",
+            "9th District",
+            "Al  Rabwa",
+            "Al Bostan St.",
+            "Al Hekma St.",
+            "Al Joman",
+            "Al Karma 1",
+            "Al Karma 2",
+            "Al Karma 4",
+            "Al Karma Gates",
+            "Al Khamayel city",
+            "Al Nada",
+            "Al Nozha St.",
+            "AlKarma Kay",
+            "Allegria",
+            "Arkan Palm 205",
+            "Atrio",
+            "Bahja",
+            "Beit Al Watan",
+            "Belle Vie",
+            "Belleville",
+            "Belva",
+            "Beverly Hills",
+            "Beverly Hills Road",
+            "Bliss Gate",
+            "Cairo Gate",
+            "Cairo University Compound",
+            "Casa",
+            "Coy",
+            "Dar Misr",
+            "Dar Misr   Phase 2",
+            "De Joya",
+            "DeJoya Residence",
+            "Doctor Ali Lotfy St.",
+            "Eden",
+            "Elan",
+            "Elite West",
+            "Elysium",
+            "Etapa",
+            "Etapa Square",
+            "Forty West",
+            "Gates Prive",
+            "Genova",
+            "Green 3",
+            "Green Residence 1",
+            "Green Residence 2",
+            "Green Revolution",
+            "Hadayek Al Mohandessin",
+            "Haven",
+            "Hills of one",
+            "Ivoire",
+            "Janna 1",
+            "Janna 2",
+            "Jeera",
+            "Jewar",
+            "Jirian",
+            "Kanaria",
+            "Karma Residence",
+            "Karmell",
+            "Kayan",
+            "La Colina",
+            "Lazurde",
+            "Lugar",
+            "Mar Ville",
+            "MarVille New Zayed",
+            "Naia West",
+            "Namya West",
+            "One 16",
+            "Opera City",
+            "Ori",
+            "Park Side Residence",
+            "Patio Al Zahraa",
+            "Rawdat Zayed",
+            "Rewaya",
+            "Rivers",
+            "Rovan",
+            "Royal City",
+            "Royal Meadows",
+            "Six West",
+            "Skyramp",
+            "Sodic West",
+            "Solana",
+            "Street 10",
+            "Tara",
+            "Terrace Compound",
+            "The Address",
+            "The Courtyard",
+            "The Courtyards",
+            "The Estates",
+            "The Harv",
+            "U One",
+            "Unknown",
+            "V Levels",
+            "Via",
+            "Village Views",
+            "Village West",
+            "Vye Sodic",
+            "Westown",
+            "Westview Residence",
+            "Yasmine District",
+            "Zayed 2000",
+            "Zayed Dunes",
+            "Zayed Dunes Complex",
+            "Zayed Regency",
+            "Zed Towers",
+            "بوابة النعيم"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "PTS",
+      "en": "Port Said",
+      "ar": "بورسعيد",
+      "listings": 0,
+      "data_status": "coming_soon",
+      "cities_from_egydata": [
+        {
+          "en": "East District",
+          "ar": "حي الشرق"
+        },
+        {
+          "en": "Arab District",
+          "ar": "حي العرب"
+        },
+        {
+          "en": "Suburbs District",
+          "ar": "حي الضواحي"
+        },
+        {
+          "en": "Port Fouad",
+          "ar": "بورفؤاد"
+        }
+      ],
+      "cities_with_data": []
+    },
+    {
+      "code": "SUZ",
+      "en": "Suez",
+      "ar": "السويس",
+      "listings": 69,
+      "data_status": "medium",
+      "cities_from_egydata": [
+        {
+          "en": "Suez District",
+          "ar": "حي السويس"
+        },
+        {
+          "en": "Arbaeen District",
+          "ar": "حي الأربعين"
+        },
+        {
+          "en": "Ataka",
+          "ar": "عتاقة"
+        },
+        {
+          "en": "Faisal District",
+          "ar": "حي فيصل"
+        },
+        {
+          "en": "Galala City",
+          "ar": "مدينة الجلالة"
+        }
+      ],
+      "cities_with_data": [
+        {
+          "source_city": "Suez",
+          "en": "Al Ain Al Sokhna",
+          "ar": "Al Ain Al Sokhna",
+          "listings": 69,
+          "compounds": [
+            "Aroma Residence",
+            "Azha",
+            "IL Monte Galala",
+            "Kai Sokhna",
+            "La Vista 6",
+            "Lasirena Palm Beach",
+            "Stella Di Mare 2",
+            "Telal Al Sokhna"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "DKH",
+      "en": "Dakahlia",
+      "ar": "الدقهلية",
+      "listings": 3,
+      "data_status": "minimal",
+      "cities_from_egydata": [
+        {
+          "en": "Mansoura",
+          "ar": "المنصورة"
+        },
+        {
+          "en": "Talkha",
+          "ar": "طلخا"
+        },
+        {
+          "en": "Mit Ghamr",
+          "ar": "ميت غمر"
+        },
+        {
+          "en": "Dikirnis",
+          "ar": "دكرنس"
+        },
+        {
+          "en": "Aga",
+          "ar": "أجا"
+        },
+        {
+          "en": "Sinbellawin",
+          "ar": "السنبلاوين"
+        },
+        {
+          "en": "New Mansoura",
+          "ar": "المنصورة الجديدة"
+        }
+      ],
+      "cities_with_data": [
+        {
+          "source_city": "Al Daqahlya",
+          "en": "Al Mansoura",
+          "ar": "Al Mansoura",
+          "listings": 2,
+          "compounds": [
+            "Toreel Area",
+            "Unknown"
+          ]
+        },
+        {
+          "source_city": "Al Daqahlya",
+          "en": "New Mansoura",
+          "ar": "New Mansoura",
+          "listings": 1,
+          "compounds": [
+            "The Pearl New Mansoura"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "SHR",
+      "en": "Sharqia",
+      "ar": "الشرقية",
+      "listings": 0,
+      "data_status": "coming_soon",
+      "cities_from_egydata": [
+        {
+          "en": "Zagazig",
+          "ar": "الزقازيق"
+        },
+        {
+          "en": "10th of Ramadan",
+          "ar": "العاشر من رمضان"
+        },
+        {
+          "en": "Bilbeis",
+          "ar": "بلبيس"
+        },
+        {
+          "en": "Abu Hammad",
+          "ar": "أبو حماد"
+        },
+        {
+          "en": "Minya Al Qamh",
+          "ar": "منيا القمح"
+        },
+        {
+          "en": "Faqous",
+          "ar": "فاقوس"
+        }
+      ],
+      "cities_with_data": []
+    },
+    {
+      "code": "QLB",
+      "en": "Qalyubia",
+      "ar": "القليوبية",
+      "listings": 16,
+      "data_status": "low",
+      "cities_from_egydata": [
+        {
+          "en": "Benha",
+          "ar": "بنها"
+        },
+        {
+          "en": "Shubra El Kheima",
+          "ar": "شبرا الخيمة"
+        },
+        {
+          "en": "Qalyub",
+          "ar": "قليوب"
+        },
+        {
+          "en": "El Qanater El Khayreya",
+          "ar": "القناطر الخيرية"
+        },
+        {
+          "en": "Toukh",
+          "ar": "طوخ"
+        },
+        {
+          "en": "El Obour",
+          "ar": "العبور"
+        },
+        {
+          "en": "New Obour",
+          "ar": "العبور الجديدة"
+        }
+      ],
+      "cities_with_data": [
+        {
+          "source_city": "Qalyubia",
+          "en": "New Obour City",
+          "ar": "New Obour City",
+          "listings": 3,
+          "compounds": [
+            "Citalia",
+            "Unknown"
+          ]
+        },
+        {
+          "source_city": "Qalyubia",
+          "en": "Obour City",
+          "ar": "Obour City",
+          "listings": 13,
+          "compounds": [
+            "9th District",
+            "Al Mushir Abu Ghazaleh St.",
+            "Al Obour Road",
+            "High City",
+            "Okarida",
+            "Unknown"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "KFS",
+      "en": "Kafr El Sheikh",
+      "ar": "كفر الشيخ",
+      "listings": 0,
+      "data_status": "coming_soon",
+      "cities_from_egydata": [
+        {
+          "en": "Kafr El Sheikh City",
+          "ar": "كفر الشيخ"
+        },
+        {
+          "en": "Desouk",
+          "ar": "دسوق"
+        },
+        {
+          "en": "Fuwwah",
+          "ar": "فوه"
+        },
+        {
+          "en": "Bella",
+          "ar": "بيلا"
+        }
+      ],
+      "cities_with_data": []
+    },
+    {
+      "code": "GHR",
+      "en": "Gharbia",
+      "ar": "الغربية",
+      "listings": 0,
+      "data_status": "coming_soon",
+      "cities_from_egydata": [
+        {
+          "en": "Tanta",
+          "ar": "طنطا"
+        },
+        {
+          "en": "El Mahalla El Kubra",
+          "ar": "المحلة الكبرى"
+        },
+        {
+          "en": "Kafr El Zayat",
+          "ar": "كفر الزيات"
+        },
+        {
+          "en": "Zefta",
+          "ar": "زفتى"
+        },
+        {
+          "en": "Santa",
+          "ar": "السنطة"
+        }
+      ],
+      "cities_with_data": []
+    },
+    {
+      "code": "MNF",
+      "en": "Monufia",
+      "ar": "المنوفية",
+      "listings": 0,
+      "data_status": "coming_soon",
+      "cities_from_egydata": [
+        {
+          "en": "Shebin El Kom",
+          "ar": "شبين الكوم"
+        },
+        {
+          "en": "Menouf",
+          "ar": "منوف"
+        },
+        {
+          "en": "Ashmoun",
+          "ar": "أشمون"
+        },
+        {
+          "en": "Sadat City",
+          "ar": "السادات"
+        },
+        {
+          "en": "Tala",
+          "ar": "تلا"
+        }
+      ],
+      "cities_with_data": []
+    },
+    {
+      "code": "BHR",
+      "en": "Beheira",
+      "ar": "البحيرة",
+      "listings": 0,
+      "data_status": "coming_soon",
+      "cities_from_egydata": [
+        {
+          "en": "Damanhour",
+          "ar": "دمنهور"
+        },
+        {
+          "en": "Kafr El Dawar",
+          "ar": "كفر الدوار"
+        },
+        {
+          "en": "Rashid",
+          "ar": "رشيد"
+        },
+        {
+          "en": "Edku",
+          "ar": "إدكو"
+        },
+        {
+          "en": "Abu El Matamir",
+          "ar": "أبو المطامير"
+        }
+      ],
+      "cities_with_data": []
+    },
+    {
+      "code": "ISM",
+      "en": "Ismailia",
+      "ar": "الإسماعيلية",
+      "listings": 0,
+      "data_status": "coming_soon",
+      "cities_from_egydata": [
+        {
+          "en": "Ismailia City",
+          "ar": "الإسماعيلية"
+        },
+        {
+          "en": "Fayed",
+          "ar": "فايد"
+        },
+        {
+          "en": "Qantara East",
+          "ar": "القنطرة شرق"
+        },
+        {
+          "en": "Tell El Kebir",
+          "ar": "التل الكبير"
+        }
+      ],
+      "cities_with_data": []
+    },
+    {
+      "code": "DMT",
+      "en": "Damietta",
+      "ar": "دمياط",
+      "listings": 0,
+      "data_status": "coming_soon",
+      "cities_from_egydata": [
+        {
+          "en": "Damietta City",
+          "ar": "دمياط"
+        },
+        {
+          "en": "New Damietta",
+          "ar": "دمياط الجديدة"
+        },
+        {
+          "en": "Ras El Bar",
+          "ar": "رأس البر"
+        },
+        {
+          "en": "Faraskour",
+          "ar": "فارسكور"
+        }
+      ],
+      "cities_with_data": []
+    },
+    {
+      "code": "FYM",
+      "en": "Faiyum",
+      "ar": "الفيوم",
+      "listings": 0,
+      "data_status": "coming_soon",
+      "cities_from_egydata": [
+        {
+          "en": "Faiyum City",
+          "ar": "الفيوم"
+        },
+        {
+          "en": "Etsa",
+          "ar": "إطسا"
+        },
+        {
+          "en": "Tamiya",
+          "ar": "طامية"
+        },
+        {
+          "en": "Snouris",
+          "ar": "سنورس"
+        }
+      ],
+      "cities_with_data": []
+    },
+    {
+      "code": "BNS",
+      "en": "Beni Suef",
+      "ar": "بني سويف",
+      "listings": 0,
+      "data_status": "coming_soon",
+      "cities_from_egydata": [
+        {
+          "en": "Beni Suef City",
+          "ar": "بني سويف"
+        },
+        {
+          "en": "El Wasta",
+          "ar": "الواسطى"
+        },
+        {
+          "en": "Nasser",
+          "ar": "ناصر"
+        },
+        {
+          "en": "Ehnasia",
+          "ar": "إهناسيا"
+        }
+      ],
+      "cities_with_data": []
+    },
+    {
+      "code": "MNY",
+      "en": "Minya",
+      "ar": "المنيا",
+      "listings": 0,
+      "data_status": "coming_soon",
+      "cities_from_egydata": [
+        {
+          "en": "Minya City",
+          "ar": "المنيا"
+        },
+        {
+          "en": "Mallawi",
+          "ar": "ملوي"
+        },
+        {
+          "en": "Samalut",
+          "ar": "سمالوط"
+        },
+        {
+          "en": "New Minya",
+          "ar": "المنيا الجديدة"
+        },
+        {
+          "en": "Abu Qurqas",
+          "ar": "أبو قرقاص"
+        }
+      ],
+      "cities_with_data": []
+    },
+    {
+      "code": "AST",
+      "en": "Asyut",
+      "ar": "أسيوط",
+      "listings": 0,
+      "data_status": "coming_soon",
+      "cities_from_egydata": [
+        {
+          "en": "Asyut City",
+          "ar": "أسيوط"
+        },
+        {
+          "en": "Dairut",
+          "ar": "ديروط"
+        },
+        {
+          "en": "El Qusiya",
+          "ar": "القوصية"
+        },
+        {
+          "en": "Manfalut",
+          "ar": "منفلوط"
+        },
+        {
+          "en": "Abnoub",
+          "ar": "أبنوب"
+        },
+        {
+          "en": "Nasser City (West Asyut)",
+          "ar": "مدينة ناصر (غرب أسيوط)"
+        }
+      ],
+      "cities_with_data": []
+    },
+    {
+      "code": "SHG",
+      "en": "Sohag",
+      "ar": "سوهاج",
+      "listings": 0,
+      "data_status": "coming_soon",
+      "cities_from_egydata": [
+        {
+          "en": "Sohag City",
+          "ar": "سوهاج"
+        },
+        {
+          "en": "Akhmim",
+          "ar": "أخميم"
+        },
+        {
+          "en": "Girga",
+          "ar": "جرجا"
+        },
+        {
+          "en": "Tahta",
+          "ar": "طهطا"
+        },
+        {
+          "en": "El Maragha",
+          "ar": "المراغة"
+        }
+      ],
+      "cities_with_data": []
+    },
+    {
+      "code": "QNA",
+      "en": "Qena",
+      "ar": "قنا",
+      "listings": 0,
+      "data_status": "coming_soon",
+      "cities_from_egydata": [
+        {
+          "en": "Qena City",
+          "ar": "قنا"
+        },
+        {
+          "en": "Nag Hammadi",
+          "ar": "نجع حمادي"
+        },
+        {
+          "en": "Dishna",
+          "ar": "دشنا"
+        },
+        {
+          "en": "Qus",
+          "ar": "قوص"
+        }
+      ],
+      "cities_with_data": []
+    },
+    {
+      "code": "LXR",
+      "en": "Luxor",
+      "ar": "الأقصر",
+      "listings": 0,
+      "data_status": "coming_soon",
+      "cities_from_egydata": [
+        {
+          "en": "Luxor City",
+          "ar": "الأقصر"
+        },
+        {
+          "en": "Esna",
+          "ar": "إسنا"
+        },
+        {
+          "en": "Armant",
+          "ar": "أرمنت"
+        },
+        {
+          "en": "El Tod",
+          "ar": "الطود"
+        }
+      ],
+      "cities_with_data": []
+    },
+    {
+      "code": "ASN",
+      "en": "Aswan",
+      "ar": "أسوان",
+      "listings": 0,
+      "data_status": "coming_soon",
+      "cities_from_egydata": [
+        {
+          "en": "Aswan City",
+          "ar": "أسوان"
+        },
+        {
+          "en": "Kom Ombo",
+          "ar": "كوم أمبو"
+        },
+        {
+          "en": "Edfu",
+          "ar": "إدفو"
+        },
+        {
+          "en": "Daraw",
+          "ar": "دراو"
+        },
+        {
+          "en": "Abu Simbel",
+          "ar": "أبو سمبل"
+        }
+      ],
+      "cities_with_data": []
+    },
+    {
+      "code": "RED",
+      "en": "Red Sea",
+      "ar": "البحر الأحمر",
+      "listings": 641,
+      "data_status": "high",
+      "cities_from_egydata": [
+        {
+          "en": "Hurghada",
+          "ar": "الغردقة"
+        },
+        {
+          "en": "Safaga",
+          "ar": "سفاجا"
+        },
+        {
+          "en": "El Quseir",
+          "ar": "القصير"
+        },
+        {
+          "en": "Marsa Alam",
+          "ar": "مرسى علم"
+        },
+        {
+          "en": "Ras Ghareb",
+          "ar": "رأس غارب"
+        }
+      ],
+      "cities_with_data": [
+        {
+          "source_city": "Red Sea",
+          "en": "Hurghada",
+          "ar": "Hurghada",
+          "listings": 641,
+          "compounds": [
+            "1st Avenue North Side",
+            "1st Avenue South side",
+            "ARC of Soma",
+            "Al Ahyaa District",
+            "Al Andalous Residence",
+            "Al Hambra Waterfalls",
+            "Al Nasr St.",
+            "Arabia Area",
+            "Arabia Azur Resort",
+            "Atalantis",
+            "Azzurra Resort",
+            "Bay West",
+            "Blanca Gardens",
+            "Cala",
+            "Edelma",
+            "El Hadaba District",
+            "El Helal",
+            "El Kawther District",
+            "Florenza Khamsin Resort",
+            "G Cribs",
+            "Grand Rock",
+            "Hayat Beach Front",
+            "Hilton Hurghada Resort",
+            "Hurghada Hub",
+            "Intercontinental District",
+            "Jasmine Village",
+            "Lavanda Beach",
+            "Lavaya",
+            "Long Beach Resort",
+            "Magawish",
+            "Magawish Resort",
+            "Makadi",
+            "Makadi Heights",
+            "Makadi Orascom Resort",
+            "Mangroovy Residence",
+            "Marassi Red Sea",
+            "Marine Sports Club",
+            "Marriott Beach Resort",
+            "Mesca",
+            "Mubarak 6",
+            "One7 Residence",
+            "Platinum Resort",
+            "Princess Resort",
+            "Ras Soma",
+            "Red Hills by Enza",
+            "Reef Town",
+            "Sabina",
+            "Sahl Hasheesh",
+            "Sahl Hasheesh Resort",
+            "Scandic Resort",
+            "Selena Bay Resort",
+            "Soma Breeze",
+            "Stella Makadi Gardens",
+            "Storia Del Mare",
+            "Sunny Days Palma De Mirette",
+            "Sunrise Garden Beach Resort",
+            "Tawaya",
+            "Tawila El Gouna",
+            "The Grand Resort",
+            "The View",
+            "Turtles Beach Resort",
+            "Veranda",
+            "West El Balad",
+            "il Bayou"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "WAD",
+      "en": "New Valley",
+      "ar": "الوادي الجديد",
+      "listings": 0,
+      "data_status": "coming_soon",
+      "cities_from_egydata": [
+        {
+          "en": "El Kharga",
+          "ar": "الخارجة"
+        },
+        {
+          "en": "Dakhla",
+          "ar": "الداخلة"
+        },
+        {
+          "en": "Farafra",
+          "ar": "الفرافرة"
+        },
+        {
+          "en": "Paris",
+          "ar": "باريس"
+        }
+      ],
+      "cities_with_data": []
+    },
+    {
+      "code": "MTR",
+      "en": "Matruh",
+      "ar": "مطروح",
+      "listings": 75,
+      "data_status": "medium",
+      "cities_from_egydata": [
+        {
+          "en": "Marsa Matruh",
+          "ar": "مرسى مطروح"
+        },
+        {
+          "en": "Siwa",
+          "ar": "سيوة"
+        },
+        {
+          "en": "El Hamam",
+          "ar": "الحمام"
+        },
+        {
+          "en": "El Alamein",
+          "ar": "العلمين"
+        },
+        {
+          "en": "El Dabaa",
+          "ar": "الضبعة"
+        },
+        {
+          "en": "New Alamein",
+          "ar": "العلمين الجديدة"
+        }
+      ],
+      "cities_with_data": [
+        {
+          "source_city": "Matrouh",
+          "en": "Marsa Matrouh",
+          "ar": "Marsa Matrouh",
+          "listings": 4,
+          "compounds": [
+            "Sedra"
+          ]
+        },
+        {
+          "source_city": "North Coast",
+          "en": "Al Alamein",
+          "ar": "Al Alamein",
+          "listings": 59,
+          "compounds": [
+            "Beachfront Towers",
+            "Downtown",
+            "Golf Porto Marina",
+            "Latin District",
+            "Lotus",
+            "Marina 2",
+            "Marina 5",
+            "Marina 8",
+            "Mazarine",
+            "North Edge Towers",
+            "Palm Hills New Alamein",
+            "Porto Cruise Alamein",
+            "Stella Heights",
+            "The Gate Towers"
+          ]
+        },
+        {
+          "source_city": "North Coast",
+          "en": "Qesm Ad Dabaah",
+          "ar": "Qesm Ad Dabaah",
+          "listings": 1,
+          "compounds": [
+            "D-Bay"
+          ]
+        },
+        {
+          "source_city": "North Coast",
+          "en": "Qesm Marsa Matrouh",
+          "ar": "Qesm Marsa Matrouh",
+          "listings": 2,
+          "compounds": [
+            "Fouka Bay"
+          ]
+        },
+        {
+          "source_city": "North Coast",
+          "en": "Ras Al Hekma",
+          "ar": "Ras Al Hekma",
+          "listings": 7,
+          "compounds": [
+            "Gaia",
+            "Hacienda West",
+            "June",
+            "Ramla",
+            "Youd"
+          ]
+        },
+        {
+          "source_city": "North Coast",
+          "en": "Sidi Abdel Rahman",
+          "ar": "Sidi Abdel Rahman",
+          "listings": 2,
+          "compounds": [
+            "Hacienda Bay",
+            "Playa Resort"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "SIN",
+      "en": "North Sinai",
+      "ar": "شمال سيناء",
+      "listings": 0,
+      "data_status": "coming_soon",
+      "cities_from_egydata": [
+        {
+          "en": "Arish",
+          "ar": "العريش"
+        },
+        {
+          "en": "Sheikh Zuweid",
+          "ar": "الشيخ زويد"
+        },
+        {
+          "en": "Rafah",
+          "ar": "رفح"
+        },
+        {
+          "en": "Bir al-Abed",
+          "ar": "بئر العبد"
+        }
+      ],
+      "cities_with_data": []
+    },
+    {
+      "code": "SIS",
+      "en": "South Sinai",
+      "ar": "جنوب سيناء",
+      "listings": 0,
+      "data_status": "coming_soon",
+      "cities_from_egydata": [
+        {
+          "en": "Sharm El Sheikh",
+          "ar": "شرم الشيخ"
+        },
+        {
+          "en": "Dahab",
+          "ar": "دهب"
+        },
+        {
+          "en": "Nuweiba",
+          "ar": "نويبع"
+        },
+        {
+          "en": "Taba",
+          "ar": "طابا"
+        },
+        {
+          "en": "Saint Catherine",
+          "ar": "سانت كاترين"
+        },
+        {
+          "en": "El Tor",
+          "ar": "الطور"
+        }
+      ],
+      "cities_with_data": []
+    }
+  ],
+  "meta": {
+    "total_governorates": 27,
+    "levels": 5,
+    "level_names_ar": [
+      "المحافظة",
+      "المركز/القسم",
+      "المدينة/الحي",
+      "المنطقة",
+      "الكومبوند"
+    ],
+    "level_names_en": [
+      "Governorate",
+      "Markaz/Qism",
+      "City/District",
+      "Area",
+      "Compound"
+    ]
+  }
+}

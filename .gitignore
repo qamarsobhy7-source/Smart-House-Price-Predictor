@@ -34,3 +34,13 @@ _gif_frames/
 
 # Test screenshots
 screenshots/_*
+
+# Auth & User Data (Sensitive)
+data/auth_config.yaml
+data/saved_properties.json
+data/saved_searches.json
+
+# Test files
+_test_*.py
+*.test.py
+screenshots/_*

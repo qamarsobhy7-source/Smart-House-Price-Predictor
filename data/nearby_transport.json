@@ -1,0 +1,293 @@
+{
+  "New Cairo City": {
+    "metro": [
+      "الخط الثالث (قادم)"
+    ],
+    "bus": 25,
+    "airport_km": 15,
+    "train": false
+  },
+  "Nasr City": {
+    "metro": [
+      "الخط الثالث"
+    ],
+    "bus": 40,
+    "airport_km": 12,
+    "train": false
+  },
+  "Heliopolis - Masr El Gedida": {
+    "metro": [
+      "الخط الثالث (قادم)"
+    ],
+    "bus": 35,
+    "airport_km": 5,
+    "train": false
+  },
+  "El Nozha": {
+    "metro": [
+      "الخط الثالث"
+    ],
+    "bus": 30,
+    "airport_km": 7,
+    "train": false
+  },
+  "Mokattam": {
+    "metro": [],
+    "bus": 20,
+    "airport_km": 20,
+    "train": false
+  },
+  "Hay El Maadi": {
+    "metro": [
+      "الخط الأول"
+    ],
+    "bus": 45,
+    "airport_km": 22,
+    "train": true
+  },
+  "Hay El Manial": {
+    "metro": [
+      "الخط الأول"
+    ],
+    "bus": 35,
+    "airport_km": 20,
+    "train": false
+  },
+  "El Khalifa": {
+    "metro": [
+      "الخط الأول"
+    ],
+    "bus": 25,
+    "airport_km": 18,
+    "train": false
+  },
+  "Hay Sharq": {
+    "metro": [],
+    "bus": 20,
+    "airport_km": 25,
+    "train": false
+  },
+  "Hay Torah": {
+    "metro": [],
+    "bus": 15,
+    "airport_km": 30,
+    "train": false
+  },
+  "Hay Wasat": {
+    "metro": [],
+    "bus": 18,
+    "airport_km": 28,
+    "train": false
+  },
+  "Madinaty": {
+    "metro": [],
+    "bus": 20,
+    "airport_km": 30,
+    "train": false
+  },
+  "New Heliopolis": {
+    "metro": [],
+    "bus": 22,
+    "airport_km": 8,
+    "train": false
+  },
+  "Shorouk City": {
+    "metro": [],
+    "bus": 18,
+    "airport_km": 35,
+    "train": false
+  },
+  "Obour City": {
+    "metro": [],
+    "bus": 15,
+    "airport_km": 30,
+    "train": false
+  },
+  "New Obour City": {
+    "metro": [],
+    "bus": 12,
+    "airport_km": 32,
+    "train": false
+  },
+  "New Capital City": {
+    "metro": [],
+    "bus": 10,
+    "airport_km": 45,
+    "train": true
+  },
+  "Mostakbal City - Future City": {
+    "metro": [],
+    "bus": 12,
+    "airport_km": 40,
+    "train": false
+  },
+  "Noor City": {
+    "metro": [],
+    "bus": 8,
+    "airport_km": 55,
+    "train": false
+  },
+  "Al Ain Al Sokhna": {
+    "metro": [],
+    "bus": 5,
+    "airport_km": 120,
+    "train": false
+  },
+  "Al Alamein": {
+    "metro": [],
+    "bus": 8,
+    "airport_km": 100,
+    "train": false
+  },
+  "Al Agouza": {
+    "metro": [
+      "الخط الثاني"
+    ],
+    "bus": 38,
+    "airport_km": 22,
+    "train": false
+  },
+  "Dokki": {
+    "metro": [
+      "الخط الثاني"
+    ],
+    "bus": 42,
+    "airport_km": 22,
+    "train": false
+  },
+  "Mohandessin": {
+    "metro": [
+      "الخط الثاني"
+    ],
+    "bus": 40,
+    "airport_km": 23,
+    "train": false
+  },
+  "Zamalek": {
+    "metro": [
+      "الخط الأول",
+      "الخط الثاني"
+    ],
+    "bus": 30,
+    "airport_km": 20,
+    "train": false
+  },
+  "Ganoub El Giza": {
+    "metro": [
+      "الخط الأول"
+    ],
+    "bus": 25,
+    "airport_km": 28,
+    "train": false
+  },
+  "Hadayek El Ahram": {
+    "metro": [],
+    "bus": 20,
+    "airport_km": 30,
+    "train": false
+  },
+  "Sheikh Zayed City": {
+    "metro": [],
+    "bus": 18,
+    "airport_km": 35,
+    "train": false
+  },
+  "6 October City": {
+    "metro": [],
+    "bus": 22,
+    "airport_km": 45,
+    "train": false
+  },
+  "Marsa Matrouh": {
+    "metro": [],
+    "bus": 10,
+    "airport_km": 5,
+    "train": false
+  },
+  "Qesm Marsa Matrouh": {
+    "metro": [],
+    "bus": 10,
+    "airport_km": 5,
+    "train": false
+  },
+  "Qesm Ad Dabaah": {
+    "metro": [],
+    "bus": 5,
+    "airport_km": 80,
+    "train": false
+  },
+  "Ras Al Hekma": {
+    "metro": [],
+    "bus": 5,
+    "airport_km": 90,
+    "train": false
+  },
+  "Sidi Abdel Rahman": {
+    "metro": [],
+    "bus": 5,
+    "airport_km": 85,
+    "train": false
+  },
+  "Alexandria Compounds": {
+    "metro": [],
+    "bus": 15,
+    "airport_km": 15,
+    "train": true
+  },
+  "Hay Awal El Montazah": {
+    "metro": [],
+    "bus": 20,
+    "airport_km": 8,
+    "train": false
+  },
+  "Hay Than El Montazah": {
+    "metro": [],
+    "bus": 18,
+    "airport_km": 10,
+    "train": false
+  },
+  "Al Mansoura": {
+    "metro": [],
+    "bus": 25,
+    "airport_km": 130,
+    "train": true
+  },
+  "New Mansoura": {
+    "metro": [],
+    "bus": 8,
+    "airport_km": 145,
+    "train": false
+  },
+  "Hurghada": {
+    "metro": [],
+    "bus": 15,
+    "airport_km": 8,
+    "train": false
+  },
+  "Meet Okba": {
+    "metro": [
+      "الخط الثاني"
+    ],
+    "bus": 30,
+    "airport_km": 24,
+    "train": false
+  },
+  "Ring Road": {
+    "metro": [],
+    "bus": 20,
+    "airport_km": 25,
+    "train": false
+  },
+  "Cairo Alexandria Desert Road": {
+    "metro": [],
+    "bus": 10,
+    "airport_km": 40,
+    "train": false
+  },
+  "10th District": {
+    "metro": [],
+    "bus": 20,
+    "airport_km": 30,
+    "train": false
+  }
+}

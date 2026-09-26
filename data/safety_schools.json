@@ -1,0 +1,266 @@
+{
+  "Zamalek": {
+    "safety": 95,
+    "schools_rating": 92,
+    "schools_intl": 8,
+    "schools_public": 5
+  },
+  "Mohandessin": {
+    "safety": 92,
+    "schools_rating": 90,
+    "schools_intl": 12,
+    "schools_public": 8
+  },
+  "Dokki": {
+    "safety": 88,
+    "schools_rating": 88,
+    "schools_intl": 10,
+    "schools_public": 12
+  },
+  "Hay El Maadi": {
+    "safety": 90,
+    "schools_rating": 89,
+    "schools_intl": 15,
+    "schools_public": 10
+  },
+  "New Cairo City": {
+    "safety": 88,
+    "schools_rating": 95,
+    "schools_intl": 45,
+    "schools_public": 20
+  },
+  "Sheikh Zayed City": {
+    "safety": 90,
+    "schools_rating": 92,
+    "schools_intl": 35,
+    "schools_public": 15
+  },
+  "6 October City": {
+    "safety": 85,
+    "schools_rating": 88,
+    "schools_intl": 40,
+    "schools_public": 25
+  },
+  "Heliopolis - Masr El Gedida": {
+    "safety": 87,
+    "schools_rating": 90,
+    "schools_intl": 20,
+    "schools_public": 15
+  },
+  "Nasr City": {
+    "safety": 82,
+    "schools_rating": 85,
+    "schools_intl": 15,
+    "schools_public": 25
+  },
+  "Hay Sharq": {
+    "safety": 80,
+    "schools_rating": 82,
+    "schools_intl": 8,
+    "schools_public": 18
+  },
+  "Hay El Manial": {
+    "safety": 85,
+    "schools_rating": 87,
+    "schools_intl": 6,
+    "schools_public": 12
+  },
+  "El Nozha": {
+    "safety": 85,
+    "schools_rating": 85,
+    "schools_intl": 12,
+    "schools_public": 10
+  },
+  "Mokattam": {
+    "safety": 78,
+    "schools_rating": 80,
+    "schools_intl": 8,
+    "schools_public": 15
+  },
+  "El Khalifa": {
+    "safety": 72,
+    "schools_rating": 75,
+    "schools_intl": 5,
+    "schools_public": 20
+  },
+  "Al Agouza": {
+    "safety": 78,
+    "schools_rating": 80,
+    "schools_intl": 4,
+    "schools_public": 15
+  },
+  "Madinaty": {
+    "safety": 92,
+    "schools_rating": 90,
+    "schools_intl": 20,
+    "schools_public": 8
+  },
+  "New Heliopolis": {
+    "safety": 85,
+    "schools_rating": 85,
+    "schools_intl": 10,
+    "schools_public": 12
+  },
+  "Shorouk City": {
+    "safety": 85,
+    "schools_rating": 82,
+    "schools_intl": 12,
+    "schools_public": 15
+  },
+  "Obour City": {
+    "safety": 82,
+    "schools_rating": 78,
+    "schools_intl": 8,
+    "schools_public": 18
+  },
+  "New Obour City": {
+    "safety": 82,
+    "schools_rating": 78,
+    "schools_intl": 8,
+    "schools_public": 15
+  },
+  "New Capital City": {
+    "safety": 92,
+    "schools_rating": 90,
+    "schools_intl": 15,
+    "schools_public": 10
+  },
+  "Mostakbal City - Future City": {
+    "safety": 88,
+    "schools_rating": 85,
+    "schools_intl": 10,
+    "schools_public": 8
+  },
+  "Noor City": {
+    "safety": 80,
+    "schools_rating": 75,
+    "schools_intl": 3,
+    "schools_public": 10
+  },
+  "Al Ain Al Sokhna": {
+    "safety": 85,
+    "schools_rating": 65,
+    "schools_intl": 2,
+    "schools_public": 5
+  },
+  "Al Alamein": {
+    "safety": 88,
+    "schools_rating": 75,
+    "schools_intl": 5,
+    "schools_public": 8
+  },
+  "Ganoub El Giza": {
+    "safety": 78,
+    "schools_rating": 75,
+    "schools_intl": 5,
+    "schools_public": 20
+  },
+  "Hadayek El Ahram": {
+    "safety": 80,
+    "schools_rating": 75,
+    "schools_intl": 5,
+    "schools_public": 18
+  },
+  "Marsa Matrouh": {
+    "safety": 85,
+    "schools_rating": 70,
+    "schools_intl": 3,
+    "schools_public": 12
+  },
+  "Qesm Marsa Matrouh": {
+    "safety": 85,
+    "schools_rating": 70,
+    "schools_intl": 3,
+    "schools_public": 12
+  },
+  "Qesm Ad Dabaah": {
+    "safety": 80,
+    "schools_rating": 60,
+    "schools_intl": 1,
+    "schools_public": 5
+  },
+  "Ras Al Hekma": {
+    "safety": 85,
+    "schools_rating": 65,
+    "schools_intl": 2,
+    "schools_public": 4
+  },
+  "Sidi Abdel Rahman": {
+    "safety": 85,
+    "schools_rating": 60,
+    "schools_intl": 1,
+    "schools_public": 3
+  },
+  "Alexandria Compounds": {
+    "safety": 85,
+    "schools_rating": 82,
+    "schools_intl": 10,
+    "schools_public": 15
+  },
+  "Hay Awal El Montazah": {
+    "safety": 82,
+    "schools_rating": 80,
+    "schools_intl": 6,
+    "schools_public": 12
+  },
+  "Hay Than El Montazah": {
+    "safety": 82,
+    "schools_rating": 78,
+    "schools_intl": 5,
+    "schools_public": 10
+  },
+  "Al Mansoura": {
+    "safety": 82,
+    "schools_rating": 85,
+    "schools_intl": 8,
+    "schools_public": 20
+  },
+  "New Mansoura": {
+    "safety": 88,
+    "schools_rating": 80,
+    "schools_intl": 5,
+    "schools_public": 8
+  },
+  "Hurghada": {
+    "safety": 85,
+    "schools_rating": 75,
+    "schools_intl": 10,
+    "schools_public": 15
+  },
+  "Meet Okba": {
+    "safety": 75,
+    "schools_rating": 78,
+    "schools_intl": 4,
+    "schools_public": 15
+  },
+  "Ring Road": {
+    "safety": 75,
+    "schools_rating": 75,
+    "schools_intl": 5,
+    "schools_public": 12
+  },
+  "Cairo Alexandria Desert Road": {
+    "safety": 80,
+    "schools_rating": 78,
+    "schools_intl": 8,
+    "schools_public": 10
+  },
+  "Hay Torah": {
+    "safety": 75,
+    "schools_rating": 75,
+    "schools_intl": 3,
+    "schools_public": 15
+  },
+  "Hay Wasat": {
+    "safety": 78,
+    "schools_rating": 75,
+    "schools_intl": 5,
+    "schools_public": 18
+  },
+  "10th District": {
+    "safety": 85,
+    "schools_rating": 82,
+    "schools_intl": 10,
+    "schools_public": 15
+  }
+}
