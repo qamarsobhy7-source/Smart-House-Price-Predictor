@@ -403,7 +403,7 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 print("✅ Part 1: Modern CSS اتحفظ")
-print(f"📊 الملف: {app_file}")
+
 
 
 # ================================================================
