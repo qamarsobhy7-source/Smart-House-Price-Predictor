@@ -10,6 +10,16 @@ import folium
 from streamlit_folium import folium_static
 from datetime import datetime
 
+# PDF Report
+try:
+    import reportlab
+    from reportlab.lib.pagesizes import A4
+    from reportlab.pdfgen import canvas
+    from reportlab.lib.units import cm
+    PDF_AVAILABLE = True
+except ImportError:
+    PDF_AVAILABLE = False
+
 # Custom modules
 try:
     from mock_images import get_property_images
@@ -252,17 +262,39 @@ with tab1:
             }
             
             # أزرار الإجراءات
-            col_b1, col_b2, col_b3 = st.columns(3)
+            col_b1, col_b2, col_b3, col_b4 = st.columns(4)
             with col_b1:
-                if st.button("❤️ أضف للمفضلة", use_container_width=True):
+                if st.button("❤️ حفظ", use_container_width=True):
                     add_favorite(st.session_state.current_prediction)
-                    st.success("✅ اتحفظ في المفضلة!")
+                    st.success("✅ اتحفظ!")
             with col_b2:
-                if st.button("📞 اتصل بالوكيل", use_container_width=True):
-                    st.info("📞 +20 100 123 4567")
+                st.markdown(f"""
+                <a href="https://wa.me/201001234567?text=مرحباً، مهتم بـ {property_type} في {district}" 
+                   target="_blank" style="text-decoration:none;">
+                    <button style="width:100%; padding:0.5rem; background:#25D366; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600;">
+                        📱 WhatsApp
+                    </button>
+                </a>
+                """, unsafe_allow_html=True)
             with col_b3:
-                if st.button("📅 احجز معاينة", use_container_width=True):
-                    st.success("✅ هنرسلك تفاصيل المعاينة")
+                st.markdown(f"""
+                <a href="tel:+201001234567" style="text-decoration:none;">
+                    <button style="width:100%; padding:0.5rem; background:#667eea; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600;">
+                        📞 اتصل
+                    </button>
+                </a>
+                """, unsafe_allow_html=True)
+            with col_b4:
+                if PDF_AVAILABLE:
+                    pdf_bytes = generate_property_pdf(st.session_state.current_prediction)
+                    if pdf_bytes:
+                        st.download_button(
+                            "📄 PDF",
+                            data=pdf_bytes,
+                            file_name=f"property_{district}_{datetime.now().strftime('%Y%m%d')}.pdf",
+                            mime="application/pdf",
+                            use_container_width=True,
+                        )
             
             # الصور
             st.markdown("### 📸 صور العقار")
@@ -399,13 +431,15 @@ with tab2:
 with tab3:
     st.markdown('<div class="section-header">🗺️ خريطة العقارات التفاعلية</div>', unsafe_allow_html=True)
     
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
     with col1:
         map_gov = st.selectbox("المحافظة", df['governorate'].unique(), key='map_g')
     with col2:
         map_type = st.selectbox("النوع", ['الكل'] + list(df['property_type'].unique()), key='map_t')
     with col3:
         max_points = st.slider("عدد النقاط", 100, 2000, 500, key='map_p')
+    with col4:
+        map_view = st.selectbox("طريقة العرض", ['عادي', '🔥 خريطة حرارية'], key='map_v')
     
     filtered = df[df['governorate'] == map_gov]
     if map_type != 'الكل':
@@ -420,14 +454,22 @@ with tab3:
         m = folium.Map(location=[center_lat, center_lon], zoom_start=11,
                        tiles='CartoDB positron')
         
-        for _, row in sample.iterrows():
-            color = 'red' if row['price'] > sample['price'].median() else 'blue'
-            folium.CircleMarker(
-                location=[row['latitude'], row['longitude']],
-                radius=5,
-                popup=f"<b>{row['property_type']}</b><br>💰 {row['price']:,.0f} EGP<br>📐 {row['size']:.0f} م²<br>📍 {row['district']}",
-                color=color, fill=True, fillOpacity=0.6
-            ).add_to(m)
+        if map_view == '🔥 خريطة حرارية':
+            # Heatmap
+            from folium.plugins import HeatMap
+            heat_data = [[row['latitude'], row['longitude'], 
+                          min(row['price'] / 1e7, 1)] for _, row in sample.iterrows()]
+            HeatMap(heat_data, radius=15, blur=20, max_zoom=13).add_to(m)
+        else:
+            # Normal markers
+            for _, row in sample.iterrows():
+                color = 'red' if row['price'] > sample['price'].median() else 'blue'
+                folium.CircleMarker(
+                    location=[row['latitude'], row['longitude']],
+                    radius=5,
+                    popup=f"<b>{row['property_type']}</b><br>💰 {row['price']:,.0f} EGP<br>📐 {row['size']:.0f} م²<br>📍 {row['district']}",
+                    color=color, fill=True, fillOpacity=0.6
+                ).add_to(m)
         
         folium_static(m, width=1200, height=600)
         
