@@ -94,8 +94,11 @@ except Exception as e:
 
 
 # ═══════════════════════════════════════════════════════════════
-# APPLY THEME
+# APPLY THEMES (both dark_theme + theme)
 # ═══════════════════════════════════════════════════════════════
+# 1) Global CSS (form, cards, layout)
+st.markdown(get_global_css(lang=lang), unsafe_allow_html=True)
+# 2) Theme CSS (dark/light colors)
 st.markdown(get_theme_css(dark=dark, lang=lang), unsafe_allow_html=True)
 
 
@@ -307,48 +310,45 @@ with tab1:
 
     # ──────────────── LEFT: FORM ────────────────
     with col1:
-        st.markdown(f'<div class="form-card">', unsafe_allow_html=True)
         st.markdown(get_section_header_html("📝", L["form_title"]), unsafe_allow_html=True)
 
         governorate = st.selectbox(
-            f"🏙️ {L['gov']}",
+            L["gov"],
             ["Cairo", "Giza", "Matrouh", "Red Sea", "Alexandria", "Suez"],
         )
 
         districts_available = sorted(
             df[df["governorate"] == governorate]["district"].unique().tolist()
         )
-        district = st.selectbox(f"📍 {L['district']}", districts_available)
+        district = st.selectbox(L["district"], districts_available)
 
         property_type = st.selectbox(
-            f"🏢 {L['ptype']}",
+            L["ptype"],
             ["Apartment", "Villa", "Townhouse", "Duplex", "Penthouse",
              "Twin House", "iVilla", "Hotel Apartment", "Chalet"],
         )
 
         c1, c2 = st.columns(2)
         with c1:
-            size = st.number_input(f"📐 {L['size']}", 20, 5000, 200, 10)
-            bathrooms = st.number_input(f"🚿 {L['baths']}", 1, 15, 2)
+            size = st.number_input(L["size"], 20, 5000, 200, 10)
+            bathrooms = st.number_input(L["baths"], 1, 15, 2)
         with c2:
-            bedrooms = st.number_input(f"🛏️ {L['beds']}", 0, 15, 3)
-            amenity_count = st.number_input(f"✨ {L['amenities']}", 0, 20, 5)
+            bedrooms = st.number_input(L["beds"], 0, 15, 3)
+            amenity_count = st.number_input(L["amenities"], 0, 20, 5)
 
         c3, c4 = st.columns(2)
         with c3:
             completion = st.selectbox(
-                f"🏗️ {L['completion']}",
+                L["completion"],
                 ["completed", "off_plan", "completed_primary", "off_plan_primary"],
             )
         with c4:
             furnished = st.selectbox(
-                f"🛋️ {L['furnished']}",
+                L["furnished"],
                 ["Unfurnished", "Furnished", "PARTLY"],
             )
 
-        images_count = st.slider(f"📸 {L['images']}", 0, 30, 10)
-
-        st.markdown("</div>", unsafe_allow_html=True)
+        images_count = st.slider(L["images"], 0, 30, 10)
 
         predict_btn = st.button(
             L["predict_btn"],
@@ -778,6 +778,102 @@ with tab5:
                 if st.button("🗑️ Remove", key=f"del_{i}", use_container_width=True):
                     st.session_state.favorites.pop(i)
                     st.rerun()
+
+
+
+
+# ═══════════════════════════════════════════════════════════════
+# EXTRA FIXES (icons + forms)
+# ═══════════════════════════════════════════════════════════════
+st.markdown("""
+<style>
+/* Input labels - bold + clean */
+label[data-testid="stWidgetLabel"] p,
+.stSelectbox label, .stNumberInput label, .stSlider label {
+    font-weight: 700 !important;
+    font-size: 13px !important;
+    color: #374151 !important;
+    margin-bottom: 4px !important;
+}
+
+/* Form inputs - bigger + rounded */
+.stSelectbox > div > div,
+.stNumberInput > div > div > input,
+.stTextInput > div > div > input {
+    border-radius: 12px !important;
+    border: 1.5px solid #e5e7eb !important;
+    padding: 10px 14px !important;
+    font-size: 14px !important;
+    background: #f9fafb !important;
+}
+
+/* Tabs styling */
+.stTabs [data-baseweb="tab-list"] {
+    gap: 4px !important;
+    background: #f3f4f6 !important;
+    padding: 6px !important;
+    border-radius: 14px !important;
+    border: none !important;
+}
+.stTabs [data-baseweb="tab"] {
+    border-radius: 10px !important;
+    padding: 10px 16px !important;
+    font-weight: 700 !important;
+    font-size: 13px !important;
+    color: #6b7280 !important;
+    background: transparent !important;
+}
+.stTabs [aria-selected="true"] {
+    background: white !important;
+    color: #6366f1 !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+}
+
+/* Section header icon fix */
+.section-icon {
+    font-size: 20px !important;
+    line-height: 1 !important;
+}
+
+/* Buttons - bigger */
+.stButton > button {
+    border-radius: 12px !important;
+    padding: 12px 20px !important;
+    font-weight: 800 !important;
+    font-size: 14px !important;
+    min-height: 46px !important;
+}
+
+/* Metric cards */
+[data-testid="stMetricValue"] {
+    font-size: 22px !important;
+    font-weight: 800 !important;
+    color: #6366f1 !important;
+}
+[data-testid="stMetricLabel"] {
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    color: #6b7280 !important;
+}
+
+/* Slider label */
+.stSlider label {
+    font-weight: 700 !important;
+}
+
+/* Remove ugly default focus rings */
+.stSelectbox > div > div:focus-within,
+.stNumberInput > div > div > input:focus {
+    border-color: #6366f1 !important;
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.1) !important;
+}
+
+/* Better spacing */
+.element-container {
+    margin-bottom: 8px !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
 
 # ═══════════════════════════════════════════════════════════════
