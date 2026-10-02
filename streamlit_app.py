@@ -8,6 +8,16 @@ import plotly.graph_objects as go
 from pathlib import Path
 import folium
 from streamlit_folium import folium_static
+from datetime import datetime
+
+# Custom modules
+try:
+    from mock_images import get_property_images
+    from favorites import add_favorite, remove_favorite, get_favorites, is_favorite
+    from neighborhood import render_neighborhood_info
+    CUSTOM_MODULES = True
+except ImportError:
+    CUSTOM_MODULES = False
 
 st.set_page_config(
     page_title="Egypt Real Estate AI",
@@ -84,6 +94,12 @@ except Exception as e:
     loaded = False
     st.error(f"Error loading: {e}")
 
+# Initialize session state
+if "favorites" not in st.session_state:
+    st.session_state.favorites = []
+if "current_prediction" not in st.session_state:
+    st.session_state.current_prediction = None
+
 # ═══════════════════════════════════════════════════════════════
 # HEADER
 # ═══════════════════════════════════════════════════════════════
@@ -103,12 +119,13 @@ if not loaded:
 # ═══════════════════════════════════════════════════════════════
 # TABS
 # ═══════════════════════════════════════════════════════════════
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
     "🎯 التوقع",
     "📊 تحليل السوق",
     "🗺️ الخريطة",
     "🧮 حاسبة الرهن",
     "⭐ العقارات المميزة",
+    "❤️ المفضلة",
     "ℹ️ عن المشروع"
 ])
 
@@ -221,6 +238,48 @@ with tab1:
             </div>
             """, unsafe_allow_html=True)
             
+            # نحفظ التوقع في session state
+            st.session_state.current_prediction = {
+                "id": f"pred_{len(st.session_state.favorites)}",
+                "governorate": governorate,
+                "district": district,
+                "property_type": property_type,
+                "size": size,
+                "bedrooms": bedrooms,
+                "bathrooms": bathrooms,
+                "price": price,
+                "ppm2": ppm2,
+            }
+            
+            # أزرار الإجراءات
+            col_b1, col_b2, col_b3 = st.columns(3)
+            with col_b1:
+                if st.button("❤️ أضف للمفضلة", use_container_width=True):
+                    add_favorite(st.session_state.current_prediction)
+                    st.success("✅ اتحفظ في المفضلة!")
+            with col_b2:
+                if st.button("📞 اتصل بالوكيل", use_container_width=True):
+                    st.info("📞 +20 100 123 4567")
+            with col_b3:
+                if st.button("📅 احجز معاينة", use_container_width=True):
+                    st.success("✅ هنرسلك تفاصيل المعاينة")
+            
+            # الصور
+            st.markdown("### 📸 صور العقار")
+            if CUSTOM_MODULES:
+                images = get_property_images(
+                    st.session_state.current_prediction["id"],
+                    property_type,
+                    count=5
+                )
+                
+                # نعرض الصور في slider
+                img_cols = st.columns(5)
+                for i, img_url in enumerate(images):
+                    with img_cols[i]:
+                        st.image(img_url, use_container_width=True)
+            
+            # مقارنة مع السوق
             market_median = df[(df['governorate'] == governorate) &
                                 (df['property_type'] == property_type)]['price'].median()
             
@@ -231,6 +290,11 @@ with tab1:
                     st.metric("📊 متوسط السوق", f"{market_median:,.0f} EGP")
                 with col_y:
                     st.metric("📈 الفرق", f"{diff_pct:+.1f}%")
+            
+            # معلومات الحي
+            if CUSTOM_MODULES:
+                st.markdown("---")
+                render_neighborhood_info(district)
         else:
             st.markdown("""
             <div style="text-align:center;padding:4rem 2rem;color:#999;">
@@ -496,9 +560,47 @@ with tab5:
 
 
 # ═══════════════════════════════════════════════════════════════
-# TAB 6: ABOUT
+# TAB 6: FAVORITES
 # ═══════════════════════════════════════════════════════════════
 with tab6:
+    st.markdown('<div class="section-header">❤️ العقارات المفضلة</div>', unsafe_allow_html=True)
+    
+    favorites = get_favorites()
+    
+    if len(favorites) == 0:
+        st.markdown("""
+        <div style="text-align:center;padding:4rem 2rem;color:#999;">
+            <div style="font-size:5rem;">💔</div>
+            <h3 style="color:#667eea;">مفيش عقارات في المفضلة</h3>
+            <p>اذهب لصفحة التوقع وأضف عقارات للمفضلة</p>
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown(f"### عندك {len(favorites)} عقار في المفضلة")
+        
+        cols = st.columns(3)
+        for i, fav in enumerate(favorites):
+            with cols[i % 3]:
+                st.markdown(f"""
+                <div class="metric-card" style="margin-bottom:1rem;">
+                    <h3>{fav['property_type']}</h3>
+                    <div class="value" style="font-size:1.3rem;">{fav['price']:,.0f} EGP</div>
+                    <p style="color:#666;margin:0.5rem 0;">
+                        📍 {fav['district']}<br>
+                        🏙️ {fav['governorate']}<br>
+                        📐 {fav['size']:.0f} م² | 🛏️ {fav['bedrooms']:.0f}BR
+                    </p>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                if st.button(f"🗑️ احذف", key=f"del_{i}", use_container_width=True):
+                    remove_favorite(fav['id'])
+                    st.rerun()
+
+# ═══════════════════════════════════════════════════════════════
+# TAB 7: ABOUT
+# ═══════════════════════════════════════════════════════════════
+with tab7:
     st.markdown('<div class="section-header">ℹ️ عن المشروع</div>', unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
