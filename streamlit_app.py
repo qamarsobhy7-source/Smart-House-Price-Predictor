@@ -1,1246 +1,1168 @@
-"""Smart House Price Predictor — v13.0"""
+"""
+Egypt Real Estate AI — Modern App v13
+Best of Property Finder + Bayut + Zillow + Aqarmap + Nawy
+"""
 import streamlit as st
 import pandas as pd
 import numpy as np
-import plotly.graph_objects as go
-import shap
-import time
-from pathlib import Path
-import sys
 import joblib
+import plotly.express as px
+import plotly.graph_objects as go
+from pathlib import Path
+import folium
+from streamlit_folium import folium_static
+from datetime import datetime
+import io
+import sys
+import json
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
+# Setup
+BASE = Path(__file__).resolve().parent
+sys.path.insert(0, str(BASE))
 
-# Load time series forecasts
-@st.cache_resource
-def _load_forecasts():
-    """Load time series forecasts (cached)."""
-    try:
-        ts_path = Path(__file__).resolve().parent / "models" / "time_series_forecasts.joblib"
-        if ts_path.exists():
-            return joblib.load(ts_path)
-    except Exception:
-        pass
-    return None
+# Modern theme
+from modern_theme import get_css, get_theme, t, load_translations
 
-
-# Load map data
-@st.cache_resource
-def _load_map_data():
-    """Load map data (cached)."""
-    try:
-        map_path = Path(__file__).resolve().parent / "data" / "real_data" / "map_data.csv"
-        if map_path.exists():
-            return pd.read_csv(map_path)
-    except Exception:
-        pass
-    return None
-
-# ═══════════════════════════════════════════════════════
-# IMPORTS — Internal modules
-# ═══════════════════════════════════════════════════════
-from location_selector import render_hierarchical_selector
-from theme import get_global_css, get_hero_html, get_section_header_html, get_step_header_html
-from neighborhood_insights import render_neighborhood_insights
-from popular_areas import render_popular_areas
-from property_types import render_property_types, get_coefficient, get_note
-from dark_theme import get_css as get_theme_css
-from featured_properties import render_featured_properties
-from filters_chips import render_quick_filters
-from loading_ui import ai_thinking_indicator, progress_bar
-from nearby_transport import render_transport
-from safety_schools import render_safety_schools
-from mortgage_calculator import render_mortgage_calculator
-from footer_about import render_trust_badges
+# Model
 from predictor import (
     load_artifacts, get_category_values, validate_input,
     build_features, predict_with_confidence, format_price,
     calculate_roi, recommend_similar_properties,
 )
-from translations import TRANSLATIONS
 
-# PDF Report
+# PDF
 try:
-    from pdf_report import generate_pdf_report
+    from reportlab.lib.pagesizes import A4
+    from reportlab.pdfgen import canvas
     PDF_AVAILABLE = True
 except ImportError:
     PDF_AVAILABLE = False
 
-# Monitoring
+# Images
 try:
-    from monitoring import log_prediction
-    MONITORING_AVAILABLE = True
+    from mock_images import get_property_images
+    IMAGES_OK = True
 except ImportError:
-    MONITORING_AVAILABLE = False
-
-# AraBERT / Sentiment
-try:
-    from arabert_helper import analyze_sentiment, get_sentiment_emoji
-    ARABERT_AVAILABLE = True
-except ImportError:
-    from sentiment_helper import analyze_sentiment
-    ARABERT_AVAILABLE = False
-    def get_sentiment_emoji(label):
-        return {"positive": "😊", "negative": "😟", "neutral": "😐"}.get(label, "😐")
+    IMAGES_OK = False
 
 
-def _translate_feat_name(name, L, FEATURE_MAP, lang='ar'):
-    """Translate a feature name from the model to the current language."""
-    raw = name.replace('num__','').replace('cat__','')
-    if raw.startswith('city_'):
-        val = raw.replace('city_','').replace('_',' ').title()
-        if lang == 'ar':
-            val = CITY_NAMES.get(val, val)
-            prefix = L.get('feat_city','City')
-        else:
-            prefix = 'City'
-        return prefix + ': ' + val
-    if raw.startswith('district_'):
-        val = raw.replace('district_','').replace('_',' ').title()
-        if lang == 'ar':
-            val = CITY_NAMES.get(val, val)
-            prefix = L.get('feat_district','District')
-        else:
-            prefix = 'District'
-        return prefix + ': ' + val
-    if raw.startswith('compound_'):
-        val = raw.replace('compound_','').replace('_',' ').title()
-        if lang == 'ar':
-            val = CITY_NAMES.get(val, val)
-            prefix = L.get('feat_compound','Compound')
-        else:
-            prefix = 'Compound'
-        return prefix + ': ' + val
-    clean = raw.replace('_',' ').title()
-    key = FEATURE_MAP.get(clean.lower(), '')
-    return L.get(key, clean)
-
-# Load place name translations from JSON
-import json as _json
-_CITY_MAP_PATH = Path(__file__).resolve().parent / "data" / "place_translations.json"
-try:
-    CITY_NAMES = _json.loads(_CITY_MAP_PATH.read_text(encoding='utf-8'))
-    # Alias للحفاظ على التوافق
-    CITY_NAMES.update({
-        'Al Daqahlya': 'الدقهلية',
-        'New Cairo City': 'القاهرة الجديدة',
-    })
-except Exception as _e:
-    CITY_NAMES = {'Cairo': 'القاهرة', 'Giza': 'الجيزة', 'Alexandria': 'الإسكندرية'}
-
-# Feature name translation map
-FEATURE_MAP = {
-    'area': 'feat_area', 'bedrooms': 'feat_bedrooms', 'bathrooms': 'feat_bathrooms',
-    'size': 'feat_size', 'amenity count': 'feat_amenity', 'amenity study': 'feat_study',
-    'distance to cairo': 'feat_dist_cairo', 'title length': 'feat_title_len',
-    'title word count': 'feat_word_count', 'city': 'feat_city', 'district': 'feat_district',
-    'gps': 'feat_gps', 'compound': 'feat_compound', 'age': 'feat_age',
-    'area per bedroom': 'feat_area_bed',
-    'geo cluster': 'geo_cluster', 'rooms total': 'rooms_total',
-    'latitude': 'latitude', 'longitude': 'longitude',
-    'amenity count': 'feat_amenity', 'amenity study': 'feat_study',
-}
-
-
-# Use AraBERT for Arabic sentiment analysis
-try:
-    from arabert_helper import analyze_sentiment, get_sentiment_emoji
-    ARABERT_AVAILABLE = True
-except ImportError:
-    from sentiment_helper import analyze_sentiment
-    ARABERT_AVAILABLE = False
-    def get_sentiment_emoji(label):
-        return {"positive": "😊", "negative": "😟", "neutral": "😐"}.get(label, "😐")
-
-from pdf_report import generate_pdf_report
-PDF_AVAILABLE = True
-
-try:
-    from monitoring import log_prediction
-    MONITORING_AVAILABLE = True
-except ImportError:
-    MONITORING_AVAILABLE = False
-
-
+# ═══════════════════════════════════════════════════════
+# PAGE CONFIG
+# ═══════════════════════════════════════════════════════
 st.set_page_config(
-    page_title="Smart Price Predictor",
+    page_title="Egypt Real Estate AI",
     page_icon="🏠",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
 
 
+# ═══════════════════════════════════════════════════════
+# SESSION STATE
+# ═══════════════════════════════════════════════════════
+if "lang" not in st.session_state:
+    st.session_state.lang = "ar"
+if "dark" not in st.session_state:
+    st.session_state.dark = False
+if "favorites" not in st.session_state:
+    st.session_state.favorites = []
+if "current_prediction" not in st.session_state:
+    st.session_state.current_prediction = None
+if "compare_list" not in st.session_state:
+    st.session_state.compare_list = []
+
+lang = st.session_state.lang
+dark = st.session_state.dark
+rtl = "rtl" if lang == "ar" else "ltr"
+
+
+# ═══════════════════════════════════════════════════════
+# APPLY CSS
+# ═══════════════════════════════════════════════════════
+st.markdown(get_css(dark=dark, lang=lang), unsafe_allow_html=True)
+
+
+# ═══════════════════════════════════════════════════════
+# LOAD MODEL & DATA
+# ═══════════════════════════════════════════════════════
 @st.cache_resource
-def _load():
+def _load_model():
     return load_artifacts()
 
+@st.cache_data
+def _load_df():
+    return pd.read_csv(BASE / "data" / "processed" / "FINAL_DATASET_v9.csv")
+
+@st.cache_data
+def _load_hierarchy():
+    with open(BASE / "data" / "egypt_hierarchy.json", "r", encoding="utf-8") as f:
+        return json.load(f)
+
 try:
-    model, metadata, mappings = _load()
-    categories = get_category_values(mappings)
+    model, metadata, mappings = _load_model()
+    df = _load_df()
+    hierarchy = _load_hierarchy()
+    LOADED = True
 except Exception as e:
-    st.error(f"Model loading error: {e}")
+    LOADED = False
+    st.error(f"⚠️ Error loading: {e}")
+
+
+if not LOADED:
     st.stop()
 
 
-# ============================================================
-# TOP BAR — Language + Dark Mode (clear & visible)
-# ============================================================
-_top = st.columns([3, 1, 1])
+# ═══════════════════════════════════════════════════════
+# TRANSLATIONS HELPER
+# ═══════════════════════════════════════════════════════
+def tr(section, key):
+    return t(section, key, lang)
 
-with _top[1]:
-    lang_option = st.selectbox(
-        "🌐",
-        ["English", "العربية"],
-        key="lang_selector_v2",
-        label_visibility="collapsed",
-    )
-
-with _top[2]:
-    dark_mode = st.toggle(
-        "🌙",
-        value=False,
-        key="dark_mode_toggle_v2",
-        help="Dark mode / الوضع الليلي",
-    )
-
-lang = "ar" if "العربية" in lang_option else "en"
-L = TRANSLATIONS[lang]
-is_rtl = (lang == "ar")
 
 # ═══════════════════════════════════════════════════════
-# GLOBAL CSS — Light/Dark theme
+# PDF GENERATOR
 # ═══════════════════════════════════════════════════════
-st.markdown(get_theme_css(dark=dark_mode, lang=lang), unsafe_allow_html=True)
+def generate_pdf(prop):
+    if not PDF_AVAILABLE:
+        return None
+    buf = io.BytesIO()
+    c = canvas.Canvas(buf, pagesize=A4)
+    w, h = A4
 
-# Fix material icons (JS)
-try:
-    from dark_theme import get_icon_fix_js
-    st.markdown(get_icon_fix_js(), unsafe_allow_html=True)
-except Exception:
-    pass
+    c.setFillColorRGB(0.39, 0.4, 0.95)
+    c.rect(0, h - 100, w, 100, fill=1, stroke=0)
+    c.setFillColorRGB(1, 1, 1)
+    c.setFont("Helvetica-Bold", 22)
+    c.drawString(40, h - 60, "Egypt Real Estate AI")
+    c.setFont("Helvetica", 11)
+    c.drawString(40, h - 85, "Property Valuation Report")
+
+    c.setFillColorRGB(0, 0, 0)
+    y = h - 150
+    c.setFont("Helvetica-Bold", 14)
+    c.drawString(40, y, "Property Details")
+    y -= 30
+    c.setFont("Helvetica", 11)
+
+    details = [
+        ("Type", prop.get("property_type", "N/A")),
+        ("Governorate", prop.get("governorate", "N/A")),
+        ("District", prop.get("district", "N/A")),
+        ("Size", f"{prop.get('size', 0):.0f} m2"),
+        ("Bedrooms", f"{prop.get('bedrooms', 0):.0f}"),
+        ("Bathrooms", f"{prop.get('bathrooms', 0):.0f}"),
+    ]
+    for k, v in details:
+        c.drawString(60, y, f"{k}: {v}")
+        y -= 22
+
+    y -= 20
+    c.setFillColorRGB(0.95, 0.35, 0.4)
+    c.rect(40, y - 80, w - 80, 80, fill=1, stroke=0)
+    c.setFillColorRGB(1, 1, 1)
+    c.setFont("Helvetica-Bold", 16)
+    c.drawString(60, y - 35, f"Estimated Price: {prop.get('price', 0):,.0f} EGP")
+    c.setFont("Helvetica", 12)
+    c.drawString(60, y - 60, f"Per m2: {prop.get('ppm2', 0):,.0f} EGP")
+
+    c.setFillColorRGB(0.5, 0.5, 0.5)
+    c.setFont("Helvetica", 9)
+    c.drawString(40, 40, f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+    c.save()
+    buf.seek(0)
+    return buf.getvalue()
+
 
 # ═══════════════════════════════════════════════════════
-# SIDEBAR — Auth + Saved Properties
-# ═══════════════════════════════════════════════════════
-
-# ============================================================
-m = metadata["metrics"]
-
-
-# ============================================================
 # NAVBAR
-# ============================================================
-navbar_html = '<div class="nav"><div class="nav-logo">🏠 Smart<span>Price</span></div><div class="nav-tag"></div></div>'
-st.markdown(navbar_html, unsafe_allow_html=True)
+# ═══════════════════════════════════════════════════════
+col_logo, col_space, col_lang, col_theme = st.columns([3, 4, 1, 1])
 
-# ============================================================
+with col_logo:
+    st.markdown(f"""
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 0;">
+        <span style="font-size:28px;">🏠</span>
+        <span style="font-size:20px;font-weight:900;color:{get_theme(dark)['primary']};">
+            {tr('navbar', 'brand')}
+        </span>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col_lang:
+    label = "🌐 EN" if lang == "ar" else "🌐 AR"
+    if st.button(label, key="lang_btn", use_container_width=True):
+        st.session_state.lang = "en" if lang == "ar" else "ar"
+        st.rerun()
+
+with col_theme:
+    theme_icon = "☀️" if dark else "🌙"
+    if st.button(theme_icon, key="theme_btn", use_container_width=True):
+        st.session_state.dark = not dark
+        st.rerun()
+
+
+# ═══════════════════════════════════════════════════════
 # HERO
-# ============================================================
-r2_str = f"{m['r2']:.4f}"
-mape_str = f"{m['mape']:.2f}"
-# نستخدم عدد المحافظات من الهيكل (27) — مش cities في الموديل (9)
-import json as _json_hero
-_hier_hero = _json_hero.loads((Path(__file__).resolve().parent / "data" / "egypt_hierarchy.json").read_text(encoding="utf-8"))
-cities_str = str(len(_hier_hero["governorates"]))
-total_str = f"{metadata['training_info']['n_total']:,}"
+# ═══════════════════════════════════════════════════════
+metrics = metadata["metrics"]
+training = metadata["training_info"]
 
-hero_html = get_hero_html(
-    lang=lang,
-    accuracy=r2_str,
-    error=mape_str + "%",
-    cities=len(_hier_hero["governorates"]),
-    listings=int(metadata['training_info']['n_total']),
-)
-st.markdown(hero_html, unsafe_allow_html=True)
+n_gov = sum(1 for g in hierarchy["governorates"] if g["listings"] > 0)
 
-# ═══════════════════════════════════════════════════════
-# FEATURED PROPERTIES (like Property Finder)
-# ═══════════════════════════════════════════════════════
-render_featured_properties(lang=lang)
-
-
-# ═══════════════════════════════════════════════════════
-# POPULAR AREAS (like Property Finder)
-# ═══════════════════════════════════════════════════════
-render_popular_areas(lang=lang)
-
-# ═══════════════════════════════════════════════════════
-# PROPERTY TYPES (like Property Finder)
-# ═══════════════════════════════════════════════════════
-render_property_types(lang=lang)
+st.markdown(f"""
+<div class="hero">
+    <div class="hero-badge">{tr('hero', 'badge')}</div>
+    <h1 class="hero-title">{tr('hero', 'title')}</h1>
+    <p class="hero-subtitle">{tr('hero', 'subtitle')}</p>
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-value">{metrics['r2']:.4f}</div>
+            <div class="stat-label">🎯 {tr('stats', 'accuracy')}</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">{metrics['mape']:.1f}%</div>
+            <div class="stat-label">📊 {tr('stats', 'error')}</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">{n_gov}</div>
+            <div class="stat-label">🏛️ {tr('stats', 'governorates')}</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">{training['n_total']:,}</div>
+            <div class="stat-label">🏘️ {tr('stats', 'listings')}</div>
+        </div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
 
 # ═══════════════════════════════════════════════════════
-# QUICK FILTERS (like Property Finder)
+# MAIN TABS
 # ═══════════════════════════════════════════════════════
-render_quick_filters(lang=lang)
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+    "🎯 " + tr('estimator', 'title').replace('🎯 ', ''),
+    "📊 " + tr('market', 'title').replace('📊 ', ''),
+    "🗺️ " + ("الخريطة" if lang == "ar" else "Map"),
+    "🧮 " + tr('mortgage', 'title').replace('🧮 ', ''),
+    "⚖️ " + tr('compare', 'title').replace('⚖️ ', ''),
+    "❤️ " + tr('favorites', 'title').replace('❤️ ', ''),
+])
 
-# Trust Badges
-render_trust_badges(lang=lang)
 
-
-
-
-# ============================================================
-# 2-COLUMN: FORM (left) + PREVIEW (right)
-# ============================================================
-col_left, col_right = st.columns([6, 4], gap="large")
-
-with col_left:
-    # STEP 1: LOCATION
-    step1_title = get_step_header_html(1, "📍", L['step1'], "اختار المحافظة والمدينة والحي" if lang=="ar" else "Choose governorate, city, district")
-    st.markdown('<div class="form-card">' + step1_title, unsafe_allow_html=True)
-
-    # ═══════════════════════════════════════════════
-    # 5-LEVEL HIERARCHICAL SELECTOR
-    # ═══════════════════════════════════════════════
-    _loc = render_hierarchical_selector(lang=lang)
-    if _loc is None:
-        st.stop()
-
-    city = _loc["city"]
-    district = _loc["district"]
-    compound = _loc["compound"]
-    _gov_selected = _loc["governorate_en"]
-    _gov_status = _loc["data_status"]
-
-    # ── Fallbacks لو المستخدم اختار "الكل" ──
-    if city == "all":
-        # نختار أول مدينة حقيقية في المحافظة دي
-        import json as _json
-        _h = _json.loads((Path(__file__).resolve().parent / "data" / "egypt_hierarchy.json").read_text(encoding="utf-8"))
-        for _g in _h["governorates"]:
-            if _g["en"] == _gov_selected:
-                _real = list({c["source_city"] for c in _g["cities_with_data"]})
-                city = _real[0] if _real else "Cairo"
-                break
-    if district == "all":
-        import json as _json
-        _h = _json.loads((Path(__file__).resolve().parent / "data" / "egypt_hierarchy.json").read_text(encoding="utf-8"))
-        for _g in _h["governorates"]:
-            if _g["en"] == _gov_selected:
-                _d = [c for c in _g["cities_with_data"] if c["source_city"] == city]
-                district = _d[0]["en"] if _d else "New Cairo City"
-                break
-
-    # Warning for sparse data
-    if _gov_status in ("low", "minimal"):
-        _warn_txt = (
-            f"⚠️ البيانات المتاحة لمحافظة **{_loc['governorate_ar']}** محدودة — التوقعات تقريبية."
-            if lang == "ar"
-            else f"⚠️ Data for **{_loc['governorate_en']}** is limited — estimates are approximate."
+# ═══════════════════════════════════════════════════════
+# TAB 1: AI ESTIMATOR
+# ═══════════════════════════════════════════════════════
+with tab1:
+    col_form, col_result = st.columns([5, 7], gap="large")
+    
+    with col_form:
+        st.markdown(f"""
+        <div class="section-header">
+            <div class="section-icon">📝</div>
+            <div>
+                <h2 class="section-title">{tr('estimator', 'title').replace('🎯 ', '')}</h2>
+                <div class="section-subtitle">{tr('estimator', 'subtitle')}</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown(f"**1️⃣ {tr('estimator', 'step1')}**")
+        
+        gov_options = [g for g in hierarchy["governorates"] if g["listings"] > 0]
+        gov_names = [f"{g['ar']} ({g['listings']:,})" if lang == "ar" else f"{g['en']} ({g['listings']:,})" for g in gov_options]
+        
+        gov_idx = st.selectbox(
+            tr('hero', 'governorate'),
+            range(len(gov_options)),
+            format_func=lambda i: gov_names[i],
+            key="sel_gov",
         )
-        st.warning(_warn_txt)
-
-    st.markdown('</div>', unsafe_allow_html=True)
-
-    # STEP 2: SIZE & ROOMS
-    step2_title = get_step_header_html(2, "📐", L['step2'], "المساحة وعدد الغرف" if lang=="ar" else "Area and rooms count")
-    st.markdown('<div class="form-card">' + step2_title, unsafe_allow_html=True)
-
-    # ═══════════════════════════════════════════════════════
-    # ROW 1: Area + Bedrooms + Bathrooms (expanded)
-    # ═══════════════════════════════════════════════════════
-    c1, c2, c3 = st.columns(3)
-    with c1:
-        area = st.slider(L["area"], 20, 600, 150, 5, key="s_area")
-    with c2:
-        bedrooms = st.selectbox(
-            L["bedrooms"],
-            ["Studio", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
-            index=3, key="s_beds",
+        selected_gov = gov_options[gov_idx]
+        
+        cities = selected_gov.get("cities", [])
+        if cities:
+            city_names = [c["ar"] if lang == "ar" else c["en"] for c in cities]
+            city_idx = st.selectbox(
+                tr('hero', 'city'),
+                range(len(cities)),
+                format_func=lambda i: f"{city_names[i]} ({cities[i]['listings']:,})",
+                key="sel_city",
+            )
+            selected_city = cities[city_idx]
+        else:
+            selected_city = {"districts": [], "compounds": []}
+            st.selectbox(tr('hero', 'city'), ["—"], key="sel_city_empty")
+        
+        districts = selected_city.get("districts", [])
+        if districts:
+            dist_names = [d["ar"] if lang == "ar" else d["en"] for d in districts]
+            dist_idx = st.selectbox(
+                tr('hero', 'district'),
+                range(len(districts)),
+                format_func=lambda i: f"{dist_names[i]} ({districts[i]['listings']:,})",
+                key="sel_dist",
+            )
+            selected_district = districts[dist_idx]
+        else:
+            selected_district = {"en": "Unknown", "ar": "غير معروف"}
+            st.selectbox(tr('hero', 'district'), ["—"], key="sel_dist_empty")
+        
+        compounds = selected_city.get("compounds", [])
+        if compounds:
+            comp_names = ["— " + ("لا يوجد" if lang == "ar" else "None") + " —"] + [c["ar"] if lang == "ar" else c["en"] for c in compounds]
+            comp_idx = st.selectbox(
+                "🏘️ " + ("كومبوند" if lang == "ar" else "Compound"),
+                range(len(comp_names)),
+                format_func=lambda i: comp_names[i],
+                key="sel_comp",
+            )
+            selected_compound = compounds[comp_idx - 1] if comp_idx > 0 else {"en": "No Compound", "ar": "لا يوجد"}
+        else:
+            selected_compound = {"en": "No Compound", "ar": "لا يوجد"}
+        
+        st.markdown("---")
+        st.markdown(f"**2️⃣ {tr('estimator', 'step2')}**")
+        
+        ptype_map = {
+            "Apartment": ("شقة", "🏢"),
+            "Villa": ("فيلا", "🏡"),
+            "Townhouse": ("تاون هاوس", "🏘️"),
+            "Duplex": ("دوبلكس", "🏢"),
+            "Penthouse": ("بنتهاوس", "🌇"),
+            "Twin House": ("توين هاوس", "🏠"),
+            "iVilla": ("آي فيلا", "🏰"),
+            "Hotel Apartment": ("شقة فندقية", "🏨"),
+            "Chalet": ("شاليه", "🏖️"),
+        }
+        ptype_labels = [f"{v[1]} {v[0] if lang == 'ar' else k}" for k, v in ptype_map.items()]
+        ptype_keys = list(ptype_map.keys())
+        
+        ptype_idx = st.selectbox(
+            tr('hero', 'property_type'),
+            range(len(ptype_keys)),
+            format_func=lambda i: ptype_labels[i],
+            key="sel_ptype",
         )
-    with c3:
-        bathrooms = st.slider(L["bathrooms"], 1, 8, 2, key="s_baths")
-
-    # ═══════════════════════════════════════════════════════
-    # ROW 2: Reception + Kitchen + Floor (like Property Finder)
-    # ═══════════════════════════════════════════════════════
-    st.markdown("<br>", unsafe_allow_html=True)
-    d1, d2, d3 = st.columns(3)
-    with d1:
-        reception = st.selectbox(
-            L.get("reception", "Reception / صالة"),
-            ["1", "2", "3", "4", "5"],
-            index=0, key="s_reception",
-            help="عدد الصالات / الريسبشن" if lang == "ar" else "Number of reception rooms",
-        )
-    with d2:
-        kitchen = st.selectbox(
-            L.get("kitchen", "Kitchen / مطبخ"),
-            ["1", "2", "3"],
-            index=0, key="s_kitchen",
-            help="عدد المطابخ" if lang == "ar" else "Number of kitchens",
-        )
-    with d3:
-        floor = st.selectbox(
-            L.get("floor", "Floor / الدور"),
-            ["Basement", "Ground", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"],
-            index=2, key="s_floor",
-            help="الطابق" if lang == "ar" else "Floor number",
-        )
-
-    # ═══════════════════════════════════════════════════════
-    # ROW 3: Property Type + Finishing + Furnished (like Aqarmap)
-    # ═══════════════════════════════════════════════════════
-    st.markdown("<br>", unsafe_allow_html=True)
-    e1, e2, e3 = st.columns(3)
-    with e1:
-        prop_type = st.selectbox(
-            L.get("prop_type", "Property Type / نوع العقار"),
-            [
-                ("Apartment", "شقة"),
-                ("Villa", "فيلا"),
-                ("Duplex", "دوبلكس"),
-                ("Penthouse", "بنتهاوس"),
-                ("Townhouse", "تاون هاوس"),
-                ("Studio", "ستوديو"),
-                ("Chalet", "شاليه"),
-            ],
-            format_func=lambda x: x[1] if lang == "ar" else x[0],
-            index=0, key="s_ptype",
-        )
-    with e2:
+        selected_ptype = ptype_keys[ptype_idx]
+        
+        c1, c2 = st.columns(2)
+        with c1:
+            size = st.number_input(tr('estimator', 'size'), 30, 5000, 200, 10, key="inp_size")
+            bathrooms = st.number_input(tr('estimator', 'bathrooms'), 1, 15, 2, key="inp_baths")
+        with c2:
+            bedrooms = st.number_input(tr('estimator', 'bedrooms'), 0, 15, 3, key="inp_beds")
+            floor = st.number_input(
+                "🏢 " + ("الطابق" if lang == "ar" else "Floor"),
+                0, 50, 3, key="inp_floor"
+            )
+        
+        st.markdown("---")
+        st.markdown(f"**3️⃣ {tr('estimator', 'step3')}**")
+        
+        finish_options_ar = ["طوب أحمر", "نصف تشطيب", "تشطيب كامل", "سوبر لوكس"]
+        finish_options_en = ["Core & Shell", "Semi Finished", "Finished", "Super Lux"]
+        finish_vals = ["Core & Shell", "Semi Finished", "Finished", "Super Lux"]
+        
         finishing = st.selectbox(
-            L.get("finishing", "Finishing / التشطيب"),
-            [
-                ("N/A", "غير محدد"),
-                ("Semi-Finished", "نصف تشطيب"),
-                ("Finished", "تشطيب عادي"),
-                ("Lux", "لوكس"),
-                ("Super Lux", "سوبر لوكس"),
-                ("Extra Super Lux", "إكسترا سوبر لوكس"),
-            ],
-            format_func=lambda x: x[1] if lang == "ar" else x[0],
-            index=4, key="s_finish",
+            tr('estimator', 'finishing'),
+            finish_vals,
+            format_func=lambda x: finish_options_ar[finish_vals.index(x)] if lang == "ar" else finish_options_en[finish_vals.index(x)],
+            key="inp_finishing",
         )
-    with e3:
+        
         furnished = st.selectbox(
-            L.get("furnished", "Furnished / التأثيث"),
-            [
-                ("Unfurnished", "غير مفروش"),
-                ("Semi-Furnished", "نص مفروش"),
-                ("Fully Furnished", "مفروش بالكامل"),
-            ],
-            format_func=lambda x: x[1] if lang == "ar" else x[0],
-            index=0, key="s_furnish",
+            tr('estimator', 'furnished'),
+            ["Unfurnished", "PARTLY", "Furnished"],
+            format_func=lambda x: {
+                "Unfurnished": tr('estimator', 'furnished_no'),
+                "PARTLY": tr('estimator', 'furnished_partly'),
+                "Furnished": tr('estimator', 'furnished_yes'),
+            }[x],
+            key="inp_furnished",
+        )
+        
+        amenity_count = st.slider(
+            "✨ " + ("عدد الكماليات" if lang == "ar" else "Amenities Count"),
+            0, 20, 5, key="inp_amenities"
+        )
+        
+        st.markdown("---")
+        st.markdown(f"**4️⃣ {tr('estimator', 'step4')}**")
+        
+        predict_btn = st.button(
+            tr('estimator', 'calculate'),
+            type="primary",
+            use_container_width=True,
+            key="predict_btn",
         )
 
-    # ═══════════════════════════════════════════════════════
-    # ROW 4: Year Built + Parking + View
-    # ═══════════════════════════════════════════════════════
-    st.markdown("<br>", unsafe_allow_html=True)
-    f1, f2, f3 = st.columns(3)
-    with f1:
-        year_built = st.slider(
-            L.get("year_built", "Year Built / سنة البناء"),
-            1950, 2026, 2020, 1, key="s_year",
-        )
-    with f2:
-        parking = st.selectbox(
-            L.get("parking", "Parking / مواقف"),
-            ["0", "1", "2", "3", "4", "5"],
-            index=1, key="s_parking",
-            help="عدد مواقف السيارات" if lang == "ar" else "Number of parking spaces",
-        )
-    with f3:
-        view = st.selectbox(
-            L.get("view", "View / الإطلالة"),
-            [
-                ("Street", "شارع"),
-                ("Garden", "حديقة"),
-                ("Pool", "حمام سباحة"),
-                ("Sea", "بحر"),
-                ("Nile", "النيل"),
-                ("Open", "مفتوحة"),
-                ("Landmark", "معلم سياحي"),
-            ],
-            format_func=lambda x: x[1] if lang == "ar" else x[0],
-            index=0, key="s_view",
-        )
 
-    # ── For model compatibility ──
-    _bedrooms_num = "1" if bedrooms == "Studio" else str(bedrooms)
-    _prop_type_en = prop_type[0]
-    _finishing_en = finishing[0]
-    _furnished_en = furnished[0]
-    _view_en = view[0]
-
-
-    st.markdown('</div>', unsafe_allow_html=True)
-
-    # STEP 3: AMENITIES
-    step3_title = get_step_header_html(3, "✨", L['step3'], "اختار المميزات المتاحة" if lang=="ar" else "Select available amenities")
-    st.markdown('<div class="form-card">' + step3_title, unsafe_allow_html=True)
-
-    AMENITY_UI = {
-        L["am_ba"]: "BA", L["am_bw"]: "BW", L["am_cp"]: "CP",
-        L["am_pg"]: "PG", L["am_sp"]: "SP", L["am_se"]: "SE",
-        L["am_ac"]: "AC", L["am_bk"]: "BK", L["am_mr"]: "MR",
-        L["am_st"]: "ST", L["am_co"]: "CO", L["am_gy"]: "GY",
-    }
-    selected_amenities = []
-    cols = st.columns(3)
-    for i, (label, code) in enumerate(AMENITY_UI.items()):
-        with cols[i % 3]:
-            if st.checkbox(label, value=(code in ["BA", "SE"]), key=f"am_{code}"):
-                selected_amenities.append(code)
-
-    st.markdown('</div>', unsafe_allow_html=True)
-
-    # STEP 4: DESCRIPTION
-    step4_title = get_step_header_html(4, "📝", L['step4'], "تفاصيل إضافية (اختياري)" if lang=="ar" else "Additional details (optional)")
-    st.markdown('<div class="form-card">' + step4_title, unsafe_allow_html=True)
-
-    description = st.text_area(
-        L["description"],
-        placeholder=L["desc_placeholder"],
-        height=80, key="s_desc",
-        label_visibility="collapsed",
-    )
-
-    sentiment = analyze_sentiment(description) if description else None
-    if sentiment and sentiment['label'] != 'neutral':
-        emoji = get_sentiment_emoji(sentiment['label'])
-        color = "#10b981" if sentiment['label'] == 'positive' else "#ef4444"
-        score_str = f'{sentiment["score"]:+.2f}'
-        source = sentiment.get('source', 'keywords')
-        source_label = "AraBERT" if source in ['araBERT', 'blended'] else "Keywords"
-        sent_html = (
-            '<div style="background:' + color + '10;border-left:4px solid ' + color
-            + ';padding:0.6rem 0.85rem;border-radius:8px;margin-top:0.5rem;color:' + color
-            + ';font-weight:600;font-size:0.82rem;">'
-            + emoji + ' ' + sentiment["label"].title() + ' sentiment (' + score_str + ')'
-            + ' <span style="opacity:0.7;font-size:0.72rem;">via ' + source_label + '</span>'
-            + '</div>'
-        )
-        st.markdown(sent_html, unsafe_allow_html=True)
-
-    st.markdown('</div>', unsafe_allow_html=True)
-
-
-# RIGHT: LIVE PREVIEW
-with col_right:
-    bd_text = L["studio"] if bedrooms == "studio" else f"{bedrooms} {L['br']}"
-    compound_text = compound if compound != "None" else "—"
-    amenity_count = len(selected_amenities)
-
-    # اسم نوع العقار
-    _ptype_label = prop_type[1] if lang == "ar" else prop_type[0]
-    _finish_label = finishing[1] if lang == "ar" else finishing[0]
-    _furnish_label = furnished[1] if lang == "ar" else furnished[0]
-    _view_label = view[1] if lang == "ar" else view[0]
-    _floor_label = floor if floor not in ("Ground", "Basement") else ("أرضي" if floor == "Ground" and lang == "ar" else "بدروم" if lang == "ar" else floor)
-
-    # ═══════════════════════════════════════════════════════
-    # Modern Live Preview Card (Property Finder style)
-    # ═══════════════════════════════════════════════════════
-    _has_imgs = False
-    _badge_html = (
-        '<div style="position:absolute;top:12px;right:12px;'
-        'background:rgba(255,255,255,0.85);backdrop-filter:blur(10px);'
-        'padding:5px 12px;border-radius:100px;'
-        'font-size:10px;font-weight:800;color:#6366f1;letter-spacing:0.5px;'
-        'z-index:2;">'
-        + L['live_preview'] + '</div>'
-    )
-
-    preview_html = (
-        '<div style="background:white;border:1px solid #e5e7eb;'
-        'border-radius:20px;overflow:hidden;'
-        'box-shadow:0 8px 32px rgba(99,102,241,0.10);">'
-        +
-        # ── Header Image (uploaded or default) ──
-        ('' if _has_imgs else
-           '<div style="height:130px;'
-           'background:linear-gradient(135deg,#667eea,#764ba2,#f093fb);'
-           'display:flex;align-items:center;justify-content:center;'
-           'font-size:52px;position:relative;">🏢' + _badge_html + '</div>')
-        +
-
-        # ── Body ──
-        '<div style="padding:18px;">'
-
-        # Title
-        '<div style="font-size:16px;font-weight:900;color:#1f2937;'
-        'margin-bottom:4px;">'
-        + _ptype_label + ' · ' + f'{area}' + ' م² · ' + bd_text + '</div>'
-
-        # Location
-        '<div style="font-size:11px;color:#6b7280;font-weight:600;'
-        'margin-bottom:14px;">📍 '
-        + (CITY_NAMES.get(city, city) if lang == 'ar' else city)
-        + ' → '
-        + (CITY_NAMES.get(district, district) if lang == 'ar' else district) + '</div>'
-
-        # ── Stats Grid (3 core) ──
-        '<div style="display:grid;grid-template-columns:repeat(3,1fr);'
-        'gap:8px;margin-bottom:14px;">'
-        '<div style="background:#eef2ff;border-radius:10px;padding:9px 4px;text-align:center;">'
-        '<div style="font-size:17px;font-weight:900;color:#6366f1;">' + f'{bathrooms}' + '</div>'
-        '<div style="font-size:9px;color:#6b7280;font-weight:700;'
-        'text-transform:uppercase;margin-top:2px;">' + L['bath_label'] + '</div></div>'
-
-        '<div style="background:#f0fdf4;border-radius:10px;padding:9px 4px;text-align:center;">'
-        '<div style="font-size:17px;font-weight:900;color:#10b981;">' + f'{amenity_count}' + '</div>'
-        '<div style="font-size:9px;color:#6b7280;font-weight:700;'
-        'text-transform:uppercase;margin-top:2px;">' + L['amen_label'] + '</div></div>'
-
-        '<div style="background:#fff7ed;border-radius:10px;padding:9px 4px;text-align:center;">'
-        '<div style="font-size:12px;font-weight:900;color:#f59e0b;'
-        'line-height:1.3;overflow:hidden;text-overflow:ellipsis;'
-        'white-space:nowrap;padding:0 2px;">' + compound_text + '</div>'
-        '<div style="font-size:9px;color:#6b7280;font-weight:700;'
-        'text-transform:uppercase;margin-top:2px;">' + L['comp_label'] + '</div></div>'
-        '</div>'
-
-        # ── Extra details ──
-        '<div style="border-top:1px solid #f3f4f6;padding-top:12px;">'
-        '<div style="font-size:10px;font-weight:800;color:#9ca3af;'
-        'text-transform:uppercase;letter-spacing:0.6px;margin-bottom:8px;">'
-        + ('تفاصيل إضافية' if lang == 'ar' else 'EXTRA DETAILS') + '</div>'
-        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;'
-        'font-size:11px;color:#1f2937;">'
-        '<div style="display:flex;justify-content:space-between;">'
-        '<span style="color:#6b7280;">🛋️ ' + L['reception'] + '</span>'
-        '<b>' + reception + '</b></div>'
-        '<div style="display:flex;justify-content:space-between;">'
-        '<span style="color:#6b7280;">🍳 ' + L['kitchen'] + '</span>'
-        '<b>' + kitchen + '</b></div>'
-        '<div style="display:flex;justify-content:space-between;">'
-        '<span style="color:#6b7280;">🏢 ' + L['floor'] + '</span>'
-        '<b>' + _floor_label + '</b></div>'
-        '<div style="display:flex;justify-content:space-between;">'
-        '<span style="color:#6b7280;">🚗 ' + L['parking'] + '</span>'
-        '<b>' + parking + '</b></div>'
-        '<div style="display:flex;justify-content:space-between;">'
-        '<span style="color:#6b7280;">📅 ' + L['year_built'] + '</span>'
-        '<b>' + str(year_built) + '</b></div>'
-        '<div style="display:flex;justify-content:space-between;">'
-        '<span style="color:#6b7280;">🛋️ ' + L['furnished'] + '</span>'
-        '<b>' + _furnish_label + '</b></div>'
-        '<div style="display:flex;justify-content:space-between;">'
-        '<span style="color:#6b7280;">🎨 ' + L['finishing'] + '</span>'
-        '<b>' + _finish_label + '</b></div>'
-        '<div style="display:flex;justify-content:space-between;">'
-        '<span style="color:#6b7280;">👁️ ' + L['view'] + '</span>'
-        '<b>' + _view_label + '</b></div>'
-        '</div></div>'
-        '</div></div>'
-    )
-    st.markdown(preview_html, unsafe_allow_html=True)
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    # ═══════════════════════════════════════════════════════
-    # PREDICT BUTTON
-    # ═══════════════════════════════════════════════════════
-    predict_btn = st.button("🔮  " + L["cta"], type="primary", use_container_width=True)
-    if predict_btn:
-        st.session_state["show_result"] = True
-
-
-
-# ============================================================
-# BUILD FEATURES
-# ============================================================
-CITY_GPS = {
-    "Cairo": (30.0444, 31.2357), "Giza": (30.0131, 31.2089),
-    "Alexandria": (31.2001, 29.9187), "Red Sea": (27.2579, 33.8116),
-    "North Coast": (31.0906, 27.9407), "Suez": (29.9737, 32.5263),
-    "Matrouh": (31.3543, 27.2373),
-}
-lat, lon = CITY_GPS.get(city, (30.0444, 31.2357))
-
-input_features = build_features(
-    area=area, bedrooms=bedrooms, bathrooms=bathrooms,
-    city=city, district=district, compound=compound,
-    latitude=lat, longitude=lon,
-    amenities=selected_amenities,
-    description=description,
-    mappings=mappings,
-)
-
-
-if st.session_state.get("show_result", False):
-    errors = validate_input(area, bedrooms, bathrooms, city, district, compound)
-    if errors:
-        st.error("WARNING: " + " | ".join(errors))
-    else:
-        # ═══ AI Thinking Indicator ═══
-        ai_thinking_indicator(lang=lang)
-        progress_bar()
-        time.sleep(0.3)
-
-        with st.spinner("🧠 " + ("بحسب السعر المتوقع..." if lang == "ar" else "Calculating predicted price...")):
-            time.sleep(0.4)
-            result = predict_with_confidence(model, input_features, m["mape"])
-            _base_price = result["price"]
-
-            # ═══════════════════════════════════════════════════════
-            # PROPERTY TYPE COEFFICIENT
-            # ═══════════════════════════════════════════════════════
-            _pt_key = prop_type[0] if isinstance(prop_type, tuple) else "Apartment"
-            _coef = get_coefficient(_pt_key)
-            price = _base_price * _coef
-            result["lower_bound"] = result["lower_bound"] * _coef
-            result["upper_bound"] = result["upper_bound"] * _coef
-            ppm = price / area
-
-        if MONITORING_AVAILABLE:
-            try:
-                log_prediction(area=area, bedrooms=bedrooms, bathrooms=bathrooms,
-                                city=city, district=district, compound=compound,
-                                predicted_price=price,
-                                confidence_lower=result['lower_bound'],
-                                confidence_upper=result['upper_bound'])
-            except Exception:
-                pass
-
-        st.markdown("<br>", unsafe_allow_html=True)
-        st.markdown("## 📊 " + L["result_title"])
-
-        res_left, res_right = st.columns([5, 5], gap="large")
-
-        with res_left:
-            price_html = (
-                '<div class="price-hero">'
-                '<div class="price-label">' + L['est_value'] + '</div>'
-                '<div class="price-value">' + f'{price/1_000_000:.2f}M' + '</div>'
-                '<div class="price-egp">' + f'{price:,.0f}' + ' EGP</div>'
-                '<div style="font-size:0.72rem;color:#6b7280;margin-top:0.35rem;">' + L['range'] + '</div>'
-                '<div class="price-range-bar"><div class="price-range-fill"></div></div>'
-                '<div class="price-range-labels">'
-                '<span>' + format_price(result['lower_bound']) + '</span>'
-                '<span>' + format_price(result['upper_bound']) + '</span>'
-                '</div></div>'
-            )
-            st.markdown(price_html, unsafe_allow_html=True)
-
-            # ═══ Transparency note for non-Apartment types ═══
-            if _pt_key != "Apartment":
-                _note = get_note(_pt_key, lang=lang)
-                _warn = (
-                    f"ℹ️ **{_note}**: تقدير **{_pt_key}** مبني على بيانات الشقق + معامل سوقي ×{_coef}. للتقييم الدقيق، اتصل بمثمّن عقاري."
-                    if lang == "ar"
-                    else f"ℹ️ **{_note}**: {_pt_key} estimate is based on Apartment data + market coefficient ×{_coef}. For precise valuation, consult a certified appraiser."
-                )
-                st.info(_warn)
-
-            monthly_rate = 0.10 / 12
-            n_payments = 20 * 12
-            down_payment = price * 0.20
-            loan_amount = price - down_payment
-            monthly_payment = (loan_amount * monthly_rate) / (1 - (1 + monthly_rate) ** -n_payments)
-
-            monthly_html = (
-                '<div class="monthly-card">'
-                '<div class="monthly-title">' + L['monthly_title'] + '</div>'
-                '<div class="monthly-value">' + f'{monthly_payment:,.0f}' + ' EGP</div>'
-                '<div class="monthly-detail">' + L['monthly_detail'] + '</div>'
-                '</div>'
-            )
-            st.markdown(monthly_html, unsafe_allow_html=True)
-
-            if PDF_AVAILABLE:
-                try:
-                    pdf_buf = generate_pdf_report(
-                        {'price': price, 'lower_bound': result['lower_bound'],
-                         'upper_bound': result['upper_bound'], 'price_per_sqm': ppm},
-                        {'area': area, 'bedrooms': bedrooms, 'bathrooms': bathrooms,
-                         'city': city, 'town': 'n/a', 'district': district,
-                         'subdistrict': compound, 'furnished': 'n/a',
-                         'completion_status': 'n/a'},
-                        {'model_name': metadata['model_name'], 'r2': m['r2'],
-                         'mape': m['mape'], 'n_train': metadata['training_info']['n_train']},
-                    )
-                    st.download_button(
-                        "📄 " + L["pdf_btn"], data=pdf_buf,
-                        file_name="property_report.pdf",
-                        mime="application/pdf", use_container_width=True,
-                    )
-                except Exception as _pdf_err:
-                    st.error(f"PDF Error: {_pdf_err}")
-
-            share_text = L["share_text"].format(price=f"{price:,.0f}", area=area, district=district, city=city)
-            share_url = "https://wa.me/?text=" + share_text.replace(' ', '%20')
-            share_html = (
-                '<a href="' + share_url + '" target="_blank" style="display:block;width:100%;text-align:center;'
-                'background:#25D366;color:white;padding:0.85rem 1.5rem;border-radius:12px;font-weight:800;'
-                'text-decoration:none;font-size:0.95rem;margin-top:0.5rem;">'
-                '' + L['share_wa'] + '</a>'
-            )
-            st.markdown(share_html, unsafe_allow_html=True)
-
-        with res_right:
-            district_ppm = mappings['price_mappings']['district_price_per_sqm'].get(district, 0)
-            diff_pct = ((ppm - district_ppm) / district_ppm * 100) if district_ppm else 0
-            arrow = "🟢" if diff_pct >= 0 else "🔴"
-
-            m1, m2, m3 = st.columns(3)
-            with m1:
-                st.markdown('<div class="metric-card"><div class="metric-value">' + f'{ppm:,.0f}' + '</div><div class="metric-label">' + L['ppm'] + '</div></div>', unsafe_allow_html=True)
-            with m2:
-                st.markdown('<div class="metric-card"><div class="metric-value">' + f'{district_ppm:,.0f}' + '</div><div class="metric-label">' + L['dist_avg'] + '</div></div>', unsafe_allow_html=True)
-            with m3:
-                st.markdown('<div class="metric-card"><div class="metric-value">' + f'{diff_pct:+.1f}' + '%</div><div class="metric-label">' + L['vs_dist'] + '</div></div>', unsafe_allow_html=True)
-
-            city_growth = {"Cairo": 15.2, "Giza": 17.2, "Alexandria": 13.1, "Red Sea": 12.0, "North Coast": 14.5, "Suez": 16.0}
-            growth = city_growth.get(city, 15.0)
-            history_html = (
-                '<div style="background:#fef3c7;border:1px solid #fde68a;border-radius:12px;padding:0.85rem;margin-top:0.75rem;">'
-                '<div style="font-weight:800;color:#78350f;font-size:0.8rem;">' + L['trend_title'] + '</div>'
-                '<div style="color:#92400e;font-size:0.72rem;margin-top:0.15rem;">' + L['trend_text'].format(city=(CITY_NAMES.get(city, city) if lang == 'ar' else city), g=f'{growth:.1f}') + '</div>'
-                '<div style="font-size:1.3rem;font-weight:900;color:#78350f;margin-top:0.35rem;">+' + f'{growth:.1f}' + '%</div>'
-                '</div>'
-            )
-            st.markdown(history_html, unsafe_allow_html=True)
-
-
-
-        st.markdown("<br>", unsafe_allow_html=True)
-        st.markdown("## 🔍 " + L["dive"])
-
-        tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9 = st.tabs([
-            "🧠 " + L["tab1"], "🗺️ " + L["tab2"], "🏘️ " + L["tab3"],
-            "⚖️ " + L["tab4"], "💰 " + L["tab5"], "📈 " + L["tab6"], "📍 " + L["tab7"],
-            "🏘️ " + L["tab8"], "🏦 " + L["tab9"]
-        ])
-
-        with tab1:
-            st.caption(L["t1_caption"])
-            try:
-                prep = model.named_steps['prep']
-                X_t = prep.transform(input_features)
-                feat_names = prep.get_feature_names_out()
-                explainer = shap.TreeExplainer(model.named_steps['model'])
-                sv = np.array(explainer.shap_values(X_t)).flatten()
-                top_n = 10
-                idx = np.argsort(np.abs(sv))[-top_n:][::-1]
-                clean_names = [_translate_feat_name(feat_names[i], L, FEATURE_MAP, lang=lang) for i in idx]
-                colors = ['#10b981' if v > 0 else '#ef4444' for v in sv[idx]]
-                fig = go.Figure(go.Bar(
-                    x=sv[idx], y=clean_names, orientation='h',
-                    marker_color=colors,
-                    text=[f"{v:+.3f}" for v in sv[idx]], textposition='outside',
-                ))
-                fig.update_layout(height=400, margin=dict(l=10, r=40, t=20, b=20),
-                                   xaxis_title=L["impact_price"], showlegend=False, plot_bgcolor='white')
-                st.plotly_chart(fig, use_container_width=True)
-                st.caption(L["t1_green"])
-            except Exception as e:
-                st.error(f"SHAP error: {e}")
-
-        with tab2:
-            st.markdown(f"#### {L['t2_title']}")
-            price_data = mappings['price_mappings']['district_price_per_sqm']
-            ppm_series = pd.Series(price_data).sort_values(ascending=True).tail(20)
-            if lang == 'ar':
-                ppm_series.index = [(CITY_NAMES.get(x, x) if lang == 'ar' else x) for x in ppm_series.index]
-            fig = go.Figure(go.Bar(
-                x=ppm_series.values, y=ppm_series.index, orientation='h',
-                marker=dict(color=ppm_series.values, colorscale='RdYlGn_r', showscale=False),
-                text=[f"{v:,.0f}" for v in ppm_series.values], textposition='outside',
-            ))
-            fig.update_layout(height=600, margin=dict(l=10, r=60, t=20, b=20),
-                              xaxis_title=L["t2_xlabel"])
-            st.plotly_chart(fig, use_container_width=True)
-
-        with tab3:
-            st.caption(L["t3_caption"])
-            try:
-                # Filter similar properties by price range (±30% of estimate)
-                price_range = (result['lower_bound'] * 0.85, result['upper_bound'] * 1.15)
-                recs = recommend_similar_properties(
-                    area=area, bedrooms=bedrooms, bathrooms=bathrooms,
-                    city=city, district=district,
-                    compound=compound if compound != "None" else "None",
-                    top_n=5, price_range=price_range,
-                )
-                if recs:
-                    st.caption(L["t3_found"].format(n=len(recs)))
-                    for i, r in enumerate(recs, 1):
-                        sim_pct = r['similarity'] * 100
-                        bd = L["studio"] if r.get('is_studio') == 1 else f"{r['bedrooms_clean']} {L['br']}"
-                        card_html = (
-                            '<div class="sim-card">'
-                            '<div style="display:flex;justify-content:space-between;align-items:center;">'
-                            '<div>'
-                            '<b style="color:#6366f1;">#' + str(i) + '</b> '
-                            '<b>' + f"{r['area_value']:.0f}" + (' م² | ' if lang == 'ar' else ' m2 | ') + bd + '</b>'
-                            '<div style="color:#6b7280;font-size:0.82rem;margin-top:0.2rem;">' + (CITY_NAMES.get(r['city'], r['city']) if lang == 'ar' else r['city']) + ' - ' + (CITY_NAMES.get(r['district'], r['district']) if lang == 'ar' else r['district']) + '</div>'
-                            '<div style="margin-top:0.3rem;"><span class="sim-match">' + f'{sim_pct:.0f}' + L['t3_match'] + '</span></div>'
-                            '</div>'
-                            '<div style="text-align:right;">'
-                            '<div style="font-size:1.3rem;font-weight:800;color:#10b981;">' + f"{r['predicted_price']/1e6:.2f}" + (' مليون' if lang == 'ar' else 'M') + '</div>'
-                            '<div style="font-size:0.68rem;color:#9ca3af;">EGP</div>'
-                            '</div></div></div>'
-                        )
-                        st.markdown(card_html, unsafe_allow_html=True)
-            except Exception as e:
-                st.error(f"Recommendation error: {e}")
-
-        with tab4:
-            st.caption(L["t4_caption"])
-            colA, colB = st.columns(2)
-            with colA:
-                st.markdown(f"**{L['t4_a']}**")
-                _area_unit = ' م²<br>' if lang == 'ar' else ' m2<br>'
-                _city_ar = CITY_NAMES.get(city, city) if lang == 'ar' else city
-                _dist_ar = CITY_NAMES.get(district, district) if lang == 'ar' else district
-                a_html = (
-                    '<div class="metric-card">'
-                    '<div class="metric-value" style="color:#10b981;">' + f'{price:,.0f}' + ' EGP</div>'
-                    '<div style="margin-top:0.5rem;font-size:0.82rem;">'
-                    + f'{L["t4_area"]}: ' + f'{area}' + _area_unit
-                    + f'{L["bedrooms"]}: ' + str(bedrooms) + '<br>'
-                    + f'{L["bathrooms"]}: ' + str(bathrooms) + '<br>'
-                    + f'{L["t4_location"]}: ' + _city_ar + ' - ' + _dist_ar + '</div></div>'
-                )
-                st.markdown(a_html, unsafe_allow_html=True)
-            with colB:
-                st.markdown(f"**{L['t4_b']}**")
-                b_area = st.number_input(L["t4_area"], 40, 500, 200, 5, key="cmp_area")
-                b_bedrooms = st.selectbox(L["bedrooms"], ["1","2","3","4","5"], index=3, key="cmp_bed")
-                b_bathrooms = st.slider(L["bathrooms"], 1, 5, 3, key="cmp_bath")
-                b_district = st.selectbox(L["district"], categories["district"], key="cmp_dist",
-                           format_func=lambda x: CITY_NAMES.get(x, x) if lang == "ar" else x)
-                b_city = st.selectbox(L["city"], categories["city"], key="cmp_city",
-                       format_func=lambda x: CITY_NAMES.get(x, x) if lang == "ar" else x)
-
-                prop_b = {
-                    'area': b_area, 'bedrooms': b_bedrooms, 'bathrooms': b_bathrooms,
-                    'city': b_city, 'district': b_district,
-                    'compound': 'None', 'amenities': [],
-                }
-                feat_b = build_features(**prop_b, mappings=mappings)
-                price_b = predict_with_confidence(model, feat_b, m["mape"])['price']
-                _b_city_ar = CITY_NAMES.get(b_city, b_city) if lang == 'ar' else b_city
-                _b_dist_ar = CITY_NAMES.get(b_district, b_district) if lang == 'ar' else b_district
-                b_html = (
-                    '<div class="metric-card">'
-                    '<div class="metric-value" style="color:#6366f1;">' + f'{price_b:,.0f}' + ' EGP</div>'
-                    '<div style="margin-top:0.5rem;font-size:0.82rem;">'
-                    + f'{L["t4_area"]}: ' + f'{b_area}' + _area_unit
-                    + f'{L["bedrooms"]}: ' + b_bedrooms + '<br>'
-                    + f'{L["bathrooms"]}: ' + str(b_bathrooms) + '<br>'
-                    + f'{L["t4_location"]}: ' + _b_city_ar + ' - ' + _b_dist_ar + '</div></div>'
-                )
-                st.markdown(b_html, unsafe_allow_html=True)
-
-            diff = price - price_b
-            if diff < 0:
-                st.success(L["t4_cheaper_a"].format(d=f"{abs(diff):,.0f}"))
-            else:
-                st.info(L["t4_cheaper_b"].format(d=f"{abs(diff):,.0f}"))
-
-        with tab5:
-            st.markdown(f"#### {L['t5_title']}")
-            roi = calculate_roi(price, years=5)
-            i1, i2, i3, i4 = st.columns(4)
-            with i1:
-                st.markdown('<div class="metric-card"><div class="metric-value">' + f"{roi['roi_pct']:.0f}" + '%</div><div class="metric-label">' + L["roi_total"] + '</div></div>', unsafe_allow_html=True)
-            with i2:
-                st.markdown('<div class="metric-card"><div class="metric-value">' + f"{roi['annualized_roi_pct']:.1f}" + '%</div><div class="metric-label">' + L["roi_annual"] + '</div></div>', unsafe_allow_html=True)
-            with i3:
-                st.markdown('<div class="metric-card"><div class="metric-value">' + f"{roi['total_rental_income']/1e6:.2f}" + (' مليون' if lang == 'ar' else 'M') + '</div><div class="metric-label">' + L["roi_rental"] + '</div></div>', unsafe_allow_html=True)
-            with i4:
-                st.markdown('<div class="metric-card"><div class="metric-value">' + f"{roi['appreciation_gain']/1e6:.2f}" + (' مليون' if lang == 'ar' else 'M') + '</div><div class="metric-label">' + L["roi_appr"] + '</div></div>', unsafe_allow_html=True)
-
-            years_arr = np.arange(6)
-            rental = [price * 0.005 * 12 * y / 1e6 for y in years_arr]
-            appr = [(price * (1.12 ** y) - price) / 1e6 for y in years_arr]
-            fig_roi = go.Figure()
-            fig_roi.add_trace(go.Bar(x=years_arr, y=rental, name=L['t5_rental'], marker_color='#10b981'))
-            fig_roi.add_trace(go.Bar(x=years_arr, y=appr, name=L['t5_appr'], marker_color='#6366f1'))
-            fig_roi.update_layout(barmode='stack', height=320, xaxis_title=L["t5_year"], yaxis_title=L["million_egp"] + "P", plot_bgcolor='white')
-            st.plotly_chart(fig_roi, use_container_width=True)
-
-        # ---------- TAB 6: FORECAST ----------
-        with tab6:
-            st.markdown(f"#### 📈 {L['t6_title']}")
-            st.caption(L["t6_caption"])
-
-            forecasts = _load_forecasts()
-
-            if forecasts is None:
-                st.warning("⚠️ Time series model not available")
-            else:
-                import plotly.graph_objects as go
-
-                # Chart: Historical + Forecast for all cities
-                fig_ts = go.Figure()
-
-                colors_ts = [
-                    '#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6',
-                    '#ec4899', '#06b6d4', '#84cc16', '#f97316',
+    with col_result:
+        if predict_btn:
+            with st.spinner(tr('estimator', 'calculating')):
+                sample = df[
+                    (df["governorate"] == selected_gov["en"]) &
+                    (df["district"] == selected_district["en"])
                 ]
-
-                for i, (city_name, data) in enumerate(forecasts.items()):
-                    color = colors_ts[i % len(colors_ts)]
-                    hist = pd.DataFrame(data['historical'])
-                    preds = pd.DataFrame(data['all_predictions'])
-
-                    # Historical line
-                    fig_ts.add_trace(go.Scatter(
-                        x=hist['ds'], y=hist['y'],
-                        mode='lines',
-                        name=f"{(CITY_NAMES.get(city_name, city_name) if lang == 'ar' else city_name)} ({L['hist']})",
-                        line=dict(color=color, width=1.5),
-                        legendgroup=city_name,
-                    ))
-
-                    # Forecast line (dashed)
-                    forecast_only = preds[preds['ds'] > hist['ds'].max()]
-                    fig_ts.add_trace(go.Scatter(
-                        x=forecast_only['ds'], y=forecast_only['yhat'],
-                        mode='lines',
-                        name=f"{(CITY_NAMES.get(city_name, city_name) if lang == 'ar' else city_name)} ({L['forecast_short']})",
-                        line=dict(color=color, width=2.5, dash='dash'),
-                        legendgroup=city_name,
-                    ))
-
-                fig_ts.update_layout(
-                    height=550,
-                    margin=dict(l=10, r=10, t=30, b=10),
-                    xaxis_title=L["t6_xlabel"],
-                    yaxis_title=L["t6_ylabel"],
-                    hovermode='x unified',
-                    plot_bgcolor='white',
-                    legend=dict(orientation="h", yanchor="bottom", y=-0.3, xanchor="center", x=0.5),
-                )
-
-                # Add vertical line for "today"
-                fig_ts.add_vline(
-                    x=pd.Timestamp('2026-01-01').timestamp() * 1000,
-                    line_dash="dot",
-                    line_color="gray",
-                    annotation_text=L["t6_today"],
-                    annotation_position="top",
-                )
-
-                st.plotly_chart(fig_ts, use_container_width=True)
-
-                # Table: Growth per city
-                st.markdown("#### 📊 Expected 12-Month Growth")
-                growth_data = []
-                for city_name, data in sorted(
-                    forecasts.items(),
-                    key=lambda x: -x[1]['growth_12m_pct']
-                ):
-                    growth_data.append({
-                        'City': city_name,
-                        L['t6_current']: f"{data['current_price']:,.0f}",
-                        L['t6_forecast']: f"{data['forecast_12m']:,.0f}",
-                        L['t6_growth']: f"+{data['growth_12m_pct']:.1f}%",
-                    })
-
-                growth_df = pd.DataFrame(growth_data)
-                st.dataframe(growth_df, hide_index=True, use_container_width=True)
-
-                # Summary metrics
-                avg_growth = np.mean([d['growth_12m_pct'] for d in forecasts.values()])
-                best_city = max(forecasts.items(), key=lambda x: x[1]['growth_12m_pct'])
-
-                c1, c2, c3 = st.columns(3)
-                with c1:
-                    st.markdown(f'<div class="metric-card"><div class="metric-value">+{avg_growth:.1f}%</div><div class="metric-label">Avg Growth</div></div>', unsafe_allow_html=True)
-                with c2:
-                    st.markdown(f'<div class="metric-card"><div class="metric-value">{best_city[0]}</div><div class="metric-label">Best City</div></div>', unsafe_allow_html=True)
-                with c3:
-                    st.markdown(f'<div class="metric-card"><div class="metric-value">{len(forecasts)}</div><div class="metric-label">Cities Covered</div></div>', unsafe_allow_html=True)
-
-        # ---------- TAB 7: INTERACTIVE MAP ----------
-        with tab7:
-            st.markdown(f"#### 📍 {L['t7_title']}")
-            st.caption(L["t7_caption"])
-
-            map_data = _load_map_data()
-
-            if map_data is None:
-                st.warning(L["t7_no_data"])
-            else:
-                import folium
-                from streamlit_folium import st_folium
-
-                # Filters
-                col_a, col_b, col_c = st.columns(3)
-
-                with col_a:
-                    cities_in_map = sorted(map_data['city'].unique())
-                    selected_cities = st.multiselect(
-                        L["t7_filter_city"],
-                        cities_in_map,
-                        default=cities_in_map,
-                        key="map_cities",
-                    )
-
-                with col_b:
-                    if len(selected_cities) > 0:
-                        filtered = map_data[map_data['city'].isin(selected_cities)]
+                lat = sample["latitude"].median() if len(sample) > 0 else 30.0444
+                lon = sample["longitude"].median() if len(sample) > 0 else 31.2357
+                
+                input_data = {}
+                for f in metadata["features"]:
+                    if f in metadata["cat_features"]:
+                        input_data[f] = "Unknown"
                     else:
-                        filtered = map_data
-
-                    if len(filtered) > 0:
-                        price_min = float(filtered['price_m'].min())
-                        price_max = float(filtered['price_m'].max())
-                    else:
-                        price_min, price_max = 0.0, 50.0
-
-                    price_range = st.slider(
-                        L["t7_price_range"],
-                        min_value=0.0,
-                        max_value=float(map_data['price_m'].max()),
-                        value=(price_min, price_max),
-                        step=0.5,
-                        key="map_price_range",
-                    )
-
-                with col_c:
-                    size_max = int(map_data['size'].max())
-                    size_range = st.slider(
-                        L["t7_size_range"],
-                        min_value=40,
-                        max_value=size_max,
-                        value=(80, min(400, size_max)),
-                        key="map_size_range",
-                    )
-
-                # Apply filters
-                filtered_map = map_data[
-                    (map_data['city'].isin(selected_cities)) &
-                    (map_data['price_m'] >= price_range[0]) &
-                    (map_data['price_m'] <= price_range[1]) &
-                    (map_data['size'] >= size_range[0]) &
-                    (map_data['size'] <= size_range[1])
-                ].copy()
-
-                st.caption(f"📍 Showing **{len(filtered_map):,}** properties")
-
-                if len(filtered_map) == 0:
-                    st.warning("⚠️ " + L["t7_no_match"])
-                else:
-                    # Color by price
-                    def get_color(p):
-                        if p < 5: return '#43A047'
-                        elif p < 10: return '#FB8C00'
-                        else: return '#E53935'
-
-                    # Center map on Egypt
-                    map_obj = folium.Map(
-                        location=[27, 31],
-                        zoom_start=6,
-                        tiles='cartodbpositron',
-                    )
-
-                    # Add markers
-                    for _, row in filtered_map.iterrows():
-                        color = get_color(row['price_m'])
-                        radius = 6 + min(row['price_m'] / 3, 10)
-
-                        popup_html = f"""
-                        <div style="font-family: Arial; width: 200px;">
-                            <h4 style="margin: 0 0 5px 0; color: #6366f1;">{row['district']}</h4>
-                            <p style="margin: 3px 0; font-size: 11px; color: #666;">
-                                📍 {row['city']} · {row['district']}
-                            </p>
-                            <hr style="margin: 5px 0;">
-                            <p style="margin: 3px 0; font-size: 12px;">
-                                📐 <b>{int(row['size'])} m²</b>
-                            </p>
-                            <p style="margin: 3px 0; font-size: 12px;">
-                                🛏️ {int(row['bedrooms']) if pd.notna(row['bedrooms']) else 'N/A'} BR
-                                · 🚿 {int(row['bathrooms']) if pd.notna(row['bathrooms']) else 'N/A'} BA
-                            </p>
-                            <p style="margin: 8px 0 3px 0; font-size: 16px; color: #10b981; font-weight: bold;">
-                                {row['price_m']:.2f}M EGP
-                            </p>
-                            <p style="margin: 0; font-size: 10px; color: #888;">
-                                {row['price_per_sqm']:,.0f} EGP/m²
-                            </p>
-                        </div>
-                        """
-
-                        folium.CircleMarker(
-                            location=[row['latitude'], row['longitude']],
-                            radius=radius,
-                            color=color,
-                            fill=True,
-                            fill_color=color,
-                            fill_opacity=0.65,
-                            weight=1.5,
-                            popup=folium.Popup(popup_html, max_width=220),
-                            tooltip=f"{(CITY_NAMES.get(row['district'], row['district']) if lang == 'ar' else row['district'])}: {row['price_m']:.2f}M EGP",
-                        ).add_to(map_obj)
-
-                    st_folium(map_obj, width=None, height=600, returned_objects=[])
-
-                    # Legend
-                    st.markdown("""
-                    <div style="background:#f9fafb; padding:1rem; border-radius:10px; margin-top:0.75rem; display:flex; gap:1.5rem; flex-wrap:wrap; justify-content:center;">
-                        <div><span style="color:#43A047; font-size:1.5rem;">●</span> ' + L["t7_under5"] + '</div>
-                        <div><span style="color:#FB8C00; font-size:1.5rem;">●</span> ' + L["t7_5to10"] + '</div>
-                        <div><span style="color:#E53935; font-size:1.5rem;">●</span> ' + L["t7_over10"] + '</div>
-                    </div>
-                    """, unsafe_allow_html=True)
-
-                    # Stats per city
-                    st.markdown("#### 📊 Properties by City")
-                    city_stats = filtered_map.groupby('city').agg({
-                        'price_m': ['count', 'mean', 'min', 'max']
-                    }).round(2)
-                    city_stats.columns = [L['count'], L['avg_price_m'], L['min_m'], L['max_m']]
-                    city_stats = city_stats.sort_values(L['count'], ascending=False)
-                    st.dataframe(city_stats, use_container_width=True)
-
-        # ---------- TAB 8: NEIGHBORHOOD INSIGHTS ----------
-        with tab8:
-            st.markdown(f"#### 🏘️ {L['t8_title']}")
-            _nb_caption = (
-                "معلومات تفصيلية عن الحي — مدارس، مستشفيات، مواصلات، تاريخ الأسعار، والتكاليف"
-                if lang == "ar"
-                else "Detailed neighborhood info — schools, hospitals, transport, price history, and costs"
+                        input_data[f] = 0
+                
+                input_data.update({
+                    "size": size,
+                    "bedrooms": bedrooms,
+                    "bathrooms": bathrooms,
+                    "amenity_count": amenity_count,
+                    "images_count": 10,
+                    "latitude": lat,
+                    "longitude": lon,
+                    "property_type": selected_ptype,
+                    "governorate": selected_gov["en"],
+                    "district": selected_district["en"],
+                    "compound": selected_compound["en"],
+                    "completion_status": "completed",
+                    "furnished": furnished,
+                    "seller_type": "Broker",
+                    "developer_name": "Unknown",
+                    "view": "Unknown",
+                    "finishing_type": finishing,
+                    "payment_method": "Unknown",
+                    "town": selected_gov["en"],
+                    "area_per_room": size / max(bedrooms, 1),
+                    "total_rooms": bedrooms + bathrooms,
+                    "bed_bath_ratio": bedrooms / max(bathrooms, 1),
+                    "amenity_per_room": amenity_count / max(bedrooms + bathrooms, 1),
+                    "images_per_room": 10 / max(bedrooms + bathrooms, 1),
+                    "lat_x_lon": lat * lon,
+                    "distance_to_cairo": 0,
+                    "distance_to_coast": 0,
+                    "distance_cairo_sq": 0,
+                    "is_coastal": 0,
+                    "is_cairo_center": 0,
+                    "is_high_end": 1 if selected_ptype in ["Villa", "Palace"] else 0,
+                    "is_luxury": 1 if selected_ptype in ["Villa", "Penthouse", "Twin House"] else 0,
+                    "is_compound": 0 if selected_compound["en"] == "No Compound" else 1,
+                    "is_premium": 0,
+                    "is_featured": 0,
+                    "walk_score": 50,
+                    "transit_score": 50,
+                    "amenity_score": amenity_count / 20,
+                    "floor_level": floor,
+                    "year_built": 2024,
+                    "has_premium_info": 0,
+                })
+                
+                X = build_features(input_data, metadata["features"], metadata["cat_features"])
+                result = predict_with_confidence(model, X, metadata["features"], metadata["cat_features"])
+                price = result["price"]
+                ppm2 = price / size
+                
+                st.session_state.current_prediction = {
+                    "id": f"pred_{datetime.now().timestamp()}",
+                    "governorate": selected_gov["en"],
+                    "governorate_ar": selected_gov["ar"],
+                    "district": selected_district["en"],
+                    "district_ar": selected_district["ar"],
+                    "compound": selected_compound["en"],
+                    "property_type": selected_ptype,
+                    "size": size,
+                    "bedrooms": bedrooms,
+                    "bathrooms": bathrooms,
+                    "floor": floor,
+                    "price": price,
+                    "ppm2": ppm2,
+                    "lat": lat,
+                    "lon": lon,
+                }
+            
+            st.markdown(f"""
+            <div class="price-card">
+                <div class="price-label">{tr('estimator', 'result_title')}</div>
+                <div class="price-value">{price:,.0f}</div>
+                <div class="price-currency">EGP</div>
+                <div class="price-per-m2">💰 {tr('estimator', 'per_sqm')}: {ppm2:,.0f} EGP/m²</div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            m1, m2, m3 = st.columns(3)
+            m1.metric(
+                "📉 " + tr('estimator', 'result_range'),
+                f"{result['price_low']/1e6:.1f}M-{result['price_high']/1e6:.1f}M"
             )
-            st.caption(_nb_caption)
+            m2.metric(
+                "🎯 " + tr('estimator', 'confidence'),
+                f"{result['confidence']*100:.0f}%"
+            )
+            
+            market_median = df[
+                (df["governorate"] == selected_gov["en"]) &
+                (df["property_type"] == selected_ptype)
+            ]["price"].median()
+            
+            if pd.notna(market_median):
+                diff = ((price - market_median) / market_median) * 100
+                if diff > 10:
+                    label = f"⬆️ {tr('estimator', 'above_market')} {diff:.0f}%"
+                elif diff < -10:
+                    label = f"⬇️ {tr('estimator', 'below_market')} {abs(diff):.0f}%"
+                else:
+                    label = f"➡️ {tr('estimator', 'at_market')}"
+                m3.metric("📊 " + tr('estimator', 'vs_market'), label)
+            
+            st.markdown("---")
+            b1, b2, b3, b4 = st.columns(4)
+            
+            with b1:
+                if st.button(tr('estimator', 'save'), use_container_width=True, key="save_pred"):
+                    st.session_state.favorites.append(st.session_state.current_prediction)
+                    st.success(tr('estimator', 'saved'))
+            
+            with b2:
+                wa_text = f"Interested in {selected_ptype} in {selected_district['en']}, {size}m2"
+                wa_url = f"https://wa.me/201001234567?text={wa_text}"
+                st.markdown(
+                    f'<a href="{wa_url}" target="_blank" style="text-decoration:none;">'
+                    f'<button style="width:100%;padding:10px;background:#25D366;'
+                    f'color:white;border:none;border-radius:12px;font-weight:800;'
+                    f'font-size:14px;cursor:pointer;">{tr("estimator", "whatsapp")}</button></a>',
+                    unsafe_allow_html=True,
+                )
+            
+            with b3:
+                st.markdown(
+                    '<a href="tel:+201001234567" style="text-decoration:none;">'
+                    '<button style="width:100%;padding:10px;background:#6366F1;'
+                    'color:white;border:none;border-radius:12px;font-weight:800;'
+                    f'font-size:14px;cursor:pointer;">{tr("estimator", "call")}</button></a>',
+                    unsafe_allow_html=True,
+                )
+            
+            with b4:
+                if PDF_AVAILABLE:
+                    pdf_data = generate_pdf(st.session_state.current_prediction)
+                    if pdf_data:
+                        st.download_button(
+                            tr('estimator', 'pdf'),
+                            data=pdf_data,
+                            file_name=f"property_{selected_district['en']}.pdf",
+                            mime="application/pdf",
+                            use_container_width=True,
+                            key="pdf_dl",
+                        )
+        else:
+            st.markdown(f"""
+            <div class="empty-state">
+                <div class="empty-icon">🏠</div>
+                <div class="empty-title">{tr('hero', 'title')}</div>
+                <p style="max-width:400px;margin:16px auto;">
+                    {tr('hero', 'subtitle')}
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
 
-            # Transport
+            
+            # ═══════════ PROPERTY IMAGES ═══════════
+            if IMAGES_OK and 'price' in dir():
+                st.markdown(f"""
+                <div class="section-header">
+                    <div class="section-icon">📸</div>
+                    <div><h3 class="section-title">{"صور العقار" if lang == "ar" else "Property Images"}</h3></div>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                imgs = get_property_images(st.session_state.current_prediction["id"], selected_ptype, 5)
+                img_cols = st.columns(5)
+                for i, u in enumerate(imgs):
+                    with img_cols[i]:
+                        st.image(u, use_container_width=True)
+                
+                # ═══════════ MAP + TIME SERIES ═══════════
+                st.markdown(f"""
+                <div class="section-header">
+                    <div class="section-icon">📍</div>
+                    <div><h3 class="section-title">{"الموقع والتوقعات" if lang == "ar" else "Location & Forecast"}</h3></div>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                col_map, col_ts = st.columns([1, 1])
+                
+                with col_map:
+                    m = folium.Map(location=[lat, lon], zoom_start=13, tiles="CartoDB positron")
+                    folium.Marker(
+                        [lat, lon],
+                        popup=f"<b>{selected_ptype}</b><br>{price:,.0f} EGP",
+                        icon=folium.Icon(color="red", icon="home", prefix="fa"),
+                    ).add_to(m)
+                    folium_static(m, width=500, height=320)
+                
+                with col_ts:
+                    base_price = price
+                    years_ts = ["2022", "2023", "2024", "2025", "2026", "2027", "2028"]
+                    growth_rates = [0.75, 0.85, 0.95, 1.0, 1.08, 1.17, 1.27]
+                    prices_ts = [base_price * r for r in growth_rates]
+                    colors = ['#94A3B8', '#94A3B8', '#94A3B8', '#6366F1', '#10B981', '#10B981', '#10B981']
+                    
+                    fig = go.Figure(go.Bar(
+                        x=years_ts, y=prices_ts,
+                        marker_color=colors,
+                        text=[f"{p/1e6:.1f}M" for p in prices_ts],
+                        textposition="outside",
+                    ))
+                    fig.update_layout(
+                        title=dict(text=tr('time_series', 'title'), font=dict(size=16)),
+                        height=320,
+                        margin=dict(l=20, r=20, t=50, b=20),
+                        paper_bgcolor='rgba(0,0,0,0)',
+                        plot_bgcolor='rgba(0,0,0,0)',
+                        showlegend=False,
+                    )
+                    st.plotly_chart(fig, use_container_width=True)
+                
+                # ═══════════ SIMILAR PROPERTIES ═══════════
+                st.markdown(f"""
+                <div class="section-header">
+                    <div class="section-icon">🏘️</div>
+                    <div>
+                        <h3 class="section-title">{tr('similar', 'title').replace('🏘️ ', '')}</h3>
+                        <div class="section-subtitle">{tr('similar', 'subtitle')}</div>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                similar = df[
+                    (df["governorate"] == selected_gov["en"]) &
+                    (df["property_type"] == selected_ptype) &
+                    (df["size"].between(size * 0.8, size * 1.2))
+                ].head(3)
+                
+                if len(similar) > 0:
+                    s_cols = st.columns(len(similar))
+                    for i, (_, row) in enumerate(similar.iterrows()):
+                        with s_cols[i]:
+                            st.markdown(f"""
+                            <div class="card">
+                                <div class="card-value">{row['price']/1e6:.2f}M</div>
+                                <div class="card-subtitle">
+                                    {row['property_type']} · {row['district'][:25]}
+                                </div>
+                                <div style="margin-top:10px;font-size:13px;">
+                                    📐 {row['size']:.0f}m² · 🛏️ {row['bedrooms']:.0f}BR · 🚿 {row['bathrooms']:.0f}BA
+                                </div>
+                            </div>
+                            """, unsafe_allow_html=True)
+                else:
+                    st.info("مفيش عقارات مشابهة" if lang == "ar" else "No similar properties")
+                
+                # ═══════════ ROI ANALYSIS ═══════════
+                st.markdown(f"""
+                <div class="section-header">
+                    <div class="section-icon">📊</div>
+                    <div><h3 class="section-title">{tr('roi', 'title').replace('📊 ', '')}</h3></div>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                roi = calculate_roi(price, years=5, growth_rate=0.08)
+                annual_rent = price * 0.07
+                rental_yield = 7.0
+                
+                r1, r2, r3 = st.columns(3)
+                r1.metric("💰 " + tr('roi', 'current_value'), f"{roi['current_price']/1e6:.2f}M")
+                r2.metric("🏠 " + tr('roi', 'annual_rental'), f"{annual_rent/1e3:.0f}K")
+                r3.metric("📈 " + tr('roi', 'rental_yield'), f"{rental_yield:.1f}%")
+                
+                r4, r5, r6 = st.columns(3)
+                r4.metric("📅 " + tr('roi', '5yr_value'), f"{roi['future_price']/1e6:.2f}M")
+                r5.metric("📊 " + tr('roi', 'appreciation'), f"+{roi['roi_percent']:.1f}%")
+                r6.metric("🎯 " + tr('roi', 'total_roi'), f"{roi['roi_percent'] + rental_yield*5:.0f}%")
+
+
+# ═══════════════════════════════════════════════════════
+# TAB 2: MARKET
+# ═══════════════════════════════════════════════════════
+with tab2:
+    st.markdown(f"""
+    <div class="section-header">
+        <div class="section-icon">📊</div>
+        <div>
+            <h2 class="section-title">{tr('market', 'title').replace('📈 ', '')}</h2>
+            <div class="section-subtitle">{tr('market', 'subtitle')}</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    m1, m2, m3, m4 = st.columns(4)
+    with m1:
+        st.markdown(f"""
+        <div class="card">
+            <div class="card-title">📊 {tr('stats', 'listings')}</div>
+            <div class="card-value">{len(df):,}</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with m2:
+        st.markdown(f"""
+        <div class="card">
+            <div class="card-title">💰 {tr('market', 'median')}</div>
+            <div class="card-value">{df['price'].median()/1e6:.1f}M</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with m3:
+        st.markdown(f"""
+        <div class="card">
+            <div class="card-title">📐 {tr('market', 'size') if 'size' in tr('market', 'size') else 'Size'}</div>
+            <div class="card-value">{df['size'].median():.0f}m²</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with m4:
+        st.markdown(f"""
+        <div class="card">
+            <div class="card-title">🏙️ {tr('stats', 'districts')}</div>
+            <div class="card-value">{df['district'].nunique()}</div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("---")
+    
+    c1, c2 = st.columns(2)
+    with c1:
+        fig = px.pie(
+            df, names='property_type', hole=0.5,
+            title='🏢 ' + tr('market', 'by_type'),
+            color_discrete_sequence=px.colors.qualitative.Set3,
+        )
+        fig.update_layout(height=420, paper_bgcolor='rgba(0,0,0,0)')
+        st.plotly_chart(fig, use_container_width=True)
+    
+    with c2:
+        avg = df.groupby('governorate')['price'].median().sort_values()
+        fig = px.bar(
+            x=avg.values, y=avg.index, orientation='h',
+            title='💰 ' + tr('market', 'by_governorate'),
+            color=avg.values, color_continuous_scale='Viridis',
+        )
+        fig.update_layout(height=420, showlegend=False, paper_bgcolor='rgba(0,0,0,0)')
+        st.plotly_chart(fig, use_container_width=True)
+    
+    c3, c4 = st.columns(2)
+    with c3:
+        fig = px.histogram(
+            df.sample(min(5000, len(df))), x='price', nbins=50,
+            title='📊 ' + tr('market', 'price_distribution'),
+            color_discrete_sequence=['#6366F1'],
+        )
+        fig.update_layout(height=420, paper_bgcolor='rgba(0,0,0,0)')
+        st.plotly_chart(fig, use_container_width=True)
+    
+    with c4:
+        sample = df.sample(min(2000, len(df)))
+        fig = px.scatter(
+            sample, x='size', y='price', color='property_type',
+            title='📐 ' + tr('market', 'size_vs_price'), opacity=0.6,
+        )
+        fig.update_layout(height=420, paper_bgcolor='rgba(0,0,0,0)')
+        st.plotly_chart(fig, use_container_width=True)
+    
+    st.markdown("---")
+    st.markdown(f"### 📋 {'جدول تفصيلي' if lang == 'ar' else 'Detailed Table'}")
+    
+    table = df.groupby('governorate').agg({
+        'price': ['count', 'median', 'mean', 'min', 'max'],
+        'size': 'median',
+        'district': 'nunique',
+        'compound': 'nunique',
+    }).round(0)
+    
+    if lang == 'ar':
+        table.columns = ['إعلانات', 'الوسيط', 'المتوسط', 'أقل', 'أعلى', 'المساحة', 'مناطق', 'كومبوندات']
+    else:
+        table.columns = ['Listings', 'Median', 'Mean', 'Min', 'Max', 'Size', 'Districts', 'Compounds']
+    
+    st.dataframe(table, use_container_width=True)
+
+
+# ═══════════════════════════════════════════════════════
+# TAB 3: MAP + NEIGHBORHOOD
+# ═══════════════════════════════════════════════════════
+with tab3:
+    st.markdown(f"""
+    <div class="section-header">
+        <div class="section-icon">🗺️</div>
+        <div>
+            <h2 class="section-title">{"الخريطة التفاعلية" if lang == "ar" else "Interactive Map"}</h2>
+            <div class="section-subtitle">{"استكشف العقارات على الخريطة" if lang == "ar" else "Explore properties on the map"}</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    m1, m2, m3, m4 = st.columns(4)
+    with m1:
+        map_gov = st.selectbox("🏙️ " + tr('hero', 'governorate'), df['governorate'].unique(), key='map_g')
+    with m2:
+        map_type = st.selectbox("🏢 " + tr('hero', 'property_type'), ['All'] + list(df['property_type'].unique()), key='map_t')
+    with m3:
+        max_pts = st.slider("📍 Points", 100, 2000, 500, key='map_p')
+    with m4:
+        map_view = st.selectbox("👁️ View", ["Normal", "🔥 Heatmap"], key='map_v')
+    
+    filtered = df[df['governorate'] == map_gov]
+    if map_type != 'All':
+        filtered = filtered[filtered['property_type'] == map_type]
+    
+    sample = filtered.sample(min(max_pts, len(filtered))) if len(filtered) > 0 else filtered
+    
+    if len(sample) > 0:
+        center_lat = sample['latitude'].median()
+        center_lon = sample['longitude'].median()
+        m = folium.Map(location=[center_lat, center_lon], zoom_start=11, tiles='CartoDB positron')
+        
+        if map_view == '🔥 Heatmap':
             try:
-                render_transport(district, lang=lang)
-            except Exception as _e:
-                st.warning(f"Transport: {_e}")
-
-            st.markdown("<br>", unsafe_allow_html=True)
-
-            # Safety & Schools
-            try:
-                render_safety_schools(district, lang=lang)
-            except Exception as _e:
-                st.warning(f"Safety: {_e}")
-
-            st.markdown("<br>", unsafe_allow_html=True)
-
-            # Full neighborhood insights
-            try:
-                render_neighborhood_insights(city, district, price, area, lang=lang)
-            except Exception as _e:
-                st.error(f"Neighborhood error: {_e}")
-
-        # ---------- TAB 9: MORTGAGE CALCULATOR ----------
-        with tab9:
-            try:
-                render_mortgage_calculator(price, lang=lang)
-            except Exception as _e:
-                st.error(f"Mortgage error: {_e}")
-
-else:
-    empty_html = (
-        '<div class="empty-box">'
-        '<div class="empty-icon">🏠</div>'
-        '<div class="empty-title">' + L['empty_title'] + '</div>'
-        '<div class="empty-text">' + L['empty_text'] + ' <b>' + L['empty_text2'] + '</b></div>'
-        '</div>'
+                from folium.plugins import HeatMap
+                hd = [[r['latitude'], r['longitude'], min(r['price'] / 1e7, 1)] for _, r in sample.iterrows()]
+                HeatMap(hd, radius=15, blur=20).add_to(m)
+            except:
+                st.warning("Heatmap unavailable")
+        else:
+            median_price = sample['price'].median()
+            for _, row in sample.iterrows():
+                color = 'red' if row['price'] > median_price else 'blue'
+                folium.CircleMarker(
+                    location=[row['latitude'], row['longitude']],
+                    radius=5,
+                    popup=f"<b>{row['property_type']}</b><br>💰 {row['price']:,.0f} EGP<br>📐 {row['size']:.0f} m²",
+                    color=color, fill=True, fillOpacity=0.6,
+                ).add_to(m)
+        
+        folium_static(m, width=1300, height=500)
+        
+        st.markdown(f"""
+        <div class="card" style="margin-top:16px;">
+            <b>📊 {tr('market', 'listings_count')}:</b> {len(sample)} | 
+            🔴 {'Above median' if lang == 'en' else 'أعلى من الوسيط'} | 
+            🔵 {'Below median' if lang == 'en' else 'أقل من الوسيط'}
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("---")
+    
+    # ═══════════ NEIGHBORHOOD INSIGHTS ═══════════
+    st.markdown(f"""
+    <div class="section-header">
+        <div class="section-icon">🏘️</div>
+        <div>
+            <h2 class="section-title">{tr('neighborhood', 'title').replace('🏘️ ', '')}</h2>
+            <div class="section-subtitle">{tr('neighborhood', 'subtitle')}</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    n_dist = st.selectbox(
+        "📍 " + tr('hero', 'district'),
+        sorted(df['district'].unique())[:100],
+        key='nb_dist'
     )
-    st.markdown(empty_html, unsafe_allow_html=True)
+    
+    if n_dist:
+        n_df = df[df['district'] == n_dist]
+        
+        n1, n2, n3, n4 = st.columns(4)
+        n1.metric("💰 " + tr('market', 'median'), f"{n_df['price'].median()/1e6:.1f}M")
+        n2.metric("📐 " + tr('market', 'size'), f"{n_df['size'].median():.0f}m²")
+        n3.metric("🏢 " + tr('stats', 'listings'), f"{len(n_df):,}")
+        n4.metric("🏘️ " + tr('stats', 'compounds'), f"{n_df['compound'].nunique()}")
+        
+        # Amenities in neighborhood
+        n_items = [
+            ("🏫", tr('neighborhood', 'schools'), 12, 4.2),
+            ("🏥", tr('neighborhood', 'hospitals'), 8, 4.5),
+            ("🛍️", tr('neighborhood', 'malls'), 6, 4.7),
+            ("🍽️", tr('neighborhood', 'restaurants'), 25, 4.3),
+            ("🚌", tr('neighborhood', 'transport'), 15, 3.8),
+            ("🌳", tr('neighborhood', 'parks'), 4, 4.0),
+        ]
+        
+        n_cols = st.columns(3)
+        for i, (icon, name, count, rating) in enumerate(n_items):
+            with n_cols[i % 3]:
+                st.markdown(f"""
+                <div class="card">
+                    <div style="font-size:32px;">{icon}</div>
+                    <div class="card-title">{name}</div>
+                    <div class="card-value">{count}</div>
+                    <div class="card-subtitle">⭐ {rating}</div>
+                </div>
+                """, unsafe_allow_html=True)
 
 
+# ═══════════════════════════════════════════════════════
+# TAB 4: MORTGAGE CALCULATOR
+# ═══════════════════════════════════════════════════════
+with tab4:
+    st.markdown(f"""
+    <div class="section-header">
+        <div class="section-icon">🧮</div>
+        <div>
+            <h2 class="section-title">{tr('mortgage', 'title').replace('🧮 ', '')}</h2>
+            <div class="section-subtitle">{tr('mortgage', 'subtitle')}</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    mc1, mc2 = st.columns([1, 1], gap="large")
+    
+    with mc1:
+        st.markdown(f"**{'البيانات' if lang == 'ar' else 'Details'}**")
+        
+        p_price = st.number_input(
+            "💰 " + tr('mortgage', 'property_price'),
+            min_value=100_000, max_value=200_000_000,
+            value=5_000_000, step=100_000,
+            key="mort_price",
+        )
+        
+        down_pct = st.slider(
+            "📊 " + tr('mortgage', 'down_payment_pct'),
+            min_value=5, max_value=50, value=20,
+            key="mort_down",
+        )
+        
+        years = st.slider(
+            "📅 " + tr('mortgage', 'years'),
+            min_value=5, max_value=30, value=20,
+            key="mort_years",
+        )
+        
+        rate = st.slider(
+            "📈 " + tr('mortgage', 'interest_rate'),
+            min_value=5.0, max_value=30.0, value=15.0, step=0.5,
+            key="mort_rate",
+        )
+    
+    with mc2:
+        # الحسابات
+        down_payment = p_price * down_pct / 100
+        loan = p_price - down_payment
+        mr = (rate / 100) / 12
+        n = years * 12
+        
+        if mr > 0:
+            monthly = loan * (mr * (1 + mr) ** n) / ((1 + mr) ** n - 1)
+        else:
+            monthly = loan / n
+        
+        total = monthly * n
+        interest = total - loan
+        
+        st.markdown(f"""
+        <div class="price-card">
+            <div class="price-label">{tr('mortgage', 'monthly_payment')}</div>
+            <div class="price-value">{monthly:,.0f}</div>
+            <div class="price-currency">EGP / {'شهر' if lang == 'ar' else 'month'}</div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        k1, k2 = st.columns(2)
+        with k1:
+            st.metric("💰 " + tr('mortgage', 'down_payment'), f"{down_payment:,.0f}")
+            st.metric("📊 " + tr('mortgage', 'total_interest'), f"{interest:,.0f}")
+        with k2:
+            st.metric("🏦 " + tr('mortgage', 'loan_amount'), f"{loan:,.0f}")
+            st.metric("💸 " + tr('mortgage', 'total_paid'), f"{total:,.0f}")
+    
+    st.markdown("---")
+    
+    # Schedule Table
+    st.markdown(f"### 📅 {tr('mortgage', 'schedule')}")
+    
+    schedule = []
+    bal = loan
+    for month in range(1, min(13, n + 1)):
+        i = bal * mr
+        p = monthly - i
+        bal -= p
+        schedule.append({
+            tr('mortgage', 'month'): month,
+            tr('mortgage', 'payment'): f"{monthly:,.0f}",
+            tr('mortgage', 'interest'): f"{i:,.0f}",
+            tr('mortgage', 'principal'): f"{p:,.0f}",
+            tr('mortgage', 'balance'): f"{max(0, bal):,.0f}",
+        })
+    
+    st.dataframe(pd.DataFrame(schedule), use_container_width=True, hide_index=True)
+    
+    # Pie chart
+    fig = go.Figure(data=[go.Pie(
+        labels=[
+            tr('mortgage', 'down_payment'),
+            tr('mortgage', 'loan_amount'),
+            tr('mortgage', 'total_interest'),
+        ],
+        values=[down_payment, loan, interest],
+        hole=0.4,
+        marker=dict(colors=['#6366F1', '#8B5CF6', '#EC4899']),
+    )])
+    fig.update_layout(
+        title=dict(text='📊 ' + ('توزيع التكاليف' if lang == 'ar' else 'Cost Breakdown')),
+        height=400,
+        paper_bgcolor='rgba(0,0,0,0)',
+    )
+    st.plotly_chart(fig, use_container_width=True)
 
-# ============================================================
+
+# ═══════════════════════════════════════════════════════
+# TAB 5: COMPARE
+# ═══════════════════════════════════════════════════════
+with tab5:
+    st.markdown(f"""
+    <div class="section-header">
+        <div class="section-icon">⚖️</div>
+        <div>
+            <h2 class="section-title">{tr('compare', 'title').replace('⚖️ ', '')}</h2>
+            <div class="section-subtitle">{tr('compare', 'subtitle')}</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    cc1, cc2 = st.columns(2)
+    with cc1:
+        comp_gov = st.selectbox("🏙️ " + tr('hero', 'governorate'), ['All'] + list(df['governorate'].unique()), key='comp_g')
+    with cc2:
+        comp_type = st.selectbox("🏢 " + tr('hero', 'property_type'), ['All'] + list(df['property_type'].unique()), key='comp_t')
+    
+    comp_df = df.copy()
+    if comp_gov != 'All':
+        comp_df = comp_df[comp_df['governorate'] == comp_gov]
+    if comp_type != 'All':
+        comp_df = comp_df[comp_df['property_type'] == comp_type]
+    
+    comp_sample = comp_df.sample(min(20, len(comp_df))) if len(comp_df) > 0 else comp_df
+    
+    if len(comp_sample) > 0:
+        options = [
+            f"{i+1}. {row['property_type']} - {row['district'][:20]} - {row['price']:,.0f} - {row['size']:.0f}m²"
+            for i, (_, row) in enumerate(comp_sample.iterrows())
+        ]
+        
+        selected = st.multiselect(
+            "🎯 " + tr('compare', 'select'),
+            options,
+            max_selections=4,
+            key='comp_select',
+        )
+        
+        if len(selected) >= 2:
+            selected_rows = []
+            for sel in selected:
+                idx = int(sel.split('.')[0]) - 1
+                selected_rows.append(comp_sample.iloc[idx])
+            
+            comp_data = {
+                tr('compare', 'property'): [f"#{i+1}" for i in range(len(selected_rows))],
+                tr('compare', 'type'): [r['property_type'] for r in selected_rows],
+                tr('compare', 'location'): [r['district'][:25] for r in selected_rows],
+                tr('compare', 'price'): [f"{r['price']:,.0f}" for r in selected_rows],
+                tr('compare', 'size'): [f"{r['size']:.0f}" for r in selected_rows],
+                tr('compare', 'price_per_m2'): [f"{r['price']/r['size']:,.0f}" for r in selected_rows],
+                tr('compare', 'bedrooms'): [f"{r['bedrooms']:.0f}" for r in selected_rows],
+                tr('compare', 'bathrooms'): [f"{r['bathrooms']:.0f}" for r in selected_rows],
+            }
+            
+            st.dataframe(pd.DataFrame(comp_data), use_container_width=True, hide_index=True)
+            
+            fig = go.Figure()
+            fig.add_trace(go.Bar(
+                x=[f"#{i+1}" for i in range(len(selected_rows))],
+                y=[r['price'] for r in selected_rows],
+                marker_color=['#6366F1', '#8B5CF6', '#EC4899', '#10B981'][:len(selected_rows)],
+                text=[f"{r['price']:,.0f}" for r in selected_rows],
+                textposition='auto',
+            ))
+            fig.update_layout(
+                title='💰 ' + tr('compare', 'price'),
+                height=400,
+                paper_bgcolor='rgba(0,0,0,0)',
+            )
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.info("🎯 " + ("اختار عقارين على الأقل" if lang == "ar" else "Select at least 2 properties"))
+
+
+# ═══════════════════════════════════════════════════════
+# TAB 6: FAVORITES
+# ═══════════════════════════════════════════════════════
+with tab6:
+    st.markdown(f"""
+    <div class="section-header">
+        <div class="section-icon">❤️</div>
+        <div>
+            <h2 class="section-title">{tr('favorites', 'title').replace('❤️ ', '')}</h2>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    favs = st.session_state.favorites
+    
+    if len(favs) == 0:
+        st.markdown(f"""
+        <div class="empty-state">
+            <div class="empty-icon">💔</div>
+            <div class="empty-title">{tr('favorites', 'empty')}</div>
+            <p>{tr('favorites', 'empty_desc')}</p>
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown(f"### {'عندك' if lang == 'ar' else 'You have'} **{len(favs)}** {'عقار' if lang == 'ar' else 'properties'}")
+        
+        for i, fav in enumerate(favs):
+            c1, c2 = st.columns([4, 1])
+            with c1:
+                st.markdown(f"""
+                <div class="card">
+                    <div class="card-value">{fav['price']:,.0f} EGP</div>
+                    <div class="card-subtitle">
+                        {fav['property_type']} · 
+                        {fav.get('district_ar', fav['district']) if lang == 'ar' else fav['district']}
+                    </div>
+                    <div style="margin-top:8px;font-size:13px;color:{get_theme(dark)['text_muted']};">
+                        🏙️ {fav.get('governorate_ar', fav['governorate']) if lang == 'ar' else fav['governorate']} · 
+                        📐 {fav['size']:.0f}m² · 
+                        🛏️ {fav['bedrooms']:.0f}BR · 
+                        🚿 {fav['bathrooms']:.0f}BA
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+            with c2:
+                if st.button("🗑️", key=f"del_{i}", use_container_width=True):
+                    st.session_state.favorites.pop(i)
+                    st.rerun()
+        
+        st.markdown("---")
+        if st.button("🗑️ " + tr('favorites', 'clear_all'), use_container_width=True):
+            st.session_state.favorites = []
+            st.rerun()
+
+
+# ═══════════════════════════════════════════════════════
+# FOOTER
+# ═══════════════════════════════════════════════════════
+st.markdown(f"""
+<div class="footer">
+    <h3 style="margin:0 0 12px 0;font-size:20px;color:{get_theme(dark)['primary']};">
+        🏠 {tr('navbar', 'brand').replace('🏠 ', '')}
+    </h3>
+    <p style="margin:8px 0;font-weight:600;">{tr('footer', 'made_with')}</p>
+    <p style="margin:8px 0;font-size:13px;">
+        {len(df):,} {tr('stats', 'listings')} · 
+        {df['governorate'].nunique()} {tr('stats', 'governorates')} · 
+        R² = {metadata['metrics']['r2']:.4f}
+    </p>
+    <p style="margin:16px 0 0 0;font-size:12px;opacity:0.7;">
+        {tr('footer', 'copyright')}
+    </p>
+</div>
+""", unsafe_allow_html=True)
