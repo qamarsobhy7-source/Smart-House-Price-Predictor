@@ -3,12 +3,7 @@
     "brand": "🏠 الذكاء العقاري",
     "buy": "شراء",
     "rent": "إيجار",
-    "market": "السوق",
-    "about": "عننا",
-    "login": "دخول",
-    "signup": "تسجيل",
-    "theme_light": "☀️ فاتح",
-    "theme_dark": "🌙 داكن"
+    "market": "السوق"
   },
   "hero": {
     "badge": "✨ مدعوم بالذكاء الاصطناعي",
@@ -17,12 +12,7 @@
     "governorate": "المحافظة",
     "city": "المدينة",
     "district": "الحي",
-    "property_type": "نوع العقار",
-    "search": "ابحث",
-    "select_governorate": "اختار المحافظة",
-    "select_city": "اختار المدينة",
-    "select_district": "اختار الحي",
-    "select_type": "اختار النوع"
+    "property_type": "نوع العقار"
   },
   "stats": {
     "accuracy": "الدقة",
@@ -31,27 +21,6 @@
     "listings": "إعلان",
     "districts": "حي",
     "compounds": "كومبوند"
-  },
-  "property_types": {
-    "title": "أنواع العقارات",
-    "subtitle": "اختار النوع اللي يناسبك",
-    "apartment": "شقة",
-    "villa": "فيلا",
-    "townhouse": "تاون هاوس",
-    "duplex": "دوبلكس",
-    "penthouse": "بنتهاوس",
-    "twin_house": "توين هاوس",
-    "ivilla": "آي فيلا",
-    "hotel_apartment": "شقة فندقية",
-    "chalet": "شاليه",
-    "studio": "استوديو"
-  },
-  "popular_areas": {
-    "title": "المناطق الأكثر طلباً",
-    "subtitle": "أفضل المناطق بالسوق المصري",
-    "avg_price": "متوسط السعر",
-    "listings": "إعلان",
-    "view_all": "شوف الكل"
   },
   "estimator": {
     "title": "🎯 حاسبة سعر العقار بالذكاء الاصطناعي",
@@ -64,21 +33,10 @@
     "bedrooms": "عدد الغرف",
     "bathrooms": "عدد الحمامات",
     "finishing": "التشطيب",
-    "finishing_core": "طوب أحمر",
-    "finishing_semi": "نصف تشطيب",
-    "finishing_finished": "تشطيب كامل",
-    "finishing_super": "سوبر لوكس",
     "furnished": "الفرش",
     "furnished_no": "غير مفروش",
     "furnished_partly": "مفروش جزئياً",
     "furnished_yes": "مفروش",
-    "amenities": "الكماليات",
-    "amenity_pool": "مسبح",
-    "amenity_gym": "جيم",
-    "amenity_garden": "حديقة",
-    "amenity_parking": "موقف سيارات",
-    "amenity_security": "أمن",
-    "amenity_elevator": "أسانسير",
     "calculate": "🔮 احسب السعر",
     "calculating": "⏳ جاري الحساب...",
     "result_title": "💰 السعر المتوقع",
@@ -91,34 +49,31 @@
     "at_market": "قريب من السوق",
     "save": "❤️ حفظ",
     "saved": "✅ محفوظ",
-    "share": "📤 مشاركة",
     "pdf": "📄 تقرير PDF",
     "whatsapp": "📱 واتساب",
     "call": "📞 اتصال"
   },
   "time_series": {
     "title": "📈 تطور الأسعار",
-    "subtitle": "السعر عبر السنوات في المنطقة دي",
+    "subtitle": "السعر عبر السنوات",
     "past": "الماضي",
     "current": "الحالي",
     "future": "متوقع",
     "year": "السنة",
-    "price": "السعر",
-    "growth": "نسبة النمو"
+    "price": "السعر"
   },
   "similar": {
     "title": "🏘️ عقارات مشابهة",
-    "subtitle": "عقارات بنفس المواصفات في المنطقة",
+    "subtitle": "بنفس المواصفات",
     "price": "السعر",
     "size": "المساحة",
     "bedrooms": "غرف",
-    "bathrooms": "حمامات",
-    "match": "توافق"
+    "bathrooms": "حمامات"
   },
   "roi": {
     "title": "📊 تحليل الاستثمار",
     "current_value": "القيمة الحالية",
-    "annual_rental": "الإيجار السنوي المتوقع",
+    "annual_rental": "الإيجار السنوي",
     "rental_yield": "عائد الإيجار",
     "5yr_value": "القيمة بعد 5 سنوات",
     "appreciation": "نمو القيمة",
@@ -126,21 +81,20 @@
   },
   "market": {
     "title": "📈 تحليل السوق",
-    "subtitle": "أرقام حقيقية من السوق المصري",
+    "subtitle": "أرقام حقيقية",
     "by_governorate": "حسب المحافظة",
     "by_type": "حسب النوع",
-    "by_area": "حسب المنطقة",
     "price_distribution": "توزيع الأسعار",
     "size_vs_price": "المساحة مقابل السعر",
     "median": "الوسيط",
     "average": "المتوسط",
     "min": "أقل",
     "max": "أعلى",
-    "listings_count": "عدد الإعلانات"
+    "listings_count": "إعلانات"
   },
   "neighborhood": {
     "title": "🏘️ معلومات الحي",
-    "subtitle": "كل اللي محتاج تعرفه عن المنطقة",
+    "subtitle": "كل ما تحتاج معرفته",
     "schools": "مدارس",
     "hospitals": "مستشفيات",
     "malls": "مولات",
@@ -148,12 +102,11 @@
     "transport": "مواصلات",
     "parks": "حدائق",
     "rating": "التقييم",
-    "count": "العدد",
-    "nearest": "الأقرب"
+    "count": "العدد"
   },
   "mortgage": {
-    "title": "🧮 حاسبة الرهن العقاري",
-    "subtitle": "احسب قسطك الشهري بسهولة",
+    "title": "🧮 حاسبة الرهن",
+    "subtitle": "احسب قسطك الشهري",
     "property_price": "سعر العقار",
     "down_payment": "المقدم",
     "down_payment_pct": "نسبة المقدم",
@@ -172,8 +125,8 @@
   },
   "compare": {
     "title": "⚖️ مقارنة العقارات",
-    "subtitle": "قارن حتى 4 عقارات جنب بعض",
-    "select": "اختار العقارات للمقارنة",
+    "subtitle": "قارن حتى 4 عقارات",
+    "select": "اختار العقارات",
     "property": "العقار",
     "price": "السعر",
     "size": "المساحة",
@@ -181,8 +134,7 @@
     "bedrooms": "غرف",
     "bathrooms": "حمامات",
     "location": "الموقع",
-    "type": "النوع",
-    "compare_btn": "قارن"
+    "type": "النوع"
   },
   "favorites": {
     "title": "❤️ المفضلة",
@@ -191,21 +143,7 @@
     "remove": "🗑️ حذف",
     "clear_all": "حذف الكل"
   },
-  "contact": {
-    "title": "📞 تواصل معنا",
-    "subtitle": "احنا هنا لمساعدتك",
-    "name": "الاسم",
-    "email": "البريد الإلكتروني",
-    "message": "الرسالة",
-    "send": "إرسال",
-    "call_us": "اتصل بينا",
-    "email_us": "راسلنا"
-  },
   "footer": {
-    "about": "عننا",
-    "contact": "تواصل",
-    "privacy": "الخصوصية",
-    "terms": "الشروط",
     "copyright": "© 2026 الذكاء العقاري المصري",
     "made_with": "اتعمل بـ ❤️ في مصر"
   }
