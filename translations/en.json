@@ -3,12 +3,7 @@
     "brand": "🏠 Real Estate AI",
     "buy": "Buy",
     "rent": "Rent",
-    "market": "Market",
-    "about": "About",
-    "login": "Login",
-    "signup": "Sign Up",
-    "theme_light": "☀️ Light",
-    "theme_dark": "🌙 Dark"
+    "market": "Market"
   },
   "hero": {
     "badge": "✨ AI-Powered",
@@ -17,12 +12,7 @@
     "governorate": "Governorate",
     "city": "City",
     "district": "District",
-    "property_type": "Property Type",
-    "search": "Search",
-    "select_governorate": "Select governorate",
-    "select_city": "Select city",
-    "select_district": "Select district",
-    "select_type": "Select type"
+    "property_type": "Property Type"
   },
   "stats": {
     "accuracy": "Accuracy",
@@ -31,27 +21,6 @@
     "listings": "Listings",
     "districts": "Districts",
     "compounds": "Compounds"
-  },
-  "property_types": {
-    "title": "Property Types",
-    "subtitle": "Choose your preferred type",
-    "apartment": "Apartment",
-    "villa": "Villa",
-    "townhouse": "Townhouse",
-    "duplex": "Duplex",
-    "penthouse": "Penthouse",
-    "twin_house": "Twin House",
-    "ivilla": "iVilla",
-    "hotel_apartment": "Hotel Apartment",
-    "chalet": "Chalet",
-    "studio": "Studio"
-  },
-  "popular_areas": {
-    "title": "Popular Areas",
-    "subtitle": "Top areas in the Egyptian market",
-    "avg_price": "Avg Price",
-    "listings": "listings",
-    "view_all": "View All"
   },
   "estimator": {
     "title": "🎯 AI Property Price Estimator",
@@ -64,21 +33,10 @@
     "bedrooms": "Bedrooms",
     "bathrooms": "Bathrooms",
     "finishing": "Finishing",
-    "finishing_core": "Core & Shell",
-    "finishing_semi": "Semi Finished",
-    "finishing_finished": "Finished",
-    "finishing_super": "Super Lux",
     "furnished": "Furnished",
     "furnished_no": "Unfurnished",
     "furnished_partly": "Partly",
     "furnished_yes": "Furnished",
-    "amenities": "Amenities",
-    "amenity_pool": "Pool",
-    "amenity_gym": "Gym",
-    "amenity_garden": "Garden",
-    "amenity_parking": "Parking",
-    "amenity_security": "Security",
-    "amenity_elevator": "Elevator",
     "calculate": "🔮 Calculate Price",
     "calculating": "⏳ Calculating...",
     "result_title": "💰 Estimated Price",
@@ -91,34 +49,31 @@
     "at_market": "At Market",
     "save": "❤️ Save",
     "saved": "✅ Saved",
-    "share": "📤 Share",
     "pdf": "📄 PDF Report",
     "whatsapp": "📱 WhatsApp",
     "call": "📞 Call"
   },
   "time_series": {
     "title": "📈 Price Evolution",
-    "subtitle": "Price over years in this area",
+    "subtitle": "Price over years",
     "past": "Past",
     "current": "Current",
     "future": "Forecast",
     "year": "Year",
-    "price": "Price",
-    "growth": "Growth"
+    "price": "Price"
   },
   "similar": {
     "title": "🏘️ Similar Properties",
-    "subtitle": "Properties with similar specs in this area",
+    "subtitle": "Same specs in this area",
     "price": "Price",
     "size": "Size",
     "bedrooms": "Beds",
-    "bathrooms": "Baths",
-    "match": "Match"
+    "bathrooms": "Baths"
   },
   "roi": {
     "title": "📊 Investment Analysis",
     "current_value": "Current Value",
-    "annual_rental": "Expected Annual Rental",
+    "annual_rental": "Annual Rental",
     "rental_yield": "Rental Yield",
     "5yr_value": "Value in 5 Years",
     "appreciation": "Appreciation",
@@ -126,10 +81,9 @@
   },
   "market": {
     "title": "📈 Market Analysis",
-    "subtitle": "Real numbers from the Egyptian market",
+    "subtitle": "Real numbers",
     "by_governorate": "By Governorate",
     "by_type": "By Type",
-    "by_area": "By Area",
     "price_distribution": "Price Distribution",
     "size_vs_price": "Size vs Price",
     "median": "Median",
@@ -140,7 +94,7 @@
   },
   "neighborhood": {
     "title": "🏘️ Neighborhood Insights",
-    "subtitle": "Everything you need to know",
+    "subtitle": "Everything you need",
     "schools": "Schools",
     "hospitals": "Hospitals",
     "malls": "Malls",
@@ -148,12 +102,11 @@
     "transport": "Transport",
     "parks": "Parks",
     "rating": "Rating",
-    "count": "Count",
-    "nearest": "Nearest"
+    "count": "Count"
   },
   "mortgage": {
     "title": "🧮 Mortgage Calculator",
-    "subtitle": "Calculate your monthly payment",
+    "subtitle": "Calculate monthly payment",
     "property_price": "Property Price",
     "down_payment": "Down Payment",
     "down_payment_pct": "Down Payment %",
@@ -172,8 +125,8 @@
   },
   "compare": {
     "title": "⚖️ Compare Properties",
-    "subtitle": "Compare up to 4 properties side by side",
-    "select": "Select properties to compare",
+    "subtitle": "Compare up to 4 properties",
+    "select": "Select properties",
     "property": "Property",
     "price": "Price",
     "size": "Size",
@@ -181,31 +134,16 @@
     "bedrooms": "Beds",
     "bathrooms": "Baths",
     "location": "Location",
-    "type": "Type",
-    "compare_btn": "Compare"
+    "type": "Type"
   },
   "favorites": {
     "title": "❤️ Favorites",
     "empty": "No saved properties yet",
-    "empty_desc": "Calculate a property and save it here",
+    "empty_desc": "Calculate and save properties here",
     "remove": "🗑️ Remove",
     "clear_all": "Clear All"
   },
-  "contact": {
-    "title": "📞 Contact Us",
-    "subtitle": "We're here to help",
-    "name": "Name",
-    "email": "Email",
-    "message": "Message",
-    "send": "Send",
-    "call_us": "Call Us",
-    "email_us": "Email Us"
-  },
   "footer": {
-    "about": "About",
-    "contact": "Contact",
-    "privacy": "Privacy",
-    "terms": "Terms",
     "copyright": "© 2026 Egypt Real Estate AI",
     "made_with": "Made with ❤️ in Egypt"
   }
