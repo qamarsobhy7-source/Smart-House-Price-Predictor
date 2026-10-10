@@ -5,3 +5,5 @@ venv/
 .env
 .ipynb_checkpoints/
 .DS_Store
+*.csv
+!data/processed/FINAL_DATASET_v9.csv
