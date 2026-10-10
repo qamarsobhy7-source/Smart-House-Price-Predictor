@@ -1,6 +1,6 @@
 """
 Smart House Price Predictor — v9 Adapter (COMPLETE)
-Provides ALL keys required by original streamlit_app.py
+Provides ALL keys required by modern streamlit_app.py
 """
 from pathlib import Path
 import joblib
@@ -16,21 +16,17 @@ FEATURES_PATH = MODELS_DIR / "FINAL_FEATURES_v9.pkl"
 CAT_FEATURES_PATH = MODELS_DIR / "FINAL_CAT_FEATURES_v9.pkl"
 
 
-# ═══════════════════════════════════════════════════════
-# LOAD ARTIFACTS
-# ═══════════════════════════════════════════════════════
 def load_artifacts():
     """Load model + metadata + mappings (with ALL required keys)."""
     model = joblib.load(MODEL_PATH)
     features = joblib.load(FEATURES_PATH)
     cat_features = joblib.load(CAT_FEATURES_PATH)
 
-    # ✅ metadata with ALL required keys
+    # Metadata with ALL required keys
     metadata = {
         "model_name": "CatBoost",
         "model_version": "v9",
         
-        # Metrics (used by hero section)
         "metrics": {
             "r2": 0.7061,
             "mape": 40.52,
@@ -38,7 +34,6 @@ def load_artifacts():
             "rmse": 10300000,
         },
         
-        # Training info (used by hero section)
         "training_info": {
             "n_total": 119916,
             "n_train": 95932,
@@ -48,7 +43,6 @@ def load_artifacts():
             "n_features": len(features),
         },
         
-        # Legacy keys
         "r2_score": 0.7061,
         "mape": 40.52,
         "accuracy": "70.6%",
@@ -62,16 +56,14 @@ def load_artifacts():
         "compounds": 881,
     }
 
-    # ✅ mappings with price_mappings
+    # Mappings with price_mappings
     try:
         df = pd.read_csv(BASE_DIR / "data" / "processed" / "FINAL_DATASET_v9.csv")
         
-        # Categorical values
         categorical_values = {}
         for col in cat_features:
             categorical_values[col] = sorted(df[col].dropna().astype(str).unique().tolist())
         
-        # Price mappings (median price per category)
         price_mappings = {
             "by_governorate": df.groupby("governorate")["price"].median().to_dict(),
             "by_property_type": df.groupby("property_type")["price"].median().to_dict(),
@@ -81,7 +73,7 @@ def load_artifacts():
             "global_mean": float(df["price"].mean()),
         }
     except Exception as e:
-        print(f"⚠️ Warning: {e}")
+        print(f"Warning loading data: {e}")
         categorical_values = {
             "property_type": ["Apartment", "Villa", "Townhouse", "Duplex",
                               "Penthouse", "Twin House", "iVilla",
@@ -107,15 +99,10 @@ def load_artifacts():
 
 
 def get_category_values(mappings):
-    """Return categorical values for dropdowns."""
     return mappings["categorical_values"]
 
 
-# ═══════════════════════════════════════════════════════
-# VALIDATE INPUT
-# ═══════════════════════════════════════════════════════
 def validate_input(area, bedrooms, bathrooms, city, district, compound, price=None):
-    """Validate user input."""
     errors = []
     try:
         area_val = float(area)
@@ -143,9 +130,6 @@ def validate_input(area, bedrooms, bathrooms, city, district, compound, price=No
     return errors
 
 
-# ═══════════════════════════════════════════════════════
-# BUILD FEATURES
-# ═══════════════════════════════════════════════════════
 def build_features(input_dict, features, cat_features):
     """Build feature vector."""
     row = {}
@@ -157,9 +141,6 @@ def build_features(input_dict, features, cat_features):
     return pd.DataFrame([row])[features]
 
 
-# ═══════════════════════════════════════════════════════
-# PREDICT WITH CONFIDENCE
-# ═══════════════════════════════════════════════════════
 def predict_with_confidence(model, X, features, cat_features):
     """Predict + confidence interval."""
     try:
@@ -177,11 +158,7 @@ def predict_with_confidence(model, X, features, cat_features):
         return {"error": str(e), "price": 0}
 
 
-# ═══════════════════════════════════════════════════════
-# FORMAT PRICE
-# ═══════════════════════════════════════════════════════
 def format_price(price, lang="en"):
-    """Format price."""
     if price >= 1_000_000:
         m = price / 1_000_000
         return f"{m:.2f} مليون جنيه" if lang == "ar" else f"EGP {m:.2f}M"
@@ -191,11 +168,7 @@ def format_price(price, lang="en"):
     return f"EGP {price:,.0f}"
 
 
-# ═══════════════════════════════════════════════════════
-# ROI
-# ═══════════════════════════════════════════════════════
 def calculate_roi(price, years=5, growth_rate=0.08):
-    """Calculate ROI."""
     future = price * ((1 + growth_rate) ** years)
     return {
         "current_price": price,
@@ -206,11 +179,7 @@ def calculate_roi(price, years=5, growth_rate=0.08):
     }
 
 
-# ═══════════════════════════════════════════════════════
-# SIMILAR PROPERTIES
-# ═══════════════════════════════════════════════════════
 def recommend_similar_properties(df, governorate, property_type, size, price, top_n=3):
-    """Find similar."""
     try:
         filtered = df[
             (df["governorate"] == governorate) &
