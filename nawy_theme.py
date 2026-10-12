@@ -1200,6 +1200,99 @@ section[data-testid="stSidebar"] * { color: TEXT !important; }
     }
 }
 
+
+/* ═══════════════════════════════════════════════════ */
+/* DROPDOWN FIX - Light & Dark Mode                   */
+/* ═══════════════════════════════════════════════════ */
+
+/* الخلفية الداكنة للـ Dropdown */
+[data-baseweb="popover"] {
+    background-color: BG_CARD !important;
+    border: 1px solid BORDER !important;
+    border-radius: 8px !important;
+    box-shadow: SHADOW_LG !important;
+}
+
+[data-baseweb="popover"] > div,
+[data-baseweb="menu"],
+[data-baseweb="menu"] > div,
+div[role="listbox"] {
+    background-color: BG_CARD !important;
+    color: TEXT !important;
+}
+
+/* القوائم نفسها */
+ul[role="listbox"] {
+    background-color: BG_CARD !important;
+    padding: 6px !important;
+}
+
+/* كل خيار */
+li[role="option"] {
+    background-color: BG_CARD !important;
+    color: TEXT !important;
+    border-radius: 6px !important;
+    padding: 10px 14px !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    margin: 2px 0 !important;
+    transition: all 0.15s !important;
+    cursor: pointer !important;
+}
+
+li[role="option"]:hover {
+    background-color: PRIMARY_SOFT !important;
+    color: PRIMARY !important;
+}
+
+li[role="option"][aria-selected="true"] {
+    background-color: PRIMARY !important;
+    color: white !important;
+    font-weight: 700 !important;
+}
+
+/* الـ select نفسه */
+[data-baseweb="select"] > div:first-child {
+    background-color: BG_CARD !important;
+    color: TEXT !important;
+    border: 1.5px solid BORDER !important;
+    border-radius: 8px !important;
+}
+
+[data-baseweb="select"] > div:first-child:hover {
+    border-color: PRIMARY !important;
+}
+
+/* النص المختار */
+[data-baseweb="select"] span,
+[data-baseweb="select"] input {
+    color: TEXT !important;
+    background-color: transparent !important;
+}
+
+/* الأيقونة (السهم) */
+[data-baseweb="select"] svg {
+    color: TEXT !important;
+    fill: TEXT !important;
+}
+
+/* الإصلاح النهائي للـ Dark Mode */
+@media (prefers-color-scheme: dark) {
+    [data-baseweb="popover"],
+    [data-baseweb="menu"],
+    div[role="listbox"],
+    ul[role="listbox"],
+    li[role="option"] {
+        background-color: #1A2332 !important;
+        color: #F8FAFC !important;
+    }
+    
+    li[role="option"]:hover {
+        background-color: #0A2540 !important;
+        color: #4D94FF !important;
+    }
+}
+
 </style>
 """
 
