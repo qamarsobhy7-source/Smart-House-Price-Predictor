@@ -1,0 +1,90 @@
+{
+  "total_predictions": 7,
+  "predictions": [
+    {
+      "timestamp": "2026-09-28T09:57:05.190124",
+      "area": 150.0,
+      "bedrooms": "3",
+      "bathrooms": 2,
+      "city": "Cairo",
+      "district": "El Khalifa",
+      "compound": "None",
+      "predicted_price": 6780828.0,
+      "confidence_lower": 5614760.470390821,
+      "confidence_upper": 7946895.529609179
+    },
+    {
+      "timestamp": "2026-09-28T10:08:46.956046",
+      "area": 150.0,
+      "bedrooms": "3",
+      "bathrooms": 2,
+      "city": "Cairo",
+      "district": "El Khalifa",
+      "compound": "None",
+      "predicted_price": 6780828.0,
+      "confidence_lower": 5614760.470390821,
+      "confidence_upper": 7946895.529609179
+    },
+    {
+      "timestamp": "2026-09-28T10:10:15.193223",
+      "area": 150.0,
+      "bedrooms": "3",
+      "bathrooms": 2,
+      "city": "Cairo",
+      "district": "El Khalifa",
+      "compound": "None",
+      "predicted_price": 6780828.0,
+      "confidence_lower": 5614760.470390821,
+      "confidence_upper": 7946895.529609179
+    },
+    {
+      "timestamp": "2026-09-28T10:15:50.788929",
+      "area": 150.0,
+      "bedrooms": "3",
+      "bathrooms": 2,
+      "city": "Cairo",
+      "district": "El Khalifa",
+      "compound": "None",
+      "predicted_price": 6780828.0,
+      "confidence_lower": 5614760.470390821,
+      "confidence_upper": 7946895.529609179
+    },
+    {
+      "timestamp": "2026-09-28T10:25:38.631774",
+      "area": 150.0,
+      "bedrooms": "3",
+      "bathrooms": 2,
+      "city": "Cairo",
+      "district": "El Khalifa",
+      "compound": "None",
+      "predicted_price": 6780828.0,
+      "confidence_lower": 5614760.470390821,
+      "confidence_upper": 7946895.529609179
+    },
+    {
+      "timestamp": "2026-09-28T10:25:55.553529",
+      "area": 150.0,
+      "bedrooms": "3",
+      "bathrooms": 2,
+      "city": "Cairo",
+      "district": "El Khalifa",
+      "compound": "None",
+      "predicted_price": 6780828.0,
+      "confidence_lower": 5614760.470390821,
+      "confidence_upper": 7946895.529609179
+    },
+    {
+      "timestamp": "2026-09-28T10:28:31.277006",
+      "area": 150.0,
+      "bedrooms": "3",
+      "bathrooms": 2,
+      "city": "Cairo",
+      "district": "El Khalifa",
+      "compound": "None",
+      "predicted_price": 6780828.0,
+      "confidence_lower": 5614760.470390821,
+      "confidence_upper": 7946895.529609179
+    }
+  ],
+  "last_updated": "2026-09-28T10:28:31.277043"
+}

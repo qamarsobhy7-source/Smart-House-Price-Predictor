@@ -1,0 +1,1 @@
+"""SmartPrice test suite."""
