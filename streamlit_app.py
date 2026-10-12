@@ -132,10 +132,19 @@ TEXTS = {
         "feat_balcony": "Balcony", "feat_view": "View",
         "feat_mall": "Mall", "feat_mosque": "Mosque",
         "feat_club": "Sports Club", "feat_sea": "Sea Front",
+        "mortgage_property_price": "Property Price (EGP)",
+        "mortgage_down_payment": "Down Payment (%)",
+        "mortgage_down_amount": "Down Payment Amount",
         "mortgage_loan": "Loan Amount (EGP)",
         "mortgage_rate": "Annual Interest Rate (%)",
         "mortgage_years": "Years",
         "mortgage_monthly": "Monthly Payment",
+        "mortgage_monthly_payment": "Monthly Payment",
+        "mortgage_amortization": "Amortization Schedule",
+        "mortgage_principal": "Principal",
+        "mortgage_interest": "Interest",
+        "mortgage_total_cost": "Total Cost",
+        "mortgage_breakdown": "Payment Breakdown",
         "mortgage_total": "Total Payment",
         "mortgage_interest": "Total Interest",
         "footer_tagline": "AI-powered real estate valuation for Egypt",
@@ -224,10 +233,19 @@ TEXTS = {
         "feat_balcony": "بلكونة", "feat_view": "إطلالة",
         "feat_mall": "مول تجاري", "feat_mosque": "مسجد",
         "feat_club": "نادي رياضي", "feat_sea": "على البحر",
+        "mortgage_property_price": "سعر العقار (جنيه)",
+        "mortgage_down_payment": "الدفعة الأولى (%)",
+        "mortgage_down_amount": "قيمة الدفعة الأولى",
         "mortgage_loan": "مبلغ التمويل (جنيه)",
         "mortgage_rate": "سعر الفائدة السنوي (%)",
         "mortgage_years": "عدد السنوات",
         "mortgage_monthly": "القسط الشهري",
+        "mortgage_monthly_payment": "القسط الشهري",
+        "mortgage_amortization": "جدول السداد",
+        "mortgage_principal": "أصل المبلغ",
+        "mortgage_interest": "الفوائد",
+        "mortgage_total_cost": "إجمالي التكلفة",
+        "mortgage_breakdown": "تفاصيل الدفع",
         "mortgage_total": "إجمالي المدفوع",
         "mortgage_interest": "إجمالي الفوائد",
         "footer_tagline": "تقدير أسعار العقارات بالذكاء الاصطناعي لمصر",
@@ -965,15 +983,15 @@ st.markdown(
 )
 
 ptype_items = [
-    (T["pt_apartment"], "45,200", "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=280&fit=crop"),
-    (T["pt_villa"], "8,500", "https://images.unsplash.com/photo-1613977257363-707ba9348227?w=400&h=280&fit=crop"),
-    (T["pt_townhouse"], "2,100", "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=280&fit=crop"),
-    (T["pt_duplex"], "3,200", "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400&h=280&fit=crop"),
-    (T["pt_penthouse"], "950", "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=400&h=280&fit=crop"),
-    (T["pt_chalet"], "12,800", "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=400&h=280&fit=crop"),
+    ("Apartment", T["pt_apartment"], "45,200", "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=280&fit=crop"),
+    ("Villa", T["pt_villa"], "8,500", "https://images.unsplash.com/photo-1613977257363-707ba9348227?w=400&h=280&fit=crop"),
+    ("Townhouse", T["pt_townhouse"], "2,100", "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=280&fit=crop"),
+    ("Duplex", T["pt_duplex"], "3,200", "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400&h=280&fit=crop"),
+    ("Penthouse", T["pt_penthouse"], "950", "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=400&h=280&fit=crop"),
+    ("Chalet", T["pt_chalet"], "12,800", "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=400&h=280&fit=crop"),
 ]
 pt_cols = st.columns(6)
-for i, (name, count, img) in enumerate(ptype_items):
+for i, (ptype_key, name, count, img) in enumerate(ptype_items):
     with pt_cols[i]:
         pt_html = (
             '<div class="ptype-card-img">'
@@ -984,6 +1002,10 @@ for i, (name, count, img) in enumerate(ptype_items):
             '</div></div>'
         )
         st.markdown(pt_html, unsafe_allow_html=True)
+        if st.button("→ " + T["click_filter"], key="ptype_click_" + ptype_key, use_container_width=True):
+            st.session_state["sel_ptype_pref"] = ptype_key
+            st.session_state["active_tab"] = 0
+            st.rerun()
 
 # ═══ AREAS ═══
 st.markdown(
@@ -1014,6 +1036,14 @@ else:
     ]
 
 area_cols = st.columns(6)
+area_keys_map = {
+    "New Cairo": "New Cairo City", "القاهرة الجديدة": "New Cairo City",
+    "6 October City": "6 October City", "مدينة 6 أكتوبر": "6 October City",
+    "New Capital": "New Capital City", "العاصمة الإدارية": "New Capital City",
+    "Mostakbal City": "Mostakbal City", "مدينة المستقبل": "Mostakbal City",
+    "North Coast": "North Coast", "الساحل الشمالي": "North Coast",
+    "Ain Sokhna": "Ain Sokhna", "العين السخنة": "Ain Sokhna",
+}
 for i, (name, count, img) in enumerate(areas):
     with area_cols[i]:
         area_html = (
@@ -1025,6 +1055,11 @@ for i, (name, count, img) in enumerate(areas):
             '</div></div>'
         )
         st.markdown(area_html, unsafe_allow_html=True)
+        if st.button("→ " + T["click_filter"], key="area_click_" + str(i), use_container_width=True):
+            if name in area_keys_map:
+                st.session_state["area_pref"] = area_keys_map[name]
+                st.session_state["active_tab"] = 0
+                st.rerun()
 
 # ═══ COMPOUNDS ═══
 st.markdown(
@@ -1083,9 +1118,25 @@ with tab1:
 
         gov_options = [g for g in hierarchy["governorates"] if g["listings"] > 0]
         gov_labels = [nm(g) + " (" + f'{g["listings"]:,}' + ")" for g in gov_options]
+        
+        # لو فيه منطقة مفضلة، نروح للمحافظة بتاعتها
+        default_gov_idx = 0
+        area_pref = st.session_state.get("area_pref", None)
+        if area_pref:
+            for idx, g in enumerate(gov_options):
+                cities_en = [c.get("en", "") for c in g.get("cities", [])]
+                if area_pref in cities_en:
+                    default_gov_idx = idx
+                    break
+        
         gov_idx = st.selectbox(T["governorate"], range(len(gov_options)),
+                                index=default_gov_idx,
                                 format_func=lambda i: gov_labels[i], key="sel_gov")
         selected_gov = gov_options[gov_idx]
+        
+        # تنظيف area_pref بعد الاستخدام
+        if "area_pref" in st.session_state:
+            del st.session_state["area_pref"]
 
         # فلتر: نستبعد المناطق بأقل من 5 إعلانات
         MIN_LISTINGS = 5
@@ -1139,10 +1190,19 @@ with tab1:
             "Townhouse": T["pt_townhouse"], "Duplex": T["pt_duplex"],
             "Penthouse": T["pt_penthouse"], "Chalet": T["pt_chalet"],
         }
+        default_ptype_idx = 0
+        ptype_pref = st.session_state.get("sel_ptype_pref", None)
+        if ptype_pref and ptype_pref in ptype_keys:
+            default_ptype_idx = ptype_keys.index(ptype_pref)
+        
         selected_ptype = st.selectbox(
             T["property_type"], ptype_keys,
+            index=default_ptype_idx,
             format_func=lambda k: ptype_labels[k], key="sel_ptype"
         )
+        
+        if "sel_ptype_pref" in st.session_state:
+            del st.session_state["sel_ptype_pref"]
 
         c1, c2 = st.columns(2)
         with c1:
@@ -1640,51 +1700,297 @@ with tab1:
             st.markdown(empty_html, unsafe_allow_html=True)
 
 
-# ═══ TAB 2: MARKET ANALYSIS ═══
+# ═══ TAB 2: MARKET ANALYSIS (ADVANCED) ═══
 with tab2:
     st.markdown('<div class="section-title">' + T["tab_market"] + '</div>', unsafe_allow_html=True)
-    st.markdown("")
+    st.markdown('<div style="color:#64748B;font-size:13px;margin-bottom:24px;">' + ("Real-time insights from 119,916 listings" if lang == "en" else "رؤى فورية من 119,916 إعلان") + '</div>', unsafe_allow_html=True)
 
-    c1, c2, c3, c4 = st.columns(4)
-    c1.metric(T["stat_listings"], f'{len(df):,}')
-    c2.metric(T["stat_gov"], str(n_gov))
-    c3.metric("Avg Price", f'{df["price"].mean()/1e6:.1f}M')
-    c4.metric("Median Price", f'{df["price"].median()/1e6:.1f}M')
+    # ═══ KPI ROW (6 KPIs) ═══
+    gov_count = len(df["governorate"].unique())
+    district_count = len(df["district"].unique())
+    
+    k1, k2, k3, k4 = st.columns(4)
+    k1.metric(T["stat_listings"], f'{len(df):,}')
+    k2.metric(T["stat_gov"], str(gov_count))
+    k3.metric(T["market_avg_price"], f'{df["price"].mean()/1e6:.2f}M EGP')
+    k4.metric(T["market_median_price"], f'{df["price"].median()/1e6:.2f}M EGP')
 
+    # ═══ FILTERS ═══
     st.markdown("---")
-    col_a, col_b = st.columns(2)
+    filter_c1, filter_c2, filter_c3 = st.columns(3)
+    with filter_c1:
+        gov_filter = st.selectbox(
+            ("Filter by Governorate" if lang == "en" else "تصفية بالمحافظة"),
+            ["All"] + sorted(df["governorate"].unique().tolist()),
+            key="mkt_gov_filter"
+        )
+    with filter_c2:
+        type_filter = st.selectbox(
+            ("Filter by Property Type" if lang == "en" else "تصفية بنوع العقار"),
+            ["All"] + sorted(df["property_type"].unique().tolist()),
+            key="mkt_type_filter"
+        )
+    with filter_c3:
+        price_range = st.selectbox(
+            ("Price Range" if lang == "en" else "نطاق السعر"),
+            [
+                ("All Prices" if lang == "en" else "كل الأسعار"),
+                ("Under 1M" if lang == "en" else "أقل من مليون"),
+                ("1M - 3M" if lang == "en" else "1-3 مليون"),
+                ("3M - 5M" if lang == "en" else "3-5 مليون"),
+                ("5M - 10M" if lang == "en" else "5-10 مليون"),
+                ("Over 10M" if lang == "en" else "أكثر من 10 مليون"),
+            ],
+            key="mkt_price_filter"
+        )
 
-    with col_a:
-        gov_counts = df["governorate"].value_counts().head(6)
-        fig = px.pie(values=gov_counts.values, names=gov_counts.index,
-                     title="Listings by Governorate")
-        st.plotly_chart(fig, use_container_width=True)
+    # Apply filters
+    df_filtered = df.copy()
+    if gov_filter != "All":
+        df_filtered = df_filtered[df_filtered["governorate"] == gov_filter]
+    if type_filter != "All":
+        df_filtered = df_filtered[df_filtered["property_type"] == type_filter]
+    
+    price_ranges = {
+        "Under 1M": (0, 1e6), "أقل من مليون": (0, 1e6),
+        "1M - 3M": (1e6, 3e6), "1-3 مليون": (1e6, 3e6),
+        "3M - 5M": (3e6, 5e6), "3-5 مليون": (3e6, 5e6),
+        "5M - 10M": (5e6, 10e6), "5-10 مليون": (5e6, 10e6),
+        "Over 10M": (10e6, 1e12), "أكثر من 10 مليون": (10e6, 1e12),
+    }
+    if price_range in price_ranges:
+        low, high = price_ranges[price_range]
+        df_filtered = df_filtered[(df_filtered["price"] >= low) & (df_filtered["price"] <= high)]
 
-    with col_b:
-        ptype_counts = df["property_type"].value_counts().head(6)
-        fig = px.bar(x=ptype_counts.values, y=ptype_counts.index, orientation="h",
-                     title="Property Types",
-                     color_discrete_sequence=[get_theme(dark)["primary"]])
-        st.plotly_chart(fig, use_container_width=True)
+    st.caption(f'' + ("Showing" if lang == "en" else "يتم عرض") + f' {len(df_filtered):,} ' + ("listings" if lang == "en" else "إعلان"))
 
+    # ═══ CHART 1: Top Areas (Horizontal Bar) ═══
     st.markdown("---")
-    price_data = df[df["price"] < df["price"].quantile(0.95)]
-    fig = px.histogram(price_data, x="price", nbins=50,
-                       title="Price Distribution",
-                       color_discrete_sequence=[get_theme(dark)["primary"]])
-    st.plotly_chart(fig, use_container_width=True)
+    chart_c1, chart_c2 = st.columns(2)
 
-# ═══ TAB 3: MORTGAGE ═══
+    with chart_c1:
+        top_areas = df_filtered.groupby("district").size().sort_values(ascending=True).tail(10)
+        fig_areas = go.Figure(go.Bar(
+            x=top_areas.values,
+            y=top_areas.index,
+            orientation='h',
+            marker=dict(
+                color=top_areas.values,
+                colorscale='Blues',
+                showscale=False,
+            ),
+            text=top_areas.values,
+            textposition='outside',
+            hovertemplate='%{y}<br>%{x:,} listings<extra></extra>' if lang == "en" else '%{y}<br>%{x:,} إعلان<extra></extra>',
+        ))
+        fig_areas.update_layout(
+            title=T["market_top_areas"],
+            height=400,
+            margin=dict(l=20, r=20, t=50, b=20),
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            xaxis_title=("Listings" if lang == "en" else "إعلانات"),
+        )
+        st.plotly_chart(fig_areas, use_container_width=True)
+
+    with chart_c2:
+        ptype_counts = df_filtered["property_type"].value_counts().head(8)
+        fig_ptype = go.Figure(go.Pie(
+            labels=ptype_counts.index,
+            values=ptype_counts.values,
+            hole=0.55,
+            marker=dict(colors=px.colors.qualitative.Set3[:len(ptype_counts)]),
+            textinfo='label+percent',
+            textposition='outside',
+            hovertemplate='%{label}<br>%{value:,}<br>%{percent}<extra></extra>',
+        ))
+        fig_ptype.update_layout(
+            title=T["market_property_dist"],
+            height=400,
+            margin=dict(l=20, r=20, t=50, b=20),
+            paper_bgcolor='rgba(0,0,0,0)',
+            showlegend=False,
+        )
+        st.plotly_chart(fig_ptype, use_container_width=True)
+
+    # ═══ CHART 3: Governorate Average Prices ═══
+    st.markdown("---")
+    gov_avg = df_filtered.groupby("governorate")["price"].mean().sort_values(ascending=True)
+    gov_avg_m = gov_avg / 1e6
+    fig_gov = go.Figure(go.Bar(
+        x=list(gov_avg_m.values),
+        y=list(gov_avg_m.index),
+        orientation='h',
+        marker=dict(
+            color=list(gov_avg_m.values),
+            colorscale='Viridis',
+            showscale=False,
+        ),
+        text=[f'{v:.2f}M' for v in gov_avg_m.values],
+        textposition='outside',
+        hovertemplate='%{y}<br>Avg: %{x:.2f}M EGP<extra></extra>',
+    ))
+    fig_gov.update_layout(
+        title=T["market_gov_avg"],
+        height=350,
+        margin=dict(l=20, r=20, t=50, b=20),
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        xaxis_title=("Average Price (M EGP)" if lang == "en" else "متوسط السعر (مليون ج.م)"),
+    )
+    st.plotly_chart(fig_gov, use_container_width=True)
+
+    # ═══ CHART 4: Price Distribution (Histogram) ═══
+    st.markdown("---")
+    chart_c3, chart_c4 = st.columns(2)
+
+    with chart_c3:
+        price_q95 = df_filtered["price"].quantile(0.95) if len(df_filtered) > 0 else 1e7
+        fig_hist = go.Figure(go.Histogram(
+            x=df_filtered[df_filtered["price"] <= price_q95]["price"] / 1e6,
+            nbinsx=50,
+            marker=dict(color=get_theme(dark)["primary"]),
+            hovertemplate='Price: %{x:.2f}M<br>Count: %{y}<extra></extra>',
+        ))
+        fig_hist.update_layout(
+            title=T["market_price_hist"],
+            height=400,
+            margin=dict(l=20, r=20, t=50, b=20),
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            xaxis_title=("Price (M EGP)" if lang == "en" else "السعر (مليون ج.م)"),
+            yaxis_title=("Count" if lang == "en" else "العدد"),
+        )
+        st.plotly_chart(fig_hist, use_container_width=True)
+
+    with chart_c4:
+        # Scatter: Price vs Size
+        sample_df = df_filtered[df_filtered["price"] <= price_q95].sample(
+            min(500, len(df_filtered)), random_state=42
+        ) if len(df_filtered) > 0 else df_filtered
+        
+        fig_scatter = go.Figure(go.Scatter(
+            x=sample_df["size"],
+            y=sample_df["price"] / 1e6,
+            mode='markers',
+            marker=dict(
+                size=6,
+                color=sample_df["price"] / 1e6,
+                colorscale='Blues',
+                showscale=False,
+                opacity=0.6,
+            ),
+            hovertemplate='Size: %{x}m²<br>Price: %{y:.2f}M EGP<extra></extra>' if lang == "en" else 'المساحة: %{x}م²<br>السعر: %{y:.2f}م ج.م<extra></extra>',
+        ))
+        fig_scatter.update_layout(
+            title=T["market_scatter"],
+            height=400,
+            margin=dict(l=20, r=20, t=50, b=20),
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            xaxis_title=("Size (m²)" if lang == "en" else "المساحة (م²)"),
+            yaxis_title=("Price (M EGP)" if lang == "en" else "السعر (مليون ج.م)"),
+        )
+        st.plotly_chart(fig_scatter, use_container_width=True)
+
+    # ═══ CHART 5: Top Compounds ═══
+    st.markdown("---")
+    top_compounds = df_filtered[
+        df_filtered["compound"].notna() & 
+        (df_filtered["compound"] != "No Compound") &
+        (df_filtered["compound"] != "Unknown") &
+        (df_filtered["compound"] != "")
+    ].groupby("compound").size().sort_values(ascending=False).head(10)
+    
+    if len(top_compounds) > 0:
+        fig_comp = go.Figure(go.Bar(
+            x=top_compounds.index,
+            y=top_compounds.values,
+            marker=dict(
+                color=top_compounds.values,
+                colorscale='Sunset',
+                showscale=False,
+            ),
+            text=top_compounds.values,
+            textposition='outside',
+            hovertemplate='%{x}<br>%{y:,} listings<extra></extra>',
+        ))
+        fig_comp.update_layout(
+            title=T["market_top_compounds"],
+            height=400,
+            margin=dict(l=20, r=20, t=50, b=20),
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            xaxis=dict(tickangle=-45),
+            yaxis_title=("Listings" if lang == "en" else "إعلانات"),
+        )
+        st.plotly_chart(fig_comp, use_container_width=True)
+
+    # ═══ Price per sqm heatmap (by governorate) ═══
+    st.markdown("---")
+    df_ppm2 = df_filtered.copy()
+    df_ppm2["ppm2"] = df_ppm2["price"] / df_ppm2["size"]
+    ppm2_by_gov = df_ppm2.groupby("governorate")["ppm2"].median().sort_values(ascending=False)
+    
+    fig_ppm2 = go.Figure(go.Bar(
+        x=ppm2_by_gov.index,
+        y=ppm2_by_gov.values,
+        marker=dict(color=get_theme(dark)["accent"]),
+        text=[f'{v:,.0f}' for v in ppm2_by_gov.values],
+        textposition='outside',
+        hovertemplate='%{x}<br>Median: %{y:,.0f} EGP/m²<extra></extra>',
+    ))
+    fig_ppm2.update_layout(
+        title=T["market_price_per_sqm"] + ' (' + ("Median by Governorate" if lang == "en" else "الوسيط حسب المحافظة") + ')',
+        height=350,
+        margin=dict(l=20, r=20, t=50, b=20),
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        yaxis_title=("EGP / m²" if lang == "en" else "ج.م / م²"),
+    )
+    st.plotly_chart(fig_ppm2, use_container_width=True)
+
+
+# ═══ TAB 3: MORTGAGE (ADVANCED) ═══
 with tab3:
     st.markdown('<div class="section-title">' + T["tab_mortgage"] + '</div>', unsafe_allow_html=True)
-    st.markdown("")
+    st.markdown('<div style="color:#64748B;font-size:13px;margin-bottom:20px;">' + ("Calculate your monthly payment and see the amortization schedule" if lang == "en" else "احسب قسطك الشهري وشوف جدول السداد الكامل") + '</div>', unsafe_allow_html=True)
 
-    c1, c2 = st.columns(2)
-    with c1:
-        loan = st.number_input(T["mortgage_loan"], 100000, 100000000, 2000000, 100000, key="m_loan")
-        rate = st.number_input(T["mortgage_rate"], 1.0, 30.0, 12.0, 0.25, key="m_rate")
-        years = st.number_input(T["mortgage_years"], 1, 30, 10, key="m_years")
+    # Inputs
+    col_inputs, col_summary = st.columns([5, 7], gap="large")
 
+    with col_inputs:
+        st.markdown('<div class="form-section">' + ("Loan Details" if lang == "en" else "تفاصيل التمويل") + '</div>', unsafe_allow_html=True)
+
+        property_price = st.number_input(
+            T["mortgage_property_price"],
+            min_value=100000, max_value=200000000,
+            value=3000000, step=100000, key="m_price"
+        )
+
+        down_pct = st.slider(
+            T["mortgage_down_payment"],
+            min_value=5, max_value=50, value=20, step=5, key="m_down_pct"
+        )
+
+        down_amount = property_price * (down_pct / 100)
+        loan = property_price - down_amount
+
+        st.caption(f'' + T["mortgage_down_amount"] + f': {down_amount:,.0f} EGP')
+        st.caption(f'' + T["mortgage_loan"] + f': {loan:,.0f} EGP')
+
+        rate = st.number_input(
+            T["mortgage_rate"],
+            min_value=1.0, max_value=30.0,
+            value=12.0, step=0.25, key="m_rate"
+        )
+
+        years = st.number_input(
+            T["mortgage_years"],
+            min_value=1, max_value=30, value=10, key="m_years"
+        )
+
+    # Calculations
     monthly_rate = rate / 100 / 12
     n_payments = years * 12
 
@@ -1696,11 +2002,111 @@ with tab3:
     total = monthly * n_payments
     interest = total - loan
 
-    with c2:
-        m1, m2, m3 = st.columns(3)
-        m1.metric(T["mortgage_monthly"], f'{monthly:,.0f}')
-        m2.metric(T["mortgage_total"], f'{total:,.0f}')
-        m3.metric(T["mortgage_interest"], f'{interest:,.0f}')
+    with col_summary:
+        # Big summary card
+        summary_html = (
+            '<div style="background:linear-gradient(135deg,#0066FF 0%,#0052CC 100%);'
+            'border-radius:20px;padding:36px 28px;color:white;text-align:center;'
+            'box-shadow:0 16px 48px rgba(0,102,255,0.25);">'
+            '<div style="font-size:12px;font-weight:700;letter-spacing:2px;opacity:0.85;">'
+            + T["mortgage_monthly"] +
+            '</div>'
+            '<div style="font-size:52px;font-weight:800;margin:16px 0 4px;letter-spacing:-2px;">'
+            + f'{monthly:,.0f}' +
+            '</div>'
+            '<div style="font-size:16px;font-weight:600;opacity:0.9;">EGP / ' + ("month" if lang == "en" else "شهرياً") + '</div>'
+            '</div>'
+        )
+        st.markdown(summary_html, unsafe_allow_html=True)
+
+        st.markdown("")
+        mc1, mc2, mc3 = st.columns(3)
+        mc1.metric(T["mortgage_loan"], f'{loan:,.0f}')
+        mc2.metric(T["mortgage_total"], f'{total:,.0f}')
+        mc3.metric(T["mortgage_interest"], f'{interest:,.0f}')
+
+    # Charts
+    st.markdown("---")
+    st.markdown('<div class="section-title" style="font-size:20px;margin-bottom:20px;">' + T["mortgage_breakdown"] + '</div>', unsafe_allow_html=True)
+
+    import plotly.graph_objects as go
+
+    chart_c1, chart_c2 = st.columns(2)
+
+    with chart_c1:
+        # Pie chart
+        fig_pie = go.Figure(data=[go.Pie(
+            labels=[T["mortgage_principal"], T["mortgage_interest"]],
+            values=[loan, interest],
+            hole=0.6,
+            marker=dict(colors=[get_theme(dark)["primary"], get_theme(dark)["accent"]]),
+            textinfo='label+percent',
+            textposition='outside',
+            hovertemplate='%{label}<br>%{value:,.0f} EGP<br>%{percent}<extra></extra>',
+        )])
+        fig_pie.update_layout(
+            title=("Cost Breakdown" if lang == "en" else "توزيع التكلفة"),
+            height=350,
+            margin=dict(l=20, r=20, t=50, b=20),
+            paper_bgcolor='rgba(0,0,0,0)',
+            showlegend=True,
+            legend=dict(orientation="h", y=-0.1),
+        )
+        st.plotly_chart(fig_pie, use_container_width=True)
+
+    with chart_c2:
+        # Balance over time
+        balances = []
+        remaining = loan
+        for i in range(n_payments + 1):
+            balances.append(remaining)
+            interest_part = remaining * monthly_rate
+            principal_part = monthly - interest_part
+            remaining -= principal_part
+
+        fig_bal = go.Figure()
+        fig_bal.add_trace(go.Scatter(
+            x=list(range(n_payments + 1)),
+            y=[b / 1e6 for b in balances],
+            mode='lines',
+            fill='tozeroy',
+            fillcolor='rgba(0,102,255,0.15)',
+            line=dict(color=get_theme(dark)["primary"], width=3),
+            name=("Remaining Balance" if lang == "en" else "الرصيد المتبقي"),
+            hovertemplate='Month %{x}<br>Balance: %{y:.2f}M EGP<extra></extra>' if lang == "en" else 'الشهر %{x}<br>الرصيد: %{y:.2f}M ج.م<extra></extra>',
+        ))
+        fig_bal.update_layout(
+            title=("Balance Over Time" if lang == "en" else "الرصيد على مدار الوقت"),
+            height=350,
+            margin=dict(l=20, r=20, t=50, b=20),
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            xaxis_title=("Months" if lang == "en" else "الشهور"),
+            yaxis_title=("Balance (M EGP)" if lang == "en" else "الرصيد (مليون ج.م)"),
+        )
+        st.plotly_chart(fig_bal, use_container_width=True)
+
+    # Amortization table (last 12 months)
+    st.markdown("---")
+    st.markdown('<div class="section-title" style="font-size:20px;margin-bottom:20px;">' + T["mortgage_amortization"] + ' (' + ("First 12 Months" if lang == "en" else "أول 12 شهر") + ')</div>', unsafe_allow_html=True)
+
+    import pandas as pd
+    amort_rows = []
+    remaining = loan
+    for i in range(1, min(13, n_payments + 1)):
+        interest_part = remaining * monthly_rate
+        principal_part = monthly - interest_part
+        remaining -= principal_part
+        amort_rows.append({
+            ("Month" if lang == "en" else "الشهر"): i,
+            ("Payment" if lang == "en" else "القسط"): f'{monthly:,.0f}',
+            T["mortgage_principal"]: f'{principal_part:,.0f}',
+            T["mortgage_interest"]: f'{interest_part:,.0f}',
+            ("Balance" if lang == "en" else "المتبقي"): f'{remaining:,.0f}',
+        })
+
+    df_amort = pd.DataFrame(amort_rows)
+    st.dataframe(df_amort, use_container_width=True, hide_index=True)
 
 # ═══ TAB 5: COMPARE ═══
 with tab5:

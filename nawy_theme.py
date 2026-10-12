@@ -1293,6 +1293,12 @@ li[role="option"][aria-selected="true"] {
     }
 }
 
+
+/* Interactive cards */
+.ptype-card-img, .area-card-img {
+    margin-bottom: 8px !important;
+}
+
 </style>
 """
 
