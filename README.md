@@ -10,32 +10,30 @@
 [![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io)
 [![License: MIT](https://img.shields.io/badge/License-MIT-22C55E?style=for-the-badge)](LICENSE)
 
-**Instant property price estimates backed by 119,916 real listings across Egypt**
-
 </div>
 
 ---
 
-## About
+## Table of Contents
 
+- [Live Demo](#live-demo)
+- [Screenshots](#screenshots)
+- [About](#about)
+- [Presentation](#presentation)
+- [Features](#features)
+- [Model](#model)
+- [Data](#data)
+- [Tech Stack](#tech-stack)
+- [Run Locally](#run-locally)
+- [Project Structure](#project-structure)
+- [Roadmap](#roadmap)
+- [License](#license)
+- [Documentation](#documentation)
+- [Contributing](#contributing)
+- [Acknowledgments](#acknowledgments)
+- [Author](#author)
 
-A web app that predicts property prices in Egypt. I built it because finding a fair price for an apartment in Cairo or Alexandria usually means asking around and hoping for the best. This tool gives you a data-driven estimate in seconds.
-
-The model is trained on **119,916 real listings** scraped from Egyptian real estate platforms (PropertyFinder, Bayut, OLX, and others). It uses **CatBoost** with 32 features — location, size, bedrooms, amenities, finishing type, and more.
-
-The whole thing works in **Arabic and English**, with a dark mode, interactive maps, price history, and a mortgage calculator.
-
-### Key Metrics
-
-| Metric | Value |
-|:---:|:---:|
-| R2 Score | 0.7061 |
-| MAPE (avg error) | 40.52% |
-| Training Listings | 119,916 |
-| Governorates | 6 (with data) |
-| Districts | 573 |
-| Compounds | 881 |
-| Features | 32 |
+---
 
 
 ## Live Demo
@@ -91,6 +89,28 @@ The whole thing works in **Arabic and English**, with a dark mode, interactive m
 </details>
 
 ---
+
+## About
+
+
+A web app that predicts property prices in Egypt. I built it because finding a fair price for an apartment in Cairo or Alexandria usually means asking around and hoping for the best. This tool gives you a data-driven estimate in seconds.
+
+The model is trained on **119,916 real listings** scraped from Egyptian real estate platforms (PropertyFinder, Bayut, OLX, and others). It uses **CatBoost** with 32 features — location, size, bedrooms, amenities, finishing type, and more.
+
+The whole thing works in **Arabic and English**, with a dark mode, interactive maps, price history, and a mortgage calculator.
+
+### Key Metrics
+
+| Metric | Value |
+|:---:|:---:|
+| R2 Score | 0.7061 |
+| MAPE (avg error) | 40.52% |
+| Training Listings | 119,916 |
+| Governorates | 6 (with data) |
+| Districts | 573 |
+| Compounds | 881 |
+| Features | 32 |
+
 
 ## Presentation
 
@@ -381,12 +401,41 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ---
 
+## Contributing
+
+Contributions are welcome! If you have suggestions or find a bug:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
+
+## Acknowledgments
+
+- **PropertyFinder, Bayut, OLX Egypt** - primary data sources
+- **Streamlit** - hosting and UI framework
+- **CatBoost** - gradient boosting framework
+- **Plotly & Folium** - interactive charts and maps
+- **Unsplash** - sample property images
+- **Egyptian real estate community** - market insights
+
+---
+
 ## Author
 
 **Qamar Sobhy**
 
 - GitHub: [@qamarsobhy7-source](https://github.com/qamarsobhy7-source)
 - Live App: [smart-house-price-predictor-77.streamlit.app](https://smart-house-price-predictor-77.streamlit.app)
+
+---
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=qamarsobhy7-source/Smart-House-Price-Predictor&type=Date)](https://star-history.com/#qamarsobhy7-source/Smart-House-Price-Predictor&Date)
 
 ---
 
