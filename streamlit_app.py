@@ -782,9 +782,9 @@ with tab1:
             ("mall", T["feat_mall"]), ("mosque", T["feat_mosque"]),
             ("club", T["feat_club"]), ("sea", T["feat_sea"]),
         ]
-        feat_cols = st.columns(3)
+        feat_cols = st.columns(2)
         for i, (fkey, flabel) in enumerate(feat_items):
-            with feat_cols[i % 3]:
+            with feat_cols[i % 2]:
                 active = fkey in st.session_state.selected_features
                 if st.button(flabel, key="feat_" + fkey, use_container_width=True,
                              type="primary" if active else "secondary"):
@@ -902,19 +902,22 @@ with tab1:
                 quality_label = "Very Low" if lang == "en" else "ضعيفة جداً"
                 quality_color = "red"
             
-            m1, m2, m3, m4 = st.columns(4)
-            m1.metric(T["price_range"], f'{result["price_low"]/1e6:.1f}M - {result["price_high"]/1e6:.1f}M')
-            m2.metric(T["confidence"], f'{result["confidence"]*100:.0f}%')
+            row1_c1, row1_c2 = st.columns(2)
+            row1_c1.metric(T["price_range"], f'{result["price_low"]/1e6:.1f}M - {result["price_high"]/1e6:.1f}M')
+            row1_c2.metric(T["confidence"], f'{result["confidence"]*100:.0f}%')
+            m3 = None
+            m4 = None
             color_hex = {"green": "#059669", "yellow": "#D97706", "orange": "#EA580C", "red": "#DC2626"}.get(quality_color, "#64748B")
             quality_html = (
                 '<div style="font-size:22px;font-weight:800;color:' + color_hex + ';letter-spacing:-0.5px;">'
                 '● ' + quality_label +
                 '</div>'
                 '<div style="font-size:11px;color:#64748B;font-weight:600;margin-top:4px;">'
-                + str(sample_count) + ' ' + ("listings in area" if lang == "en" else "إعلان في المنطقة") +
+                + str(sample_count) + ' ' + ("similar listings" if lang == "en" else "إعلان مشابه") +
                 '</div>'
             )
-            with m3:
+            row2_c1, row2_c2 = st.columns(2)
+            with row2_c1:
                 st.markdown(
                     '<div style="padding:8px 0;">'
                     '<div style="font-size:11px;color:#64748B;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">'
@@ -948,7 +951,21 @@ with tab1:
                     vs_label = f'{abs(diff):.0f}% ' + T["below_market"]
                 else:
                     vs_label = T["at_market"]
-                m4.metric(T["vs_market"], vs_label)
+                with row2_c2:
+                    market_html = (
+                        '<div style="padding:8px 0;">'
+                        '<div style="font-size:11px;color:#64748B;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">'
+                        + T["vs_market"] + ' (' + market_scope + ')'
+                        + '</div>'
+                        '<div style="font-size:22px;font-weight:800;color:#0A0F1C;letter-spacing:-0.5px;">'
+                        + vs_label.split()[0] +
+                        '</div>'
+                        '<div style="font-size:11px;color:#64748B;font-weight:600;margin-top:4px;">'
+                        + ' '.join(vs_label.split()[1:]) +
+                        '</div>'
+                        '</div>'
+                    )
+                    st.markdown(market_html, unsafe_allow_html=True)
 
 
             st.markdown("---")

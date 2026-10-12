@@ -1075,6 +1075,31 @@ section[data-testid="stSidebar"] * { color: TEXT !important; }
     min-width: 90px !important;
 }
 
+
+/* IMPROVED MOBILE METRICS */
+@media (max-width: 768px) {
+    [data-testid="stMetricValue"] {
+        font-size: 18px !important;
+        line-height: 1.2 !important;
+    }
+    [data-testid="stMetricLabel"] {
+        font-size: 10px !important;
+        line-height: 1.2 !important;
+    }
+    .stButton > button {
+        font-size: 12px !important;
+        padding: 10px 8px !important;
+        min-height: 44px !important;
+        white-space: normal !important;
+        word-break: keep-all !important;
+    }
+    .stButton > button p {
+        white-space: normal !important;
+        word-break: keep-all !important;
+        font-size: 12px !important;
+    }
+}
+
 </style>
 """
 
