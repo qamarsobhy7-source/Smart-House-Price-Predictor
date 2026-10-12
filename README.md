@@ -19,9 +19,11 @@
 ## About
 
 
-**Egypt Real Estate AI** is a bilingual (English / Arabic) web application that estimates property prices in the Egyptian real estate market using a gradient-boosted machine learning model.
+A web app that predicts property prices in Egypt. I built it because finding a fair price for an apartment in Cairo or Alexandria usually means asking around and hoping for the best. This tool gives you a data-driven estimate in seconds.
 
-The app combines valuation intelligence with a modern, Nawy-inspired interface — similar to Zillow's Zestimate — with full Arabic support, time-series forecasting, neighborhood insights, and interactive market analysis.
+The model is trained on **119,916 real listings** scraped from Egyptian real estate platforms (PropertyFinder, Bayut, OLX, and others). It uses **CatBoost** with 32 features — location, size, bedrooms, amenities, finishing type, and more.
+
+The whole thing works in **Arabic and English**, with a dark mode, interactive maps, price history, and a mortgage calculator.
 
 ### Key Metrics
 
