@@ -1299,6 +1299,15 @@ li[role="option"][aria-selected="true"] {
     margin-bottom: 8px !important;
 }
 
+
+/* CHAT WIDGET */
+[data-testid="stForm"] {
+    border: 1px solid BORDER;
+    border-radius: 12px;
+    padding: 16px;
+    background: BG_CARD;
+}
+
 </style>
 """
 

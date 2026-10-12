@@ -41,6 +41,8 @@ st.set_page_config(
 _defaults = {
     "lang": "en", "dark": False, "favorites": [],
     "selected_features": [], "current_prediction": None,
+    "saved_searches": [], "price_alerts": [],
+    "chat_messages": [], "show_chat": False,
 }
 for k, v in _defaults.items():
     if k not in st.session_state:
@@ -936,6 +938,25 @@ def generate_pdf_report(pred_data, lang="en"):
     return buf.getvalue()
 
 
+
+
+# ═══ CHAT WITH AGENT ═══
+def render_chat_widget():
+    """Widget محادثة عائم"""
+    
+    # زر عائم في الأسفل على اليمين
+    chat_btn_html = (
+        '<div style="position:fixed;bottom:20px;left:20px;z-index:9998;">'
+        '<a href="?chat=1" style="text-decoration:none;">'
+        '<button style="width:60px;height:60px;border-radius:50%;'
+        'background:linear-gradient(135deg,#0066FF 0%,#0052CC 100%);'
+        'color:white;border:none;cursor:pointer;font-size:14px;font-weight:700;'
+        'box-shadow:0 8px 24px rgba(0,102,255,0.4);'
+        'transition:transform 0.2s;"></button></a>'
+        '</div>'
+    )
+    st.markdown(chat_btn_html, unsafe_allow_html=True)
+
 # ═══ NAVBAR ═══
 nav1, nav2, nav3 = st.columns([6, 1, 1])
 with nav1:
@@ -1100,12 +1121,13 @@ for i, (name, units, price, img) in enumerate(compounds):
         st.markdown(comp_html, unsafe_allow_html=True)
 
 # ═══ TABS ═══
-tab1, tab2, tab3, tab4, tab5 = st.tabs([
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     T["tab_estimator"],
     T["tab_market"],
     T["tab_mortgage"],
     T["tab_favorites"],
     T["tab_compare"],
+    T["chat_with_agent"],
 ])
 
 
@@ -1286,6 +1308,25 @@ with tab1:
 
         st.markdown("---")
         predict_btn = st.button(T["calculate"], type="primary", use_container_width=True, key="predict_btn")
+
+        # ═══ SAVE SEARCH BUTTON ═══
+        save_search_btn = st.button(T["save_search"], use_container_width=True, key="save_search_btn")
+        
+        if save_search_btn:
+            search_data = {
+                "governorate": selected_gov["en"],
+                "governorate_ar": selected_gov.get("ar", selected_gov["en"]),
+                "city": selected_city.get("en", "") if cities else "",
+                "district": selected_district["en"],
+                "district_ar": selected_district.get("ar", selected_district["en"]),
+                "property_type": selected_ptype,
+                "size": size,
+                "bedrooms": bedrooms,
+                "bathrooms": bathrooms,
+                "saved_at": datetime.now().strftime("%Y-%m-%d %H:%M"),
+            }
+            st.session_state.saved_searches.append(search_data)
+            st.success(T["saved_search"])
 
 
     with col_result:
@@ -1471,6 +1512,31 @@ with tab1:
                     st.markdown(market_html, unsafe_allow_html=True)
 
 
+            st.markdown("---")
+            
+            # ═══ PRICE ALERT INPUT ═══
+            alert_c1, alert_c2 = st.columns([3, 1])
+            with alert_c1:
+                target_price = st.number_input(
+                    T["alert_target"],
+                    min_value=100000, max_value=500000000,
+                    value=int(price * 0.9),
+                    step=100000,
+                    key="alert_target_price",
+                )
+            with alert_c2:
+                st.markdown("<div style='height:28px;'></div>", unsafe_allow_html=True)
+                if st.button(T["set_alert"], use_container_width=True, key="set_alert_btn"):
+                    alert_data = {
+                        "property": st.session_state.current_prediction.copy(),
+                        "target_price": target_price,
+                        "current_price": price,
+                        "set_at": datetime.now().strftime("%Y-%m-%d %H:%M"),
+                        "active": True,
+                    }
+                    st.session_state.price_alerts.append(alert_data)
+                    st.success(T["alert_set"])
+            
             st.markdown("---")
             b1, b2, b3 = st.columns(3)
             with b1:
@@ -2238,6 +2304,79 @@ with tab4:
                     st.error(T["import_error"])
         st.markdown("---")
 
+    # ═══ PRICE ALERTS ═══
+    if st.session_state.price_alerts:
+        st.markdown('<div class="section-title" style="font-size:18px;margin-bottom:16px;">' + T["alerts_list"] + ' (' + str(len(st.session_state.price_alerts)) + ')</div>', unsafe_allow_html=True)
+        
+        for i, alert in enumerate(st.session_state.price_alerts):
+            prop = alert["property"]
+            current = alert["current_price"]
+            target = alert["target_price"]
+            diff = current - target
+            diff_pct = (diff / target) * 100 if target else 0
+            
+            if diff <= 0:
+                status_color = "#059669"
+                status_icon = "●"
+                status_text = "Alert triggered!" if lang == "en" else "تم التنبيه!"
+            elif diff_pct < 5:
+                status_color = "#D97706"
+                status_icon = "●"
+                status_text = "Close to target" if lang == "en" else "قريب من الهدف"
+            else:
+                status_color = "#64748B"
+                status_icon = "●"
+                status_text = "Watching" if lang == "en" else "تحت المراقبة"
+            
+            with st.expander(f"{prop.get('property_type', '-')} in {nm({'en': prop.get('district', ''), 'ar': prop.get('district', '')})} - {current:,.0f} EGP"):
+                ca, cb = st.columns([3, 1])
+                with ca:
+                    st.markdown(f"**{T['alert_current']}:** {current:,.0f} EGP")
+                    st.markdown(f"**{T['alert_target']}:** {target:,.0f} EGP")
+                    st.markdown(f"**{T['alert_difference']}:** {diff:+,.0f} EGP ({diff_pct:+.1f}%)")
+                    st.markdown(f"<div style='color:{status_color};font-weight:700;'>{status_icon} {status_text}</div>", unsafe_allow_html=True)
+                    st.caption(alert["set_at"])
+                with cb:
+                    if st.button("X", key=f"del_alert_{i}", use_container_width=True):
+                        st.session_state.price_alerts.pop(i)
+                        st.rerun()
+        
+        if st.button(T["clear_all"] + " - Alerts", key="clear_alerts"):
+            st.session_state.price_alerts = []
+            st.rerun()
+        
+        st.markdown("---")
+    
+    # ═══ SAVED SEARCHES ═══
+    if st.session_state.saved_searches:
+        st.markdown("---")
+        st.markdown('<div class="section-title" style="font-size:18px;margin-bottom:16px;">' + T["saved_searches"] + ' (' + str(len(st.session_state.saved_searches)) + ')</div>', unsafe_allow_html=True)
+        
+        if st.button(T["clear_all"], key="clear_searches", use_container_width=False):
+            st.session_state.saved_searches = []
+            st.rerun()
+        
+        for i, search in enumerate(st.session_state.saved_searches):
+            search_name = nm({"en": search["district"], "ar": search.get("district_ar", search["district"])})
+            type_label = T.get("pt_" + search["property_type"].lower(), search["property_type"])
+            
+            with st.expander(f"{search_name} - {type_label} - {search['size']:.0f}m²"):
+                col_a, col_b = st.columns([3, 1])
+                with col_a:
+                    st.markdown(f"**{T['governorate']}:** {search['governorate']}")
+                    st.markdown(f"**{T['district']}:** {search_name}")
+                    st.markdown(f"**{T['property_type']}:** {type_label}")
+                    st.markdown(f"**{T['size']}:** {search['size']:.0f} m²")
+                    st.markdown(f"**{T['bedrooms']}:** {search['bedrooms']} | **{T['bathrooms']}:** {search['bathrooms']}")
+                    st.caption(search["saved_at"])
+                with col_b:
+                    if st.button("X", key=f"del_search_{i}", use_container_width=True):
+                        st.session_state.saved_searches.pop(i)
+                        st.rerun()
+        
+        st.markdown("---")
+    
+    # ═══ FAVORITES ═══
     if not st.session_state.favorites:
         empty_html = (
             '<div class="empty-state">'
@@ -2262,6 +2401,122 @@ with tab4:
                 if st.button("X", key="del_" + str(i), use_container_width=True):
                     st.session_state.favorites.pop(i)
                     st.rerun()
+
+
+# ═══ TAB 6: CHAT ═══
+with tab6:
+    st.markdown('<div class="section-title">' + T["chat_title"] + '</div>', unsafe_allow_html=True)
+    st.markdown('<div style="color:#64748B;font-size:13px;margin-bottom:20px;">' + T["chat_welcome"] + '</div>', unsafe_allow_html=True)
+
+    # Agent card
+    agent_html = (
+        '<div style="background:#EBF2FF;border-radius:16px;padding:20px;display:flex;align-items:center;gap:16px;margin-bottom:20px;">'
+        '<div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#0066FF,#0052CC);display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:22px;">SA</div>'
+        '<div>'
+        '<div style="font-weight:800;font-size:16px;color:#0A0F1C;">' + ("Sarah Ahmed" if lang == "en" else "سارة أحمد") + '</div>'
+        '<div style="font-size:13px;color:#64748B;">' + ("Senior Real Estate Agent" if lang == "en" else "وكيلة عقارات أولى") + '</div>'
+        '<div style="font-size:12px;color:#059669;margin-top:4px;">● ' + ("Online" if lang == "en" else "متصل الآن") + '</div>'
+        '</div>'
+        '</div>'
+    )
+    st.markdown(agent_html, unsafe_allow_html=True)
+
+    # Messages container
+    if not st.session_state.chat_messages:
+        st.session_state.chat_messages.append({
+            "role": "agent",
+            "text": T["chat_welcome"],
+            "time": datetime.now().strftime("%H:%M"),
+        })
+
+    for msg in st.session_state.chat_messages:
+        if msg["role"] == "user":
+            st.markdown(
+                '<div style="display:flex;justify-content:flex-end;margin:8px 0;">'
+                '<div style="max-width:70%;background:#0066FF;color:white;padding:12px 16px;border-radius:16px 16px 4px 16px;font-size:14px;">'
+                + msg["text"] +
+                '<div style="font-size:10px;opacity:0.7;margin-top:4px;text-align:right;">' + msg["time"] + '</div>'
+                '</div></div>',
+                unsafe_allow_html=True,
+            )
+        else:
+            st.markdown(
+                '<div style="display:flex;justify-content:flex-start;margin:8px 0;">'
+                '<div style="max-width:70%;background:#F8FAFC;color:#0A0F1C;padding:12px 16px;border-radius:16px 16px 16px 4px;font-size:14px;border:1px solid #E2E8F0;">'
+                + msg["text"] +
+                '<div style="font-size:10px;color:#64748B;margin-top:4px;">' + msg["time"] + '</div>'
+                '</div></div>',
+                unsafe_allow_html=True,
+            )
+
+    # Input
+    st.markdown("---")
+    with st.form("chat_form", clear_on_submit=True):
+        c_input, c_send = st.columns([5, 1])
+        with c_input:
+            user_msg = st.text_input(
+                "",
+                placeholder=T["chat_placeholder"],
+                key="chat_input",
+                label_visibility="collapsed",
+            )
+        with c_send:
+            submitted = st.form_submit_button(T["chat_send"], use_container_width=True)
+
+        if submitted and user_msg:
+            now = datetime.now().strftime("%H:%M")
+            st.session_state.chat_messages.append({
+                "role": "user",
+                "text": user_msg,
+                "time": now,
+            })
+
+            # رد تلقائي
+            import random
+            replies = [T["chat_reply1"], T["chat_reply2"], T["chat_reply3"]]
+            reply = random.choice(replies)
+            st.session_state.chat_messages.append({
+                "role": "agent",
+                "text": reply,
+                "time": now,
+            })
+            st.rerun()
+
+    # Quick replies
+    st.markdown("---")
+    st.markdown('<div style="font-size:12px;color:#64748B;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">' + ("Quick Questions" if lang == "en" else "أسئلة سريعة") + '</div>', unsafe_allow_html=True)
+
+    quick_qs = [
+        ("What is the price?" if lang == "en" else "ما هو السعر؟"),
+        ("Is it negotiable?" if lang == "en" else "هل السعر قابل للتفاوض؟"),
+        ("Schedule a visit" if lang == "en" else "جدولة معاينة"),
+        ("Financing options" if lang == "en" else "خيارات التمويل"),
+    ]
+
+    qcols = st.columns(4)
+    for i, q in enumerate(quick_qs):
+        with qcols[i]:
+            if st.button(q, key="quick_q_" + str(i), use_container_width=True):
+                now = datetime.now().strftime("%H:%M")
+                st.session_state.chat_messages.append({
+                    "role": "user",
+                    "text": q,
+                    "time": now,
+                })
+                st.session_state.chat_messages.append({
+                    "role": "agent",
+                    "text": T["chat_reply1"],
+                    "time": now,
+                })
+                st.rerun()
+
+    # Clear chat
+    if st.button(T["clear_all"], key="clear_chat", use_container_width=False):
+        st.session_state.chat_messages = []
+        st.rerun()
+
+    # Reset text area after sending
+    st.markdown("")
 
 st.markdown('</div>', unsafe_allow_html=True)
 
