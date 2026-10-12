@@ -879,6 +879,34 @@ section[data-testid="stSidebar"] * { color: TEXT !important; }
     line-height: 1.3 !important;
 }
 
+
+/* FIX: Full text on pills - no truncation */
+.stButton > button {
+    min-height: 44px !important;
+    height: auto !important;
+    white-space: normal !important;
+    word-break: keep-all !important;
+    overflow-wrap: break-word !important;
+    text-overflow: clip !important;
+    font-size: 13px !important;
+    padding: 10px 14px !important;
+    line-height: 1.35 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* Remove ellipsis */
+.stButton > button > div,
+.stButton > button > div > p,
+.stButton > button p {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    word-break: keep-all !important;
+    margin: 0 !important;
+}
+
 </style>
 """
 

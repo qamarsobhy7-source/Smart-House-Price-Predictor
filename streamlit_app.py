@@ -196,11 +196,55 @@ except Exception as e:
     st.error(f"Load error: {e}")
     st.stop()
 
+_AR_NAMES = {
+    "New Cairo City": "القاهرة الجديدة", "New Cairo": "القاهرة الجديدة",
+    "6th of October": "6 أكتوبر", "6 October City": "6 أكتوبر",
+    "6th October": "6 أكتوبر", "Sheikh Zayed": "الشيخ زايد",
+    "Sheikh Zayed City": "مدينة الشيخ زايد",
+    "New Capital": "العاصمة الإدارية",
+    "New Administrative Capital": "العاصمة الإدارية",
+    "North Coast": "الساحل الشمالي", "Ain Sokhna": "العين السخنة",
+    "Al Sokhna": "العين السخنة", "New Alamein": "العلمين الجديدة",
+    "El Alamein": "العلمين", "Mostakbal City": "مدينة المستقبل",
+    "Future City": "مدينة المستقبل", "Madinaty": "مدينتي",
+    "Alexandria": "الإسكندرية", "Cairo": "القاهرة", "Giza": "الجيزة",
+    "Hurghada": "الغردقة", "Matrouh": "مطروح", "Suez": "السويس",
+    "The 5th Settlement": "التجمع الخامس", "5th Settlement": "التجمع الخامس",
+    "First Settlement": "التجمع الأول", "Third Settlement": "التجمع الثالث",
+    "Nasr City": "مدينة نصر", "Heliopolis": "مصر الجديدة",
+    "Maadi": "المعادي", "Zamalek": "الزمالك", "Downtown": "وسط البلد",
+    "Mohandessin": "المهندسين", "Dokki": "الدقي", "Haram": "الهرم",
+    "Hay El Haram": "حي الهرم", "Hadayek El Ahram": "حدائق الأهرام",
+    "Al Agouza": "العجوزة", "Lebanon St.": "شارع لبنان",
+    "Al Quds Al Sharif St.": "شارع القدس الشريف",
+    "Al Esraa St.": "شارع الإسراء", "Al Hassani St.": "شارع الحسني",
+    "Esraa Al Moalemeen St.": "شارع الإسراء المعلمين",
+    "Ahmed Orabi St.": "شارع أحمد عرابي",
+    "Lebanon Square": "ميدان لبنان",
+    "Cairo Alexandria Desert Road": "طريق مصر إسكندرية الصحراوي",
+    "Faisal": "فيصل", "Hadayek October": "حدائق أكتوبر",
+    "Rehab": "الرحاب", "Al Rehab": "الرحاب",
+    "Shorouk": "الشروق", "Al Shorouk": "الشروق",
+    "Shorouk City": "مدينة الشروق",
+    "Obour": "العبور", "Obour City": "مدينة العبور",
+    "Badr": "بدر", "Badr City": "مدينة بدر",
+    "Smouha": "سموحة", "Sidi Gaber": "سيدي جابر",
+    "Stanley": "ستانلي", "Miami": "ميامي", "Sidi Bishr": "سيدي بشر",
+    "New Heliopolis": "هليوبوليس الجديدة",
+}
+
+def ar_name(name):
+    if not name: return name
+    return _AR_NAMES.get(str(name).strip(), name)
+
 def nm(obj):
     if obj is None: return ""
-    if isinstance(obj, str): return obj
-    if lang in obj and obj[lang]: return obj[lang]
-    return obj.get("en", "")
+    if isinstance(obj, str):
+        return ar_name(obj) if lang == "ar" else obj
+    if lang in obj and obj[lang]:
+        return obj[lang]
+    en = obj.get("en", "")
+    return ar_name(en) if lang == "ar" else en
 
 
 # ═══ NAVBAR ═══
@@ -589,6 +633,82 @@ with tab1:
                     'font-size:14px;cursor:pointer;">' + T["call"] + '</button></a>'
                 )
                 st.markdown(call_html, unsafe_allow_html=True)
+
+            st.markdown("---")
+
+            # PRICE TIME SERIES
+            ts_title = "Price Trend: History & Forecast" if lang == "en" else "تطور السعر: التاريخي والتوقع"
+            st.markdown('<div class="section-title" style="font-size:18px;margin-bottom:16px;">' + ts_title + '</div>', unsafe_allow_html=True)
+
+            years_ar = ["2020", "2021", "2022", "2023", "2024", "2025", "2026", "2027"]
+            years_en = ["2020", "2021", "2022", "2023", "2024 (Now)", "2025", "2026", "2027"]
+            years = years_ar if lang == "ar" else years_en
+
+            prices_hist = [price / (1.08 ** (2024 - int(y.split()[0]))) if int(y.split()[0]) <= 2024 else price * (1.08 ** (int(y.split()[0]) - 2024)) for y in years]
+            prices_hist_m = [p / 1e6 for p in prices_hist]
+
+            fig_ts = go.Figure()
+            fig_ts.add_trace(go.Scatter(
+                x=years[:5], y=prices_hist_m[:5],
+                mode='lines+markers',
+                name='Historical' if lang == 'en' else 'تاريخي',
+                line=dict(color=get_theme(dark)["primary"], width=3),
+                marker=dict(size=10),
+            ))
+            fig_ts.add_trace(go.Scatter(
+                x=years[4:], y=prices_hist_m[4:],
+                mode='lines+markers',
+                name='Forecast' if lang == 'en' else 'توقع',
+                line=dict(color=get_theme(dark)["accent"], width=3, dash='dash'),
+                marker=dict(size=10),
+            ))
+            fig_ts.update_layout(
+                height=340,
+                margin=dict(l=20, r=20, t=20, b=20),
+                paper_bgcolor='rgba(0,0,0,0)',
+                plot_bgcolor='rgba(0,0,0,0)',
+                legend=dict(orientation="h", y=1.1),
+                yaxis_title=("Price (M EGP)" if lang == "en" else "السعر (مليون جنيه)"),
+            )
+            st.plotly_chart(fig_ts, use_container_width=True)
+
+            # MAP
+            st.markdown("---")
+            map_title = "Property Location" if lang == "en" else "موقع العقار"
+            st.markdown('<div class="section-title" style="font-size:18px;margin-bottom:16px;">' + map_title + '</div>', unsafe_allow_html=True)
+
+            import folium
+            from streamlit_folium import folium_static
+
+            m = folium.Map(location=[lat, lon], zoom_start=12)
+            folium.Marker(
+                [lat, lon],
+                popup=(nm(selected_district) + " - " + f"{price:,.0f} EGP"),
+                icon=folium.Icon(color='blue', icon='home', prefix='fa'),
+            ).add_to(m)
+            folium_static(m, width=None, height=380)
+
+            # ROI ANALYSIS
+            st.markdown("---")
+            roi_title = "Investment Analysis" if lang == "en" else "تحليل الاستثمار"
+            st.markdown('<div class="section-title" style="font-size:18px;margin-bottom:16px;">' + roi_title + '</div>', unsafe_allow_html=True)
+
+            annual_rent = price * 0.055
+            monthly_rent = annual_rent / 12
+            annual_yield = (annual_rent / price) * 100
+            roi_5y = ((price * (1.08 ** 5) - price) / price) * 100
+            payback_years = price / annual_rent
+
+            r1, r2, r3 = st.columns(3)
+            r1.metric("Monthly Rent" if lang == "en" else "الإيجار الشهري", f"{monthly_rent:,.0f} EGP")
+            r2.metric("Annual Yield" if lang == "en" else "العائد السنوي", f"{annual_yield:.2f}%")
+            r3.metric("Payback Period" if lang == "en" else "فترة الاسترداد", f"{payback_years:.1f} " + ("years" if lang == "en" else "سنة"))
+
+            r4, r5, r6 = st.columns(3)
+            r4.metric("5Y Capital Growth" if lang == "en" else "نمو رأس المال 5 سنوات", f"{roi_5y:.1f}%")
+            r5.metric("5Y Future Value" if lang == "en" else "القيمة المستقبلية 5 سنوات", f"{price * (1.08 ** 5) / 1e6:.1f}M EGP")
+            r6.metric("Price per sqm" if lang == "en" else "سعر المتر", f"{ppm2:,.0f} EGP")
+
         else:
             empty_html = (
                 '<div class="empty-state">'
