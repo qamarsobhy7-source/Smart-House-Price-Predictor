@@ -7,3 +7,8 @@ venv/
 .DS_Store
 *.csv
 !data/processed/FINAL_DATASET_v9.csv
+
+# Backup folders
+BACKUP_BEFORE_IMPROVEMENTS/
+*_BACKUP_*.py
+BACKUP_*/

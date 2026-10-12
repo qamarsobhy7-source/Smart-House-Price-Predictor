@@ -1100,6 +1100,106 @@ section[data-testid="stSidebar"] * { color: TEXT !important; }
     }
 }
 
+
+/* PROPERTY GALLERY */
+.gallery-main {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: SHADOW_MD;
+    margin-bottom: 16px;
+}
+.gallery-main img {
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s;
+}
+.gallery-main:hover img {
+    transform: scale(1.03);
+}
+.gallery-badge {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    backdrop-filter: blur(8px);
+}
+@media (max-width: 768px) {
+    .gallery-main img { height: 220px; }
+}
+
+
+/* NEIGHBORHOOD CARDS */
+.neighborhood-card {
+    background: BG_CARD;
+    border: 1px solid BORDER;
+    border-radius: 12px;
+    padding: 16px 14px;
+    text-align: right;
+    transition: all 0.25s ease;
+    height: 100%;
+    min-height: 110px;
+}
+.neighborhood-card:hover {
+    border-color: PRIMARY;
+    transform: translateY(-2px);
+    box-shadow: SHADOW_MD;
+}
+.neighborhood-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+.neighborhood-icon {
+    display: inline-block;
+    background: PRIMARY_SOFT;
+    color: PRIMARY;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 4px 8px;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+}
+.neighborhood-distance {
+    font-size: 11px;
+    font-weight: 700;
+    color: TEXT_MUTED;
+    background: BG_SOFT;
+    padding: 3px 8px;
+    border-radius: 6px;
+}
+.neighborhood-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: TEXT;
+    line-height: 1.35;
+    margin-bottom: 6px;
+}
+.neighborhood-cat {
+    font-size: 10px;
+    color: TEXT_MUTED;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+@media (max-width: 768px) {
+    .neighborhood-card {
+        padding: 12px 10px;
+        min-height: 90px;
+    }
+    .neighborhood-name {
+        font-size: 12px;
+    }
+}
+
 </style>
 """
 

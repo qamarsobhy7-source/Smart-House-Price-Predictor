@@ -18,6 +18,14 @@ BASE = Path(__file__).resolve().parent
 sys.path.insert(0, str(BASE))
 
 from nawy_theme import get_css, get_theme
+try:
+    from reportlab.lib.pagesizes import A4
+    from reportlab.pdfgen import canvas
+    from reportlab.lib.colors import HexColor
+    PDF_AVAILABLE = True
+except ImportError:
+    PDF_AVAILABLE = False
+
 from predictor import (
     load_artifacts, get_category_values, validate_input,
     build_features, predict_with_confidence, format_price,
@@ -57,6 +65,7 @@ TEXTS = {
         "tab_estimator": "Price Estimator",
         "tab_market": "Market Analysis",
         "tab_mortgage": "Mortgage Calculator",
+        "tab_compare": "Compare",
         "tab_favorites": "Favorites",
         "location": "Location", "details": "Details", "features": "Features",
         "governorate": "Governorate", "city": "City",
@@ -71,6 +80,25 @@ TEXTS = {
         "view_unknown": "No Specific View", "view_garden": "Garden View",
         "view_pool": "Pool View", "view_sea": "Sea View", "view_city": "City View",
         "view_street": "Street View", "view_lake": "Lake View",
+        "export_favs": "Export Favorites", "import_favs": "Import Favorites",
+        "export_help": "Download favorites as JSON file", "import_help": "Upload favorites from JSON file",
+        "import_success": "Favorites imported successfully", "import_error": "Invalid file format",
+        "comp_title": "Compare Properties",
+        "comp_subtitle": "Add 2 to 4 properties and compare them side by side",
+        "comp_add": "Add Property",
+        "comp_clear": "Clear All",
+        "comp_empty": "No properties to compare yet. Save favorites first.",
+        "comp_property": "Property",
+        "comp_price": "Price",
+        "comp_size": "Size",
+        "comp_bedrooms": "Bedrooms",
+        "comp_bathrooms": "Bathrooms",
+        "comp_location": "Location",
+        "comp_type": "Type",
+        "comp_ppm2": "Price / sqm",
+        "comp_max": "Maximum 4 properties can be compared",
+        "comp_need_two": "Need at least 2 properties to compare",
+        "comp_title_col": "Feature",
         "size": "Size (sqm)", "bedrooms": "Bedrooms",
         "bathrooms": "Bathrooms", "floor": "Floor",
         "living_rooms": "Living Rooms", "kitchens": "Kitchens",
@@ -129,6 +157,7 @@ TEXTS = {
         "tab_estimator": "حاسبة الأسعار",
         "tab_market": "تحليل السوق",
         "tab_mortgage": "حاسبة الرهن",
+        "tab_compare": "مقارنة العقارات",
         "tab_favorites": "المفضلة",
         "location": "الموقع", "details": "التفاصيل", "features": "المميزات",
         "governorate": "المحافظة", "city": "المدينة",
@@ -143,6 +172,25 @@ TEXTS = {
         "view_unknown": "بدون إطلالة محددة", "view_garden": "إطلالة حديقة",
         "view_pool": "إطلالة حمام سباحة", "view_sea": "إطلالة بحر", "view_city": "إطلالة مدينة",
         "view_street": "إطلالة شارع", "view_lake": "إطلالة بحيرة",
+        "export_favs": "تصدير المفضلات", "import_favs": "استيراد المفضلات",
+        "export_help": "حفظ المفضلات في ملف JSON", "import_help": "استرجاع المفضلات من ملف JSON",
+        "import_success": "تم استيراد المفضلات", "import_error": "صيغة الملف غير صحيحة",
+        "comp_title": "مقارنة العقارات",
+        "comp_subtitle": "أضف 2 إلى 4 عقارات وقارنهم جنب بعض",
+        "comp_add": "أضف عقار",
+        "comp_clear": "مسح الكل",
+        "comp_empty": "مفيش عقارات للمقارنة. احفظ مفضلات الأول.",
+        "comp_property": "العقار",
+        "comp_price": "السعر",
+        "comp_size": "المساحة",
+        "comp_bedrooms": "غرف النوم",
+        "comp_bathrooms": "الحمامات",
+        "comp_location": "الموقع",
+        "comp_type": "النوع",
+        "comp_ppm2": "سعر المتر",
+        "comp_max": "أقصى عدد 4 عقارات للمقارنة",
+        "comp_need_two": "محتاج عقارين على الأقل للمقارنة",
+        "comp_title_col": "الخاصية",
         "size": "المساحة (م²)", "bedrooms": "غرف النوم",
         "bathrooms": "الحمامات", "floor": "الطابق",
         "living_rooms": "الصالونات", "kitchens": "المطابخ",
@@ -491,6 +539,396 @@ def nm(obj):
     return en
 
 
+
+
+# ═══ PROPERTY IMAGES ═══
+_PROPERTY_IMAGES = {
+    "Apartment": [
+        "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=500&fit=crop",
+        "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=500&fit=crop",
+        "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=500&fit=crop",
+        "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&h=500&fit=crop",
+        "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=500&fit=crop",
+    ],
+    "Villa": [
+        "https://images.unsplash.com/photo-1613977257363-707ba9348227?w=800&h=500&fit=crop",
+        "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=500&fit=crop",
+        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=500&fit=crop",
+        "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=500&fit=crop",
+        "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=500&fit=crop",
+    ],
+    "Townhouse": [
+        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=500&fit=crop",
+        "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=500&fit=crop",
+        "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=800&h=500&fit=crop",
+        "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&h=500&fit=crop",
+        "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&h=500&fit=crop",
+    ],
+    "Duplex": [
+        "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=500&fit=crop",
+        "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=800&h=500&fit=crop",
+        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=500&fit=crop",
+        "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&h=500&fit=crop",
+        "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=500&fit=crop",
+    ],
+    "Penthouse": [
+        "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=800&h=500&fit=crop",
+        "https://images.unsplash.com/photo-1567496898669-ee935f5f647a?w=800&h=500&fit=crop",
+        "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=500&fit=crop",
+        "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=500&fit=crop",
+        "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&h=500&fit=crop",
+    ],
+    "Chalet": [
+        "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&h=500&fit=crop",
+        "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=500&fit=crop",
+        "https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=800&h=500&fit=crop",
+        "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=500&fit=crop",
+        "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=500&fit=crop",
+    ],
+}
+
+
+def render_property_gallery(property_type, district_name, price_text, key_prefix="gal"):
+    """عرض معرض صور للعقار"""
+    images = _PROPERTY_IMAGES.get(property_type, _PROPERTY_IMAGES["Apartment"])
+    
+    if f"{key_prefix}_idx" not in st.session_state:
+        st.session_state[f"{key_prefix}_idx"] = 0
+    
+    current_idx = st.session_state[f"{key_prefix}_idx"]
+    current_img = images[current_idx]
+    
+    gallery_title = "Property Gallery" if lang == "en" else "صور العقار"
+    st.markdown(
+        '<div class="section-title" style="font-size:20px;margin:24px 0 16px;">' + gallery_title + '</div>',
+        unsafe_allow_html=True,
+    )
+    
+    # الصورة الرئيسية
+    main_html = (
+        '<div class="gallery-main">'
+        '<img src="' + current_img + '" alt="Property">'
+        '<div class="gallery-badge">' + str(current_idx + 1) + ' / ' + str(len(images)) + '</div>'
+        '</div>'
+    )
+    st.markdown(main_html, unsafe_allow_html=True)
+    
+    # Thumbnails
+    thumb_cols = st.columns(len(images))
+    for i, img in enumerate(images):
+        with thumb_cols[i]:
+            if st.button(
+                str(i + 1),
+                key=key_prefix + "_thumb_" + str(i),
+                use_container_width=True,
+                type="primary" if i == current_idx else "secondary",
+            ):
+                st.session_state[f"{key_prefix}_idx"] = i
+                st.rerun()
+
+
+
+
+# ═══ NEIGHBORHOOD INFO ═══
+def get_neighborhood_info(district_name_en, governorate_en):
+    """معلومات تقديرية عن الحي"""
+    info = {
+        "schools": [],
+        "hospitals": [],
+        "transport": [],
+        "shopping": [],
+        "restaurants": [],
+    }
+    
+    # ترجمة المحافظة
+    gov_map = {
+        "Cairo": "القاهرة", "Giza": "الجيزة", "Alexandria": "الإسكندرية",
+        "Matrouh": "مطروح", "Red Sea": "البحر الأحمر", "Suez": "السويس",
+    }
+    gov_ar = gov_map.get(governorate_en, governorate_en)
+    
+    # قوالب عامة حسب المحافظة
+    if governorate_en == "Cairo":
+        info["schools"] = [
+            ("Cairo English School", "مدرسة القاهرة الإنجليزية", "International", 2.1),
+            ("British International School", "المدرسة البريطانية الدولية", "British", 3.4),
+            ("Modern English School", "المدرسة الإنجليزية الحديثة", "Private", 1.8),
+        ]
+        info["hospitals"] = [
+            ("Cairo Medical Center", "مركز القاهرة الطبي", "Hospital", 1.5),
+            ("Cleopatra Hospital", "مستشفى كليوباترا", "Hospital", 2.7),
+            ("Al Salam Hospital", "مستشفى السلام", "Hospital", 3.2),
+        ]
+        info["transport"] = [
+            ("Metro Station", "محطة مترو", "Metro", 1.2),
+            ("Bus Stop", "موقف أتوبيس", "Bus", 0.4),
+            ("Taxi Stand", "موقف تاكسي", "Taxi", 0.3),
+        ]
+        info["shopping"] = [
+            ("Mall of Egypt", "مول مصر", "Mall", 12.0),
+            ("City Stars Mall", "سيتي ستارز", "Mall", 8.5),
+            ("Local Supermarket", "سوبر ماركت محلي", "Market", 0.5),
+        ]
+        info["restaurants"] = [
+            ("Local Restaurant", "مطعم محلي", "Egyptian", 0.6),
+            ("Italian Restaurant", "مطعم إيطالي", "Italian", 1.1),
+            ("Fast Food Chain", "سلسلة وجبات سريعة", "Fast Food", 0.8),
+        ]
+    elif governorate_en == "Giza":
+        info["schools"] = [
+            ("Giza International School", "مدرسة الجيزة الدولية", "International", 2.5),
+            ("Nile English School", "مدرسة النيل الإنجليزية", "Private", 1.9),
+        ]
+        info["hospitals"] = [
+            ("Giza Hospital", "مستشفى الجيزة", "Hospital", 2.0),
+            ("Cairo Medical Center", "مركز القاهرة الطبي", "Hospital", 3.5),
+        ]
+        info["transport"] = [
+            ("Metro Station", "محطة مترو", "Metro", 1.8),
+            ("Bus Stop", "موقف أتوبيس", "Bus", 0.5),
+        ]
+        info["shopping"] = [
+            ("Mall of Arabia", "مول العرب", "Mall", 5.0),
+            ("Local Market", "سوق محلي", "Market", 0.7),
+        ]
+        info["restaurants"] = [
+            ("Local Restaurant", "مطعم محلي", "Egyptian", 0.4),
+            ("Cafe", "كافيه", "Cafe", 0.6),
+        ]
+    elif governorate_en == "Alexandria":
+        info["schools"] = [
+            ("Alexandria International School", "مدرسة الإسكندرية الدولية", "International", 2.3),
+        ]
+        info["hospitals"] = [
+            ("Alexandria University Hospital", "مستشفى جامعة الإسكندرية", "University", 1.5),
+            ("Smouha Hospital", "مستشفى سموحة", "Hospital", 2.8),
+        ]
+        info["transport"] = [
+            ("Tram Station", "محطة ترام", "Tram", 0.6),
+            ("Bus Stop", "موقف أتوبيس", "Bus", 0.3),
+        ]
+        info["shopping"] = [
+            ("City Center Alexandria", "سيتي سنتر الإسكندرية", "Mall", 4.5),
+            ("Local Market", "سوق محلي", "Market", 0.5),
+        ]
+        info["restaurants"] = [
+            ("Seafood Restaurant", "مطعم أسماك", "Seafood", 0.8),
+            ("Local Restaurant", "مطعم محلي", "Egyptian", 0.4),
+        ]
+    elif governorate_en == "Red Sea":
+        info["schools"] = [
+            ("Hurghada International School", "مدرسة الغردقة الدولية", "International", 3.0),
+        ]
+        info["hospitals"] = [
+            ("Hurghada General Hospital", "مستشفى الغردقة العام", "General", 2.5),
+        ]
+        info["transport"] = [
+            ("Local Bus", "أتوبيس محلي", "Bus", 0.6),
+            ("Taxi Stand", "موقف تاكسي", "Taxi", 0.4),
+        ]
+        info["shopping"] = [
+            ("Senzo Mall", "سينزو مول", "Mall", 3.5),
+            ("Local Market", "سوق محلي", "Market", 0.7),
+        ]
+        info["restaurants"] = [
+            ("Seafood Restaurant", "مطعم أسماك", "Seafood", 0.5),
+            ("Beach Cafe", "كافيه شاطئ", "Cafe", 0.3),
+        ]
+    elif governorate_en == "Suez":
+        info["schools"] = [
+            ("Suez International School", "مدرسة السويس الدولية", "International", 2.5),
+        ]
+        info["hospitals"] = [
+            ("Suez General Hospital", "مستشفى السويس العام", "General", 2.0),
+        ]
+        info["transport"] = [
+            ("Bus Stop", "موقف أتوبيس", "Bus", 0.4),
+            ("Train Station", "محطة قطار", "Train", 2.5),
+        ]
+        info["shopping"] = [
+            ("Local Mall", "مول محلي", "Mall", 2.0),
+        ]
+        info["restaurants"] = [
+            ("Local Restaurant", "مطعم محلي", "Egyptian", 0.5),
+        ]
+    else:  # Matrouh + default
+        info["schools"] = [
+            ("International School", "مدرسة دولية", "International", 3.0),
+        ]
+        info["hospitals"] = [
+            ("General Hospital", "مستشفى عام", "General", 2.5),
+        ]
+        info["transport"] = [
+            ("Bus Stop", "موقف أتوبيس", "Bus", 0.6),
+        ]
+        info["shopping"] = [
+            ("Local Market", "سوق محلي", "Market", 0.5),
+        ]
+        info["restaurants"] = [
+            ("Local Restaurant", "مطعم محلي", "Egyptian", 0.4),
+        ]
+    
+    return info
+
+
+def render_neighborhood_section(district_name_en, governorate_en):
+    """عرض معلومات الحي"""
+    info = get_neighborhood_info(district_name_en, governorate_en)
+    
+    title = "Neighborhood Insights" if lang == "en" else "معلومات الحي"
+    subtitle = ("What's around " + district_name_en) if lang == "en" else ("ما يحيط بـ " + nm({"en": district_name_en, "ar": district_name_en}))
+    
+    st.markdown(
+        '<div class="section-title" style="font-size:20px;margin:24px 0 8px;">' + title + '</div>'
+        '<div style="color:#64748B;font-size:13px;margin-bottom:20px;">' + subtitle + '</div>',
+        unsafe_allow_html=True,
+    )
+    
+    categories = [
+        ("schools", "Schools" if lang == "en" else "مدارس", "SCH"),
+        ("hospitals", "Hospitals" if lang == "en" else "مستشفيات", "HOS"),
+        ("transport", "Transport" if lang == "en" else "مواصلات", "TRA"),
+        ("shopping", "Shopping" if lang == "en" else "تسوق", "SHO"),
+        ("restaurants", "Restaurants" if lang == "en" else "مطاعم", "RES"),
+    ]
+    
+    for cat_key, cat_title, cat_icon in categories:
+        items = info.get(cat_key, [])
+        if not items:
+            continue
+        
+        cols = st.columns(len(items))
+        for i, item in enumerate(items):
+            with cols[i]:
+                name_en, name_ar, category, distance = item
+                item_name = name_en if lang == "en" else name_ar
+                distance_text = f"{distance} km" if lang == "en" else f"{distance} كم"
+                
+                card_html = (
+                    '<div class="neighborhood-card">'
+                    '<div class="neighborhood-header">'
+                    '<span class="neighborhood-icon">' + cat_icon + '</span>'
+                    '<span class="neighborhood-distance">' + distance_text + '</span>'
+                    '</div>'
+                    '<div class="neighborhood-name">' + item_name + '</div>'
+                    '<div class="neighborhood-cat">' + category + '</div>'
+                    '</div>'
+                )
+                st.markdown(card_html, unsafe_allow_html=True)
+
+
+
+
+def generate_pdf_report(pred_data, lang="en"):
+    """توليد تقرير PDF كامل"""
+    if not PDF_AVAILABLE:
+        return None
+    
+    buf = io.BytesIO()
+    c = canvas.Canvas(buf, pagesize=A4)
+    w, h = A4
+    
+    # الهيدر
+    primary = HexColor("#0066FF")
+    dark = HexColor("#0A0F1C")
+    muted = HexColor("#64748B")
+    
+    c.setFillColor(primary)
+    c.rect(0, h - 90, w, 90, fill=1, stroke=0)
+    
+    c.setFillColor(HexColor("#FFFFFF"))
+    c.setFont("Helvetica-Bold", 24)
+    c.drawString(40, h - 50, "Egypt Real Estate AI")
+    c.setFont("Helvetica", 11)
+    c.drawString(40, h - 72, "Property Valuation Report" if lang == "en" else "تقرير تقييم عقار")
+    
+    y = h - 130
+    
+    # السعر المتوقع
+    c.setFillColor(HexColor("#EBF2FF"))
+    c.rect(40, y - 90, w - 80, 90, fill=1, stroke=0)
+    
+    c.setFillColor(primary)
+    c.setFont("Helvetica-Bold", 11)
+    c.drawString(60, y - 25, "ESTIMATED PRICE" if lang == "en" else "السعر المتوقع")
+    
+    c.setFillColor(dark)
+    c.setFont("Helvetica-Bold", 32)
+    price_text = f"{pred_data.get('price', 0):,.0f} EGP"
+    c.drawString(60, y - 65, price_text)
+    
+    c.setFillColor(muted)
+    c.setFont("Helvetica", 11)
+    ppm2 = pred_data.get("ppm2", 0)
+    c.drawString(60, y - 82, f"Price per sqm: {ppm2:,.0f} EGP")
+    
+    y -= 130
+    
+    # تفاصيل العقار
+    c.setFillColor(dark)
+    c.setFont("Helvetica-Bold", 16)
+    c.drawString(40, y, "Property Details" if lang == "en" else "تفاصيل العقار")
+    y -= 25
+    
+    details = [
+        ("Property Type", pred_data.get("property_type", "-")),
+        ("Governorate", pred_data.get("governorate", "-")),
+        ("District", pred_data.get("district", "-")),
+        ("Size", f"{pred_data.get('size', 0):.0f} sqm"),
+        ("Bedrooms", str(pred_data.get("bedrooms", 0))),
+        ("Bathrooms", str(pred_data.get("bathrooms", 0))),
+    ]
+    
+    c.setFont("Helvetica", 11)
+    c.setFillColor(dark)
+    for label, value in details:
+        c.setFillColor(muted)
+        c.drawString(60, y, label + ":")
+        c.setFillColor(dark)
+        c.drawString(200, y, str(value))
+        y -= 20
+    
+    y -= 20
+    
+    # Investment Analysis
+    c.setFillColor(dark)
+    c.setFont("Helvetica-Bold", 16)
+    c.drawString(40, y, "Investment Analysis" if lang == "en" else "تحليل الاستثمار")
+    y -= 25
+    
+    price = pred_data.get("price", 0)
+    annual_rent = price * 0.055
+    monthly_rent = annual_rent / 12
+    annual_yield = (annual_rent / price) * 100 if price else 0
+    payback = price / annual_rent if annual_rent else 0
+    future_5y = price * (1.08 ** 5)
+    
+    inv_details = [
+        ("Monthly Rent", f"{monthly_rent:,.0f} EGP"),
+        ("Annual Yield", f"{annual_yield:.2f}%"),
+        ("Payback Period", f"{payback:.1f} years"),
+        ("5Y Future Value", f"{future_5y/1e6:.2f}M EGP"),
+    ]
+    
+    c.setFont("Helvetica", 11)
+    for label, value in inv_details:
+        c.setFillColor(muted)
+        c.drawString(60, y, label + ":")
+        c.setFillColor(dark)
+        c.drawString(200, y, value)
+        y -= 20
+    
+    # الفوتر
+    c.setFillColor(muted)
+    c.setFont("Helvetica", 8)
+    c.drawString(40, 40, "Egypt Real Estate AI - AI-powered valuation")
+    c.drawString(40, 28, f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+    
+    c.save()
+    buf.seek(0)
+    return buf.getvalue()
+
+
 # ═══ NAVBAR ═══
 nav1, nav2, nav3 = st.columns([6, 1, 1])
 with nav1:
@@ -638,11 +1076,12 @@ for i, (name, units, price, img) in enumerate(compounds):
         st.markdown(comp_html, unsafe_allow_html=True)
 
 # ═══ TABS ═══
-tab1, tab2, tab3, tab4 = st.tabs([
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
     T["tab_estimator"],
     T["tab_market"],
     T["tab_mortgage"],
     T["tab_favorites"],
+    T["tab_compare"],
 ])
 
 
@@ -882,12 +1321,25 @@ with tab1:
             )
             st.markdown(price_html, unsafe_allow_html=True)
 
-            # مؤشر جودة البيانات
-            sample_count = len(df[
+            # ═══ PROPERTY GALLERY ═══
+            st.markdown("---")
+            render_property_gallery(selected_ptype, nm(selected_district), f"{price:,.0f}", key_prefix="result_gal")
+
+            # مؤشر جودة البيانات: نفس نوع العقار في نفس الحي
+            similar_data = df[
                 (df["governorate"] == selected_gov["en"]) &
-                (df["district"] == selected_district["en"])
-            ])
-            gov_count = len(df[df["governorate"] == selected_gov["en"]])
+                (df["district"] == selected_district["en"]) &
+                (df["property_type"] == selected_ptype)
+            ]
+            sample_count = len(similar_data)
+            
+            # لو عدد قليل جداً، نوسع للمحافظة بنفس نوع العقار
+            if sample_count < 5:
+                similar_data = df[
+                    (df["governorate"] == selected_gov["en"]) &
+                    (df["property_type"] == selected_ptype)
+                ]
+                sample_count = len(similar_data)
             
             if sample_count >= 50:
                 quality_label = "High" if lang == "en" else "عالية"
@@ -913,7 +1365,7 @@ with tab1:
                 '● ' + quality_label +
                 '</div>'
                 '<div style="font-size:11px;color:#64748B;font-weight:600;margin-top:4px;">'
-                + str(sample_count) + ' ' + ("similar listings" if lang == "en" else "إعلان مشابه") +
+                + str(sample_count) + ' ' + ("similar apartments" if selected_ptype == "Apartment" else "similar properties") if lang == "en" else str(sample_count) + ' ' + ("شقق مشابهة" if selected_ptype == "Apartment" else "عقارات مشابهة") +
                 '</div>'
             )
             row2_c1, row2_c2 = st.columns(2)
@@ -977,8 +1429,20 @@ with tab1:
 
             with b2:
                 # PDF
-                if st.button(T["pdf"], use_container_width=True, key="pdf_btn"):
-                    st.info("Report saved to your account" if lang == "en" else "تم حفظ التقرير في حسابك")
+                if PDF_AVAILABLE:
+                    pdf_bytes = generate_pdf_report(st.session_state.current_prediction, lang)
+                    if pdf_bytes:
+                        st.download_button(
+                            label=T["pdf"],
+                            data=pdf_bytes,
+                            file_name="property_report_" + datetime.now().strftime("%Y%m%d_%H%M%S") + ".pdf",
+                            mime="application/pdf",
+                            use_container_width=True,
+                            key="pdf_download",
+                        )
+                else:
+                    if st.button(T["pdf"], use_container_width=True, key="pdf_btn_disabled"):
+                        st.warning("PDF library not available" if lang == "en" else "مكتبة PDF غير متاحة")
 
             with b3:
                 # Share
@@ -1169,6 +1633,11 @@ with tab1:
                     )
 
 
+            # ═══ NEIGHBORHOOD INSIGHTS ═══
+            st.markdown("---")
+            render_neighborhood_section(selected_district["en"], selected_gov["en"])
+
+
 
         else:
             empty_html = (
@@ -1242,10 +1711,135 @@ with tab3:
         m2.metric(T["mortgage_total"], f'{total:,.0f}')
         m3.metric(T["mortgage_interest"], f'{interest:,.0f}')
 
+# ═══ TAB 5: COMPARE ═══
+with tab5:
+    st.markdown('<div class="section-title">' + T["comp_title"] + '</div>', unsafe_allow_html=True)
+    st.markdown('<div style="color:#64748B;font-size:14px;margin-bottom:24px;">' + T["comp_subtitle"] + '</div>', unsafe_allow_html=True)
+
+    if not st.session_state.favorites:
+        comp_empty = (
+            '<div class="empty-state">'
+            '<div class="empty-title">' + T["comp_empty"] + '</div>'
+            '<div class="empty-desc">' + T["empty_desc"] + '</div>'
+            '</div>'
+        )
+        st.markdown(comp_empty, unsafe_allow_html=True)
+    else:
+        # عرض قائمة المفضلة للاختيار
+        st.markdown('<div class="form-section">' + ("Select properties to compare" if lang == "en" else "اختر العقارات للمقارنة") + '</div>', unsafe_allow_html=True)
+
+        if len(st.session_state.favorites) < 2:
+            st.info(T["comp_need_two"])
+
+        selected_indices = []
+        for i, fav in enumerate(st.session_state.favorites):
+            checkbox_label = (
+                str(fav.get("property_type", "")) + " | " +
+                str(fav.get("district", "")) + " | " +
+                f'{fav.get("size", 0):.0f}m2 | ' +
+                f'{fav.get("price", 0):,.0f} EGP'
+            )
+            if st.checkbox(checkbox_label, key="cmp_" + str(i)):
+                selected_indices.append(i)
+
+        if len(selected_indices) > 4:
+            st.warning(T["comp_max"])
+            selected_indices = selected_indices[:4]
+
+        if len(selected_indices) >= 2:
+            st.markdown("---")
+            # بناء جدول المقارنة
+            compare_data = {
+                T["comp_property"]: [],
+                T["comp_type"]: [],
+                T["comp_location"]: [],
+                T["comp_size"]: [],
+                T["comp_bedrooms"]: [],
+                T["comp_bathrooms"]: [],
+                T["comp_price"]: [],
+                T["comp_ppm2"]: [],
+            }
+
+            for idx in selected_indices:
+                fav = st.session_state.favorites[idx]
+                compare_data[T["comp_property"]].append("Property " + str(idx + 1))
+                compare_data[T["comp_type"]].append(str(fav.get("property_type", "-")))
+                compare_data[T["comp_location"]].append(str(fav.get("district", "-")))
+                compare_data[T["comp_size"]].append(f'{fav.get("size", 0):.0f} m2')
+                compare_data[T["comp_bedrooms"]].append(str(fav.get("bedrooms", 0)))
+                compare_data[T["comp_bathrooms"]].append(str(fav.get("bathrooms", 0)))
+                compare_data[T["comp_price"]].append(f'{fav.get("price", 0):,.0f} EGP')
+                compare_data[T["comp_ppm2"]].append(f'{fav.get("ppm2", 0):,.0f} EGP')
+
+            # عرض كجدول
+            import pandas as pd
+            df_compare = pd.DataFrame(compare_data)
+            st.dataframe(df_compare, use_container_width=True, hide_index=True)
+
+            # رسم بياني للمقارنة
+            st.markdown("---")
+            chart_data = {
+                "Property": ["Property " + str(i + 1) for i in selected_indices],
+                "Price (M EGP)": [st.session_state.favorites[i].get("price", 0) / 1e6 for i in selected_indices],
+                "Size (sqm)": [st.session_state.favorites[i].get("size", 0) for i in selected_indices],
+            }
+            df_chart = pd.DataFrame(chart_data)
+
+            c1, c2 = st.columns(2)
+            with c1:
+                fig_price = px.bar(df_chart, x="Property", y="Price (M EGP)",
+                                    title=("Price Comparison" if lang == "en" else "مقارنة السعر"),
+                                    color_discrete_sequence=[get_theme(dark)["primary"]])
+                st.plotly_chart(fig_price, use_container_width=True)
+            with c2:
+                fig_size = px.bar(df_chart, x="Property", y="Size (sqm)",
+                                    title=("Size Comparison" if lang == "en" else "مقارنة المساحة"),
+                                    color_discrete_sequence=[get_theme(dark)["accent"]])
+                st.plotly_chart(fig_size, use_container_width=True)
+
+        elif len(selected_indices) == 1:
+            st.info(T["comp_need_two"])
+
+
 # ═══ TAB 4: FAVORITES ═══
 with tab4:
     st.markdown('<div class="section-title">' + T["tab_favorites"] + '</div>', unsafe_allow_html=True)
     st.markdown("")
+
+    # أزرار Export/Import
+    if st.session_state.favorites:
+        c_exp, c_imp = st.columns(2)
+        with c_exp:
+            favs_json = json.dumps(st.session_state.favorites, ensure_ascii=False, indent=2)
+            st.download_button(
+                label=T["export_favs"],
+                data=favs_json,
+                file_name="favorites_" + datetime.now().strftime("%Y%m%d") + ".json",
+                mime="application/json",
+                use_container_width=True,
+                key="export_favs_btn",
+                help=T["export_help"],
+            )
+        with c_imp:
+            uploaded = st.file_uploader(
+                T["import_favs"],
+                type=["json"],
+                key="import_favs_file",
+                help=T["import_help"],
+                label_visibility="collapsed",
+            )
+            if uploaded is not None:
+                try:
+                    imported = json.loads(uploaded.read().decode("utf-8"))
+                    if isinstance(imported, list) and len(imported) > 0:
+                        st.session_state.favorites = imported
+                        st.success(T["import_success"])
+                        st.rerun()
+                    else:
+                        st.error(T["import_error"])
+                except Exception:
+                    st.error(T["import_error"])
+        st.markdown("---")
 
     if not st.session_state.favorites:
         empty_html = (
