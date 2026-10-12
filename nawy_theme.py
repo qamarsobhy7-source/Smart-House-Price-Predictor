@@ -671,6 +671,82 @@ section[data-testid="stSidebar"] * { color: TEXT !important; }
     .prop-img-wrap { height: 200px; }
     .rec-img-wrap { height: 200px; }
 }
+
+/* COMPOUND CARD */
+.comp-card {
+    background: BG_CARD;
+    border: 1px solid BORDER;
+    border-radius: 12px;
+    padding: 24px 20px;
+    transition: all 0.25s ease;
+    cursor: pointer;
+    height: 100%;
+}
+.comp-card:hover {
+    border-color: PRIMARY;
+    transform: translateY(-3px);
+    box-shadow: SHADOW_MD;
+}
+.comp-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: TEXT;
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+.comp-units {
+    font-size: 12px;
+    color: TEXT_MUTED;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 8px;
+}
+.comp-price {
+    font-size: 16px;
+    font-weight: 800;
+    color: PRIMARY;
+    letter-spacing: -0.3px;
+}
+
+/* FORM SECTION HEADER */
+.form-section {
+    font-size: 12px;
+    font-weight: 700;
+    color: TEXT_MUTED;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 20px 0 12px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid BORDER_SOFT;
+}
+
+/* FAVORITE ITEM */
+.fav-item {
+    background: BG_CARD;
+    border: 1px solid BORDER;
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-bottom: 12px;
+}
+.fav-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: TEXT;
+    margin-bottom: 6px;
+}
+.fav-detail {
+    font-size: 13px;
+    color: TEXT_MUTED;
+    margin-bottom: 8px;
+}
+.fav-price {
+    font-size: 18px;
+    font-weight: 800;
+    color: PRIMARY;
+    letter-spacing: -0.3px;
+}
+
 </style>
 """
 
