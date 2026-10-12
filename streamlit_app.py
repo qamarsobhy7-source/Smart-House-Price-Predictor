@@ -30,7 +30,10 @@ from predictor import (
     calculate_roi, recommend_similar_properties,
 )
 
-from ui_components import promo_banner, stat_card
+from ui_components import (
+    promo_banner, stat_card, single_pills, number_pills, multi_pills,
+    area_circle_card, property_card, section_header, recommendation_card
+)
 
 # Optional modules
 try:
@@ -249,6 +252,86 @@ promo_banner(
 # ═══════════════════════════════════════════════════════════════
 # TABS
 # ═══════════════════════════════════════════════════════════════
+
+# ═══════════════════════════════════════════════════════════════
+# BROWSE SECTIONS — Nawy + Aqarmap style
+# ═══════════════════════════════════════════════════════════════
+
+st.markdown("---")
+section_header("تصفح حسب نوع العقار", icon="🏘️", key="ptype_header")
+ptype_cats = [
+    ("🏢", "شقق", "45,200 وحدة"),
+    ("🏡", "فيلل", "8,500 وحدة"),
+    ("🏘️", "دوبلكس", "3,200 وحدة"),
+    ("🏖️", "شاليهات", "12,800 وحدة"),
+    ("🏠", "تاون هاوس", "2,100 وحدة"),
+    ("🌇", "بنتهاوس", "950 وحدة"),
+]
+pt_cols = st.columns(6)
+for i, (icon, name, count) in enumerate(ptype_cats):
+    with pt_cols[i]:
+        st.markdown(f"""
+        <div style="background:white;border:1px solid #E2E8F0;border-radius:18px;padding:22px 10px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.04);transition:all 0.3s;cursor:pointer;">
+            <div style="font-size:38px;margin-bottom:10px;">{icon}</div>
+            <div style="font-size:15px;font-weight:800;color:#0F1419;">{name}</div>
+            <div style="font-size:11px;color:#64748B;margin-top:6px;font-weight:600;">{count}</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+st.markdown("---")
+section_header("أشهر المناطق", icon="📍", show_more_text="كل المناطق", key="areas_header")
+areas_data = [
+    ("القاهرة الجديدة", "365 كمبوند", "https://images.unsplash.com/photo-1548013146-72479768bada?w=300&h=300&fit=crop"),
+    ("مدينة 6 أكتوبر", "163 كمبوند", "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=300&h=300&fit=crop"),
+    ("العاصمة الإدارية", "245 كمبوند", "https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=300&h=300&fit=crop"),
+    ("مدينة المستقبل", "98 كمبوند", "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=300&h=300&fit=crop"),
+    ("الساحل الشمالي", "210 كمبوند", "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300&h=300&fit=crop"),
+    ("العين السخنة", "78 كمبوند", "https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=300&h=300&fit=crop"),
+]
+area_cols = st.columns(6)
+for i, (name, count, img) in enumerate(areas_data):
+    with area_cols[i]:
+        area_circle_card(name, count, img, key=f"area_{i}")
+
+st.markdown("---")
+section_header("أحدث الكمبوندات", icon="🏗️", show_more_text="أظهر المزيد", key="compounds_header")
+compounds_data = [
+    ("ماونتن فيو 1.1 - التجمع", "14 وحدة", "يبدأ من 14,500,000 ج.م", "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&h=400&fit=crop", "طرح جديد"),
+    ("ماونتن فيو رأس الحكمة", "32 وحدة", "يبدأ من 8,200,000 ج.م", "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop", None),
+    ("مكادي هايتس - مكادي", "70 وحدة", "يبدأ من 6,900,000 ج.م", "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&h=400&fit=crop", None),
+]
+comp_cols = st.columns(3)
+for i, (title, units, price, img, badge) in enumerate(compounds_data):
+    with comp_cols[i]:
+        property_card(
+            title=title,
+            location=units,
+            price=price,
+            image_url=img,
+            badge=badge,
+            key=f"comp_{i}"
+        )
+
+st.markdown("---")
+section_header("نرشح لك", icon="⭐", key="rec_header")
+rec_cols = st.columns(2)
+with rec_cols[0]:
+    recommendation_card(
+        "كمبوند ذا ليكس - التجمع الخامس",
+        "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=600&h=400&fit=crop",
+        "2030",
+        key="rec_1"
+    )
+with rec_cols[1]:
+    recommendation_card(
+        "كمبوند هايد بارك - الشيخ زايد",
+        "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&h=400&fit=crop",
+        "2027",
+        key="rec_2"
+    )
+
+st.markdown("---")
+
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "🎯 " + tr('estimator', 'title').replace('🎯 ', ''),
     "📊 " + tr('market', 'title').replace('📈 ', ''),
@@ -359,8 +442,10 @@ with tab1:
         with c1:
             size = st.number_input(tr('estimator', 'size'), 30, 5000, 200, 10, key="inp_size")
             bathrooms = st.number_input(tr('estimator', 'bathrooms'), 1, 15, 2, key="inp_baths")
+            living_rooms = st.number_input("🛋️ عدد الصالونات", 0, 5, 1, key="inp_living")
         with c2:
             bedrooms = st.number_input(tr('estimator', 'bedrooms'), 0, 15, 3, key="inp_beds")
+            kitchens = st.number_input("🍳 عدد المطابخ", 0, 3, 1, key="inp_kitchen")
             floor = st.number_input(
                 "🏢 " + ("الطابق" if lang == "ar" else "Floor"),
                 0, 50, 3, key="inp_floor"
@@ -438,7 +523,7 @@ with tab1:
                     "view": "Unknown", "finishing_type": finishing,
                     "payment_method": "Unknown", "town": selected_gov["en"],
                     "area_per_room": size / max(bedrooms, 1),
-                    "total_rooms": bedrooms + bathrooms,
+                    "total_rooms": bedrooms + bathrooms + living_rooms + kitchens,
                     "bed_bath_ratio": bedrooms / max(bathrooms, 1),
                     "amenity_per_room": amenity_count / max(bedrooms + bathrooms, 1),
                     "images_per_room": 10 / max(bedrooms + bathrooms, 1),
