@@ -2,10 +2,9 @@
 
 # Egypt Real Estate AI
 
-### AI-powered property valuation for the Egyptian real estate market
+### Property valuation for the Egyptian real estate market
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-0066FF?style=for-the-badge&logo=streamlit&logoColor=white)](https://da.gd/AOPPkw)
-[![Short Link](https://img.shields.io/badge/da.gd%2FAOPPkw-00A86B?style=for-the-badge&logo=linktree&logoColor=white)](https://da.gd/AOPPkw)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-0066FF?style=for-the-badge&logo=streamlit&logoColor=white)](https://smart-house-price-predictor-77.streamlit.app)
 [![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
 [![CatBoost](https://img.shields.io/badge/CatBoost-ML-FFCC00?style=for-the-badge)](https://catboost.ai)
 [![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io)
@@ -39,7 +38,7 @@ The app combines valuation intelligence with a modern, Nawy-inspired interface â
 
 ## Live Demo
 
-**Try the app now:** [**da.gd/AOPPkw**](https://da.gd/AOPPkw)
+**Try the app now:** [**da.gd/AOPPkw**](https://smart-house-price-predictor-77.streamlit.app)
 
 > Bilingual AI-powered property valuation for the Egyptian real estate market.
 
