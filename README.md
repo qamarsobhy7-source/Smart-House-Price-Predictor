@@ -14,28 +14,6 @@
 
 ---
 
-## Table of Contents
-
-- [Live Demo](#live-demo)
-- [Screenshots](#screenshots)
-- [About](#about)
-- [Presentation](#presentation)
-- [Features](#features)
-- [Model](#model)
-- [Data](#data)
-- [Tech Stack](#tech-stack)
-- [Run Locally](#run-locally)
-- [Project Structure](#project-structure)
-- [Roadmap](#roadmap)
-- [License](#license)
-- [Documentation](#documentation)
-- [Contributing](#contributing)
-- [Acknowledgments](#acknowledgments)
-- [Author](#author)
-
----
-
-
 ## Live Demo
 
 **Try the app now:** [smart-house-price-predictor-77.streamlit.app](https://smart-house-price-predictor-77.streamlit.app)
@@ -89,6 +67,28 @@
 </details>
 
 ---
+
+## Table of Contents
+
+- [Live Demo](#live-demo)
+- [Screenshots](#screenshots)
+- [About](#about)
+- [Presentation](#presentation)
+- [Features](#features)
+- [Model](#model)
+- [Data](#data)
+- [Tech Stack](#tech-stack)
+- [Run Locally](#run-locally)
+- [Project Structure](#project-structure)
+- [Roadmap](#roadmap)
+- [License](#license)
+- [Documentation](#documentation)
+- [Contributing](#contributing)
+- [Acknowledgments](#acknowledgments)
+- [Author](#author)
+
+---
+
 
 ## About
 
