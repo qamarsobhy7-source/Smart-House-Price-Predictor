@@ -599,8 +599,10 @@ def render_property_gallery(property_type, district_name, price_text, key_prefix
     current_img = images[current_idx]
     
     gallery_title = "Property Gallery" if lang == "en" else "صور العقار"
+    gallery_note = "Sample images for reference" if lang == "en" else "صور توضيحية للمرجعية"
     st.markdown(
-        '<div class="section-title" style="font-size:20px;margin:24px 0 16px;">' + gallery_title + '</div>',
+        '<div class="section-title" style="font-size:20px;margin:24px 0 4px;">' + gallery_title + '</div>'
+        '<div style="color:#64748B;font-size:12px;margin-bottom:16px;font-style:italic;">' + gallery_note + '</div>',
         unsafe_allow_html=True,
     )
     
@@ -631,23 +633,61 @@ def render_property_gallery(property_type, district_name, price_text, key_prefix
 
 # ═══ NEIGHBORHOOD INFO ═══
 def get_neighborhood_info(district_name_en, governorate_en):
-    """معلومات تقديرية عن الحي"""
-    info = {
-        "schools": [],
-        "hospitals": [],
-        "transport": [],
-        "shopping": [],
-        "restaurants": [],
+    """معلومات تقديرية عن الحي حسب المنطقة"""
+    
+    # معلومات مخصصة لبعض المناطق الشهيرة
+    DISTRICT_SPECIFIC = {
+        "The 5th Settlement": {
+            "schools": [("Cairo English School", "مدرسة القاهرة الإنجليزية", 1.5),
+                       ("British International School", "المدرسة البريطانية الدولية", 2.8)],
+            "hospitals": [("Al Salam International Hospital", "مستشفى السلام الدولي", 1.2),
+                         ("Cleopatra Hospital", "مستشفى كليوباترا", 2.1)],
+            "transport": [("Metro Station", "محطة مترو", 2.4), ("Bus Stop", "موقف أتوبيس", 0.6)],
+            "shopping": [("Downtown Mall", "داون تاون مول", 1.8), ("Point 90 Mall", "بوينت 90 مول", 2.5)],
+            "restaurants": [("Local Egyptian", "مطعم مصري", 0.5), ("Italian", "مطعم إيطالي", 1.0)],
+        },
+        "Sheikh Zayed Compounds": {
+            "schools": [("Beverly Hills Schools", "مدارس بيفرلي هيلز", 1.8),
+                       ("American International School", "المدرسة الأمريكية الدولية", 3.2)],
+            "hospitals": [("Dar Al Fouad Hospital", "مستشفى دار الفؤاد", 4.5),
+                         ("Sheikh Zayed Specialized", "مستشفى الشيخ زايد التخصصي", 2.0)],
+            "transport": [("Bus Stop", "موقف أتوبيس", 0.5), ("Taxi Stand", "موقف تاكسي", 0.3)],
+            "shopping": [("Mall of Arabia", "مول العرب", 4.2), ("Mall of Egypt", "مول مصر", 8.5)],
+            "restaurants": [("Local", "مطعم محلي", 0.4), ("Cafe", "كافيه", 0.7)],
+        },
+        "Hadayek El Ahram": {
+            "schools": [("Modern English School", "المدرسة الإنجليزية الحديثة", 2.0),
+                       ("Dream International School", "مدرسة دريم الدولية", 3.5)],
+            "hospitals": [("Haram Hospital", "مستشفى الهرم", 3.8),
+                         ("Al Salam Hospital", "مستشفى السلام", 5.2)],
+            "transport": [("Bus Stop", "موقف أتوبيس", 0.6), ("Microbus", "ميكروباص", 0.3)],
+            "shopping": [("Mall of Egypt", "مول مصر", 5.5), ("Local Market", "سوق محلي", 0.8)],
+            "restaurants": [("Local Egyptian", "مطعم مصري", 0.5)],
+        },
+        "El Katameya": {
+            "schools": [("British International School", "المدرسة البريطانية الدولية", 2.5),
+                       ("Cairo British School", "مدرسة القاهرة البريطانية", 3.0)],
+            "hospitals": [("Cleopatra Hospital", "مستشفى كليوباترا", 3.5)],
+            "transport": [("Bus Stop", "موقف أتوبيس", 0.8), ("Taxi", "تاكسي", 0.4)],
+            "shopping": [("Point 90 Mall", "بوينت 90 مول", 2.0)],
+            "restaurants": [("Local", "مطعم محلي", 0.6), ("Cafe", "كافيه", 0.9)],
+        },
     }
     
-    # ترجمة المحافظة
-    gov_map = {
-        "Cairo": "القاهرة", "Giza": "الجيزة", "Alexandria": "الإسكندرية",
-        "Matrouh": "مطروح", "Red Sea": "البحر الأحمر", "Suez": "السويس",
-    }
-    gov_ar = gov_map.get(governorate_en, governorate_en)
+    # لو المنطقة ليها معلومات مخصصة
+    if district_name_en in DISTRICT_SPECIFIC:
+        specific = DISTRICT_SPECIFIC[district_name_en]
+        return {
+            "schools": [(n, a, "School", d) for n, a, d in specific["schools"]],
+            "hospitals": [(n, a, "Hospital", d) for n, a, d in specific["hospitals"]],
+            "transport": [(n, a, "Transport", d) for n, a, d in specific["transport"]],
+            "shopping": [(n, a, "Mall", d) for n, a, d in specific["shopping"]],
+            "restaurants": [(n, a, "Restaurant", d) for n, a, d in specific["restaurants"]],
+        }
     
     # قوالب عامة حسب المحافظة
+    info = {"schools": [], "hospitals": [], "transport": [], "shopping": [], "restaurants": []}
+    
     if governorate_en == "Cairo":
         info["schools"] = [
             ("Cairo English School", "مدرسة القاهرة الإنجليزية", "International", 2.1),
@@ -657,22 +697,18 @@ def get_neighborhood_info(district_name_en, governorate_en):
         info["hospitals"] = [
             ("Cairo Medical Center", "مركز القاهرة الطبي", "Hospital", 1.5),
             ("Cleopatra Hospital", "مستشفى كليوباترا", "Hospital", 2.7),
-            ("Al Salam Hospital", "مستشفى السلام", "Hospital", 3.2),
         ]
         info["transport"] = [
             ("Metro Station", "محطة مترو", "Metro", 1.2),
             ("Bus Stop", "موقف أتوبيس", "Bus", 0.4),
-            ("Taxi Stand", "موقف تاكسي", "Taxi", 0.3),
         ]
         info["shopping"] = [
             ("Mall of Egypt", "مول مصر", "Mall", 12.0),
             ("City Stars Mall", "سيتي ستارز", "Mall", 8.5),
-            ("Local Supermarket", "سوبر ماركت محلي", "Market", 0.5),
         ]
         info["restaurants"] = [
             ("Local Restaurant", "مطعم محلي", "Egyptian", 0.6),
             ("Italian Restaurant", "مطعم إيطالي", "Italian", 1.1),
-            ("Fast Food Chain", "سلسلة وجبات سريعة", "Fast Food", 0.8),
         ]
     elif governorate_en == "Giza":
         info["schools"] = [
@@ -681,7 +717,7 @@ def get_neighborhood_info(district_name_en, governorate_en):
         ]
         info["hospitals"] = [
             ("Giza Hospital", "مستشفى الجيزة", "Hospital", 2.0),
-            ("Cairo Medical Center", "مركز القاهرة الطبي", "Hospital", 3.5),
+            ("Dar Al Fouad Hospital", "مستشفى دار الفؤاد", "Hospital", 5.0),
         ]
         info["transport"] = [
             ("Metro Station", "محطة مترو", "Metro", 1.8),
@@ -693,7 +729,6 @@ def get_neighborhood_info(district_name_en, governorate_en):
         ]
         info["restaurants"] = [
             ("Local Restaurant", "مطعم محلي", "Egyptian", 0.4),
-            ("Cafe", "كافيه", "Cafe", 0.6),
         ]
     elif governorate_en == "Alexandria":
         info["schools"] = [
@@ -709,64 +744,16 @@ def get_neighborhood_info(district_name_en, governorate_en):
         ]
         info["shopping"] = [
             ("City Center Alexandria", "سيتي سنتر الإسكندرية", "Mall", 4.5),
-            ("Local Market", "سوق محلي", "Market", 0.5),
         ]
         info["restaurants"] = [
             ("Seafood Restaurant", "مطعم أسماك", "Seafood", 0.8),
-            ("Local Restaurant", "مطعم محلي", "Egyptian", 0.4),
         ]
-    elif governorate_en == "Red Sea":
-        info["schools"] = [
-            ("Hurghada International School", "مدرسة الغردقة الدولية", "International", 3.0),
-        ]
-        info["hospitals"] = [
-            ("Hurghada General Hospital", "مستشفى الغردقة العام", "General", 2.5),
-        ]
-        info["transport"] = [
-            ("Local Bus", "أتوبيس محلي", "Bus", 0.6),
-            ("Taxi Stand", "موقف تاكسي", "Taxi", 0.4),
-        ]
-        info["shopping"] = [
-            ("Senzo Mall", "سينزو مول", "Mall", 3.5),
-            ("Local Market", "سوق محلي", "Market", 0.7),
-        ]
-        info["restaurants"] = [
-            ("Seafood Restaurant", "مطعم أسماك", "Seafood", 0.5),
-            ("Beach Cafe", "كافيه شاطئ", "Cafe", 0.3),
-        ]
-    elif governorate_en == "Suez":
-        info["schools"] = [
-            ("Suez International School", "مدرسة السويس الدولية", "International", 2.5),
-        ]
-        info["hospitals"] = [
-            ("Suez General Hospital", "مستشفى السويس العام", "General", 2.0),
-        ]
-        info["transport"] = [
-            ("Bus Stop", "موقف أتوبيس", "Bus", 0.4),
-            ("Train Station", "محطة قطار", "Train", 2.5),
-        ]
-        info["shopping"] = [
-            ("Local Mall", "مول محلي", "Mall", 2.0),
-        ]
-        info["restaurants"] = [
-            ("Local Restaurant", "مطعم محلي", "Egyptian", 0.5),
-        ]
-    else:  # Matrouh + default
-        info["schools"] = [
-            ("International School", "مدرسة دولية", "International", 3.0),
-        ]
-        info["hospitals"] = [
-            ("General Hospital", "مستشفى عام", "General", 2.5),
-        ]
-        info["transport"] = [
-            ("Bus Stop", "موقف أتوبيس", "Bus", 0.6),
-        ]
-        info["shopping"] = [
-            ("Local Market", "سوق محلي", "Market", 0.5),
-        ]
-        info["restaurants"] = [
-            ("Local Restaurant", "مطعم محلي", "Egyptian", 0.4),
-        ]
+    else:
+        info["schools"] = [("International School", "مدرسة دولية", "International", 3.0)]
+        info["hospitals"] = [("General Hospital", "مستشفى عام", "General", 2.5)]
+        info["transport"] = [("Bus Stop", "موقف أتوبيس", "Bus", 0.6)]
+        info["shopping"] = [("Local Market", "سوق محلي", "Market", 0.5)]
+        info["restaurants"] = [("Local Restaurant", "مطعم محلي", "Egyptian", 0.4)]
     
     return info
 
@@ -777,10 +764,12 @@ def render_neighborhood_section(district_name_en, governorate_en):
     
     title = "Neighborhood Insights" if lang == "en" else "معلومات الحي"
     subtitle = ("What's around " + district_name_en) if lang == "en" else ("ما يحيط بـ " + nm({"en": district_name_en, "ar": district_name_en}))
+    note = "Estimated data - actual distances may vary" if lang == "en" else "بيانات تقديرية - المسافات الفعلية قد تختلف"
     
     st.markdown(
-        '<div class="section-title" style="font-size:20px;margin:24px 0 8px;">' + title + '</div>'
-        '<div style="color:#64748B;font-size:13px;margin-bottom:20px;">' + subtitle + '</div>',
+        '<div class="section-title" style="font-size:20px;margin:24px 0 4px;">' + title + '</div>'
+        '<div style="color:#64748B;font-size:13px;margin-bottom:4px;">' + subtitle + '</div>'
+        '<div style="color:#94A3B8;font-size:11px;margin-bottom:20px;font-style:italic;">' + note + '</div>',
         unsafe_allow_html=True,
     )
     
@@ -1325,21 +1314,23 @@ with tab1:
             st.markdown("---")
             render_property_gallery(selected_ptype, nm(selected_district), f"{price:,.0f}", key_prefix="result_gal")
 
-            # مؤشر جودة البيانات: نفس نوع العقار في نفس الحي
+            # مؤشر جودة البيانات: نفس نوع العقار في نفس الحي فقط
             similar_data = df[
                 (df["governorate"] == selected_gov["en"]) &
                 (df["district"] == selected_district["en"]) &
                 (df["property_type"] == selected_ptype)
             ]
             sample_count = len(similar_data)
+            sample_scope = "in this district" if lang == "en" else "في هذا الحي"
             
-            # لو عدد قليل جداً، نوسع للمحافظة بنفس نوع العقار
+            # لو أقل من 5، نقارن بالمحافظة
             if sample_count < 5:
                 similar_data = df[
                     (df["governorate"] == selected_gov["en"]) &
                     (df["property_type"] == selected_ptype)
                 ]
                 sample_count = len(similar_data)
+                sample_scope = "in this governorate" if lang == "en" else "في المحافظة"
             
             if sample_count >= 50:
                 quality_label = "High" if lang == "en" else "عالية"
@@ -1365,7 +1356,7 @@ with tab1:
                 '● ' + quality_label +
                 '</div>'
                 '<div style="font-size:11px;color:#64748B;font-weight:600;margin-top:4px;">'
-                + str(sample_count) + ' ' + ("similar apartments" if selected_ptype == "Apartment" else "similar properties") if lang == "en" else str(sample_count) + ' ' + ("شقق مشابهة" if selected_ptype == "Apartment" else "عقارات مشابهة") +
+                + str(sample_count) + ' ' + sample_scope +
                 '</div>'
             )
             row2_c1, row2_c2 = st.columns(2)
