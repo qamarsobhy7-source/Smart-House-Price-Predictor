@@ -250,24 +250,25 @@ st.markdown(
 )
 
 ptype_items = [
-    ("AP", T["pt_apartment"], "45,200"),
-    ("VI", T["pt_villa"], "8,500"),
-    ("TH", T["pt_townhouse"], "2,100"),
-    ("DX", T["pt_duplex"], "3,200"),
-    ("PH", T["pt_penthouse"], "950"),
-    ("CH", T["pt_chalet"], "12,800"),
+    (T["pt_apartment"], "45,200", "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=280&fit=crop"),
+    (T["pt_villa"], "8,500", "https://images.unsplash.com/photo-1613977257363-707ba9348227?w=400&h=280&fit=crop"),
+    (T["pt_townhouse"], "2,100", "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=280&fit=crop"),
+    (T["pt_duplex"], "3,200", "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400&h=280&fit=crop"),
+    (T["pt_penthouse"], "950", "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=400&h=280&fit=crop"),
+    (T["pt_chalet"], "12,800", "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=400&h=280&fit=crop"),
 ]
 pt_cols = st.columns(6)
-for i, (code, name, count) in enumerate(ptype_items):
+for i, (name, count, img) in enumerate(ptype_items):
     with pt_cols[i]:
-        st.markdown(
-            '<div class="ptype-card">'
-            '<div class="ptype-icon">' + code + '</div>'
+        pt_html = (
+            '<div class="ptype-card-img">'
+            '<img class="ptype-thumb" src="' + img + '" alt="' + name + '">'
+            '<div class="ptype-info">'
             '<div class="ptype-name">' + name + '</div>'
             '<div class="ptype-count">' + count + '</div>'
-            '</div>',
-            unsafe_allow_html=True,
+            '</div></div>'
         )
+        st.markdown(pt_html, unsafe_allow_html=True)
 
 # ═══ AREAS ═══
 st.markdown(
@@ -280,33 +281,35 @@ st.markdown(
 
 if lang == "ar":
     areas = [
-        ("القاهرة الجديدة", "365 كمبوند"),
-        ("مدينة 6 أكتوبر", "163 كمبوند"),
-        ("العاصمة الإدارية", "245 كمبوند"),
-        ("مدينة المستقبل", "98 كمبوند"),
-        ("الساحل الشمالي", "210 كمبوند"),
-        ("العين السخنة", "78 كمبوند"),
+        ("القاهرة الجديدة", "365 كمبوند", "https://images.unsplash.com/photo-1548013146-72479768bada?w=400&h=280&fit=crop"),
+        ("مدينة 6 أكتوبر", "163 كمبوند", "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=400&h=280&fit=crop"),
+        ("العاصمة الإدارية", "245 كمبوند", "https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=400&h=280&fit=crop"),
+        ("مدينة المستقبل", "98 كمبوند", "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400&h=280&fit=crop"),
+        ("الساحل الشمالي", "210 كمبوند", "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&h=280&fit=crop"),
+        ("العين السخنة", "78 كمبوند", "https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=400&h=280&fit=crop"),
     ]
 else:
     areas = [
-        ("New Cairo", "365 compounds"),
-        ("6 October City", "163 compounds"),
-        ("New Capital", "245 compounds"),
-        ("Mostakbal City", "98 compounds"),
-        ("North Coast", "210 compounds"),
-        ("Ain Sokhna", "78 compounds"),
+        ("New Cairo", "365 compounds", "https://images.unsplash.com/photo-1548013146-72479768bada?w=400&h=280&fit=crop"),
+        ("6 October City", "163 compounds", "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=400&h=280&fit=crop"),
+        ("New Capital", "245 compounds", "https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=400&h=280&fit=crop"),
+        ("Mostakbal City", "98 compounds", "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400&h=280&fit=crop"),
+        ("North Coast", "210 compounds", "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&h=280&fit=crop"),
+        ("Ain Sokhna", "78 compounds", "https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=400&h=280&fit=crop"),
     ]
 
 area_cols = st.columns(6)
-for i, (name, count) in enumerate(areas):
+for i, (name, count, img) in enumerate(areas):
     with area_cols[i]:
-        st.markdown(
-            '<div class="area-card">'
+        area_html = (
+            '<div class="area-card-img">'
+            '<img class="area-thumb" src="' + img + '" alt="' + name + '">'
+            '<div class="area-info">'
             '<div class="area-name">' + name + '</div>'
             '<div class="area-count">' + count + '</div>'
-            '</div>',
-            unsafe_allow_html=True,
+            '</div></div>'
         )
+        st.markdown(area_html, unsafe_allow_html=True)
 
 # ═══ COMPOUNDS ═══
 st.markdown(
@@ -319,30 +322,32 @@ st.markdown(
 
 if lang == "ar":
     compounds = [
-        ("ماونتن فيو 1.1 - التجمع", "14 وحدة", "14,500,000"),
-        ("ماونتن فيو رأس الحكمة", "32 وحدة", "8,200,000"),
-        ("مكادي هايتس - مكادي", "70 وحدة", "6,900,000"),
+        ("ماونتن فيو 1.1 - التجمع", "14 وحدة", "14,500,000", "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&h=400&fit=crop"),
+        ("ماونتن فيو رأس الحكمة", "32 وحدة", "8,200,000", "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop"),
+        ("مكادي هايتس - مكادي", "70 وحدة", "6,900,000", "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&h=400&fit=crop"),
     ]
     price_prefix = "يبدأ من"
 else:
     compounds = [
-        ("Mountain View 1.1 - Fifth Settlement", "14 units", "14,500,000"),
-        ("Mountain View Ras El Hekma", "32 units", "8,200,000"),
-        ("Makadi Heights - Makadi", "70 units", "6,900,000"),
+        ("Mountain View 1.1 - Fifth Settlement", "14 units", "14,500,000", "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&h=400&fit=crop"),
+        ("Mountain View Ras El Hekma", "32 units", "8,200,000", "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop"),
+        ("Makadi Heights - Makadi", "70 units", "6,900,000", "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&h=400&fit=crop"),
     ]
     price_prefix = "From"
 
 comp_cols = st.columns(3)
-for i, (name, units, price) in enumerate(compounds):
+for i, (name, units, price, img) in enumerate(compounds):
     with comp_cols[i]:
-        st.markdown(
-            '<div class="comp-card">'
+        comp_html = (
+            '<div class="comp-card-img">'
+            '<img class="comp-thumb" src="' + img + '" alt="' + name + '">'
+            '<div class="comp-info">'
             '<div class="comp-title">' + name + '</div>'
             '<div class="comp-units">' + units + '</div>'
             '<div class="comp-price">' + price_prefix + ' ' + price + ' ' + T["currency"] + '</div>'
-            '</div>',
-            unsafe_allow_html=True,
+            '</div></div>'
         )
+        st.markdown(comp_html, unsafe_allow_html=True)
 
 # ═══ TABS ═══
 tab1, tab2, tab3, tab4 = st.tabs([

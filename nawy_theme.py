@@ -747,6 +747,138 @@ section[data-testid="stSidebar"] * { color: TEXT !important; }
     letter-spacing: -0.3px;
 }
 
+
+/* PROPERTY TYPE CARD WITH IMAGE */
+.ptype-card-img {
+    background: BG_CARD;
+    border: 1px solid BORDER;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.25s ease;
+    cursor: pointer;
+    height: 100%;
+}
+.ptype-card-img:hover {
+    border-color: PRIMARY;
+    transform: translateY(-3px);
+    box-shadow: SHADOW_MD;
+}
+.ptype-card-img .ptype-thumb {
+    width: 100%;
+    height: 110px;
+    object-fit: cover;
+    display: block;
+}
+.ptype-card-img .ptype-info {
+    padding: 12px 10px;
+    text-align: center;
+}
+.ptype-card-img .ptype-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: TEXT;
+    margin-bottom: 3px;
+}
+.ptype-card-img .ptype-count {
+    font-size: 11px;
+    color: TEXT_MUTED;
+    font-weight: 500;
+}
+
+/* AREA CARD WITH IMAGE */
+.area-card-img {
+    background: BG_CARD;
+    border: 1px solid BORDER;
+    border-radius: 14px;
+    overflow: hidden;
+    transition: all 0.25s ease;
+    cursor: pointer;
+    height: 100%;
+}
+.area-card-img:hover {
+    border-color: PRIMARY;
+    transform: translateY(-3px);
+    box-shadow: SHADOW_MD;
+}
+.area-card-img .area-thumb {
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+    display: block;
+}
+.area-card-img .area-info {
+    padding: 12px 10px;
+    text-align: center;
+}
+.area-card-img .area-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: TEXT;
+    margin-bottom: 3px;
+}
+.area-card-img .area-count {
+    font-size: 11px;
+    color: TEXT_MUTED;
+    font-weight: 500;
+}
+
+/* COMPOUND CARD WITH IMAGE */
+.comp-card-img {
+    background: BG_CARD;
+    border: 1px solid BORDER;
+    border-radius: 14px;
+    overflow: hidden;
+    transition: all 0.25s ease;
+    cursor: pointer;
+    height: 100%;
+    margin-bottom: 16px;
+}
+.comp-card-img:hover {
+    border-color: PRIMARY;
+    transform: translateY(-3px);
+    box-shadow: SHADOW_MD;
+}
+.comp-card-img .comp-thumb {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+}
+.comp-card-img .comp-info {
+    padding: 16px 18px;
+}
+.comp-card-img .comp-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: TEXT;
+    margin-bottom: 6px;
+    line-height: 1.4;
+}
+.comp-card-img .comp-units {
+    font-size: 11px;
+    color: TEXT_MUTED;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 8px;
+}
+.comp-card-img .comp-price {
+    font-size: 15px;
+    font-weight: 800;
+    color: PRIMARY;
+    letter-spacing: -0.3px;
+}
+
+/* FEATURE PILL BUTTONS - FULL WIDTH TEXT */
+.stButton > button[kind="secondary"],
+.stButton > button[kind="primary"] {
+    min-height: 42px !important;
+    white-space: normal !important;
+    font-size: 13px !important;
+    padding: 8px 12px !important;
+    line-height: 1.3 !important;
+}
+
 </style>
 """
 
