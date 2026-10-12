@@ -1308,6 +1308,100 @@ li[role="option"][aria-selected="true"] {
     background: BG_CARD;
 }
 
+
+/* ═══════════════════════════════════════════════════ */
+/* STRONG FIX: Dropdown text in Dark Mode             */
+/* ═══════════════════════════════════════════════════ */
+
+/* الخلفية للـ popover */
+[data-baseweb="popover"],
+[data-baseweb="menu"],
+[data-baseweb="select"] ul,
+div[role="listbox"],
+ul[role="listbox"] {
+    background-color: BG_CARD !important;
+    border-color: BORDER !important;
+}
+
+/* كل النصوص جوا الـ dropdown */
+[data-baseweb="popover"] *,
+[data-baseweb="menu"] *,
+div[role="listbox"] *,
+ul[role="listbox"] *,
+li[role="option"],
+li[role="option"] *,
+li[role="option"] span,
+li[role="option"] div {
+    color: TEXT !important;
+    background-color: transparent !important;
+}
+
+/* الخيارات العادية */
+li[role="option"] {
+    background-color: BG_CARD !important;
+    color: TEXT !important;
+    padding: 10px 14px !important;
+    border-radius: 6px !important;
+}
+
+li[role="option"]:hover,
+li[role="option"]:hover * {
+    background-color: PRIMARY_SOFT !important;
+    color: PRIMARY !important;
+}
+
+li[role="option"][aria-selected="true"],
+li[role="option"][aria-selected="true"] * {
+    background-color: PRIMARY !important;
+    color: #FFFFFF !important;
+    font-weight: 700 !important;
+}
+
+/* الـ select المختار */
+[data-baseweb="select"] > div,
+[data-baseweb="select"] > div *,
+[data-baseweb="select"] input,
+[data-baseweb="select"] span {
+    color: TEXT !important;
+}
+
+[data-baseweb="select"] > div:first-child {
+    background-color: BG_CARD !important;
+    border-color: BORDER !important;
+}
+
+/* SVG الأيقونة */
+[data-baseweb="select"] svg {
+    fill: TEXT !important;
+    color: TEXT !important;
+}
+
+/* قوائم Radio و Checkbox */
+.stRadio label,
+.stCheckbox label,
+.stRadio div,
+.stCheckbox div {
+    color: TEXT !important;
+}
+
+/* Text input placeholder */
+.stTextInput input::placeholder,
+.stTextArea textarea::placeholder {
+    color: TEXT_MUTED !important;
+    opacity: 0.7 !important;
+}
+
+/* Labels */
+.stSelectbox label,
+.stTextInput label,
+.stNumberInput label,
+.stSlider label,
+.stRadio label,
+.stCheckbox label {
+    color: TEXT !important;
+    font-weight: 700 !important;
+}
+
 </style>
 """
 
