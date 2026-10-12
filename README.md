@@ -105,7 +105,7 @@ The app combines valuation intelligence with a modern, Nawy-inspired interface â
 ## Model
 
 ### Algorithm
-- CatBoost Regressor (gradient boosting on decision trees)
+- **CatBoost Regressor** (gradient boosting on decision trees)
 - Trained on 119,916 listings from 7 data sources
 
 ### Performance
@@ -119,10 +119,10 @@ The app combines valuation intelligence with a modern, Nawy-inspired interface â
 
 ### 32 Features
 
-Numeric (20):
+**Numeric (20):**
 size, bedrooms, bathrooms, images_count, latitude, longitude, amenity_count, distance_to_cairo, distance_to_coast, is_premium, is_featured, is_luxury, is_compound, walk_score, transit_score, amenity_score, area_per_room, total_rooms, bed_bath_ratio, lat_x_lon
 
-Categorical (12):
+**Categorical (12):**
 property_type, governorate, district, compound, town, completion_status, furnished, seller_type, developer_name, view, finishing_type, payment_method
 
 ---
@@ -139,7 +139,7 @@ property_type, governorate, district, compound, town, completion_status, furnish
 | Red Sea | 6,253 | 5.2% |
 | Alexandria | 4,122 | 3.4% |
 | Suez | 2,948 | 2.5% |
-| Total | 119,916 | 100% |
+| **Total** | **119,916** | **100%** |
 
 ---
 
@@ -162,104 +162,78 @@ property_type, governorate, district, compound, town, completion_status, furnish
 
 ### 1. Clone the repository
 
+```bash
 git clone https://github.com/qamarsobhy7-source/Smart-House-Price-Predictor.git
+```
 
 ### 2. Navigate to folder
 
+```bash
 cd Smart-House-Price-Predictor
+```
 
 ### 3. Install dependencies
 
+```bash
 pip install -r requirements.txt
+```
 
 ### 4. Run the app
 
+```bash
 streamlit run streamlit_app.py
+```
 
 ### 5. Open in browser
 
 Visit http://localhost:8501
 
 ---
-## Model
+## Screenshots
 
-### Algorithm
-- CatBoost Regressor (gradient boosting on decision trees)
-- Trained on 119,916 listings from 7 data sources
+### Main View
 
-### Performance
+![Egypt Real Estate AI - Homepage](screenshots/01_homepage.png)
 
-| Metric | Value |
-|:---:|:---:|
-| R2 Score | 0.7061 |
-| MAPE | 40.52% |
-| Training Set | 95,932 (80%) |
-| Test Set | 23,984 (20%) |
+### Estimation Result
 
-### 32 Features
+![Property Price Estimation](screenshots/09_result_price.png)
 
-Numeric (20):
-size, bedrooms, bathrooms, images_count, latitude, longitude, amenity_count, distance_to_cairo, distance_to_coast, is_premium, is_featured, is_luxury, is_compound, walk_score, transit_score, amenity_score, area_per_room, total_rooms, bed_bath_ratio, lat_x_lon
+### More Screenshots
 
-Categorical (12):
-property_type, governorate, district, compound, town, completion_status, furnished, seller_type, developer_name, view, finishing_type, payment_method
+<details>
+<summary>Click to see all 10 screenshots</summary>
 
----
+<br>
 
-## Data
+**Hero Section & KPIs**
+![Hero](screenshots/02_hero_kpis.png)
 
-### Coverage
+**Browse by Property Type**
+![Property Types](screenshots/03_property_types.png)
 
-| Governorate | Listings | % |
-|:---:|:---:|:---:|
-| Cairo | 65,674 | 54.8% |
-| Giza | 30,374 | 25.3% |
-| Matrouh | 10,545 | 8.8% |
-| Red Sea | 6,253 | 5.2% |
-| Alexandria | 4,122 | 3.4% |
-| Suez | 2,948 | 2.5% |
-| Total | 119,916 | 100% |
+**Popular Areas**
+![Popular Areas](screenshots/04_popular_areas.png)
 
----
+**Latest Compounds**
+![Compounds](screenshots/05_compounds.png)
 
-## Tech Stack
+**Dark Mode**
+![Dark Mode](screenshots/06_dark_mode.png)
 
-| Layer | Technology |
-|:---:|:---:|
-| Frontend | Streamlit |
-| Model | CatBoost |
-| Data | Pandas, NumPy |
-| Charts | Plotly |
-| Maps | Folium |
-| PDF | ReportLab |
-| Styling | Custom CSS |
-| Deployment | Streamlit Cloud |
+**Mobile View**
+![Mobile](screenshots/07_mobile.png)
+
+**Price Estimator Form**
+![Form](screenshots/08_estimator_form.png)
+
+**Investment Analysis (ROI)**
+![ROI](screenshots/10_result_roi.png)
+
+</details>
 
 ---
 
-## Run Locally
-
-### 1. Clone the repository
-
-git clone https://github.com/qamarsobhy7-source/Smart-House-Price-Predictor.git
-
-### 2. Navigate to folder
-
-cd Smart-House-Price-Predictor
-
-### 3. Install dependencies
-
-pip install -r requirements.txt
-
-### 4. Run the app
-
-streamlit run streamlit_app.py
-
-### 5. Open in browser
-
-Visit http://localhost:8501
-
----
 ## Project Structure
 
 ```
