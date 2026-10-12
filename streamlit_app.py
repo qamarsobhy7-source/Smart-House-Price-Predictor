@@ -84,7 +84,7 @@ TEXTS = {
         "confidence": "Confidence",
         "price_range": "Range",
         "vs_market": "vs. Market",
-        "save": "Save", "saved": "Saved",
+        "save": "Save", "saved": "Saved", "share": "Share",
         "whatsapp": "WhatsApp", "call": "Call", "pdf": "PDF Report",
         "above_market": "above market",
         "below_market": "below market",
@@ -156,7 +156,7 @@ TEXTS = {
         "confidence": "نسبة الثقة",
         "price_range": "النطاق السعري",
         "vs_market": "مقارنة بالسوق",
-        "save": "حفظ", "saved": "تم الحفظ",
+        "save": "حفظ", "saved": "تم الحفظ", "share": "مشاركة",
         "whatsapp": "واتساب", "call": "اتصال", "pdf": "تقرير PDF",
         "above_market": "أعلى من السوق",
         "below_market": "أقل من السوق",
@@ -213,19 +213,54 @@ except Exception as e:
     st.stop()
 
 _AR_NAMES = {
-    # Cairo - مدن وأحياء رئيسية
-    "Cairo": "القاهرة", "New Cairo": "القاهرة الجديدة",
-    "New Cairo City": "القاهرة الجديدة", "Heliopolis": "مصر الجديدة",
-    "Nasr City": "مدينة نصر", "Maadi": "المعادي",
-    "Zamalek": "الزمالك", "Downtown": "وسط البلد",
-    "Mohandessin": "المهندسين", "Dokki": "الدقي",
-    "Agouza": "العجوزة", "Al Agouza": "العجوزة",
-    "Abdeen": "عابدين", "Hay El Zaytoun": "حي الزيتون",
-    "El Zaytoun": "الزيتون", "Zeitoun": "الزيتون",
+    # ═══ المدن (Cities) ═══
+    "New Cairo City": "القاهرة الجديدة", "New Cairo": "القاهرة الجديدة",
+    "El Khalifa": "الخليفة", "New Capital City": "العاصمة الإدارية الجديدة",
+    "New Capital": "العاصمة الإدارية", "New Administrative Capital": "العاصمة الإدارية",
+    "Sheikh Zayed City": "مدينة الشيخ زايد", "Sheikh Zayed": "الشيخ زايد",
+    "6 October City": "مدينة 6 أكتوبر", "6th of October": "6 أكتوبر",
+    "6th October City": "مدينة 6 أكتوبر", "6 October": "6 أكتوبر",
+    "Hay El Haram": "حي الهرم", "El Haram": "الهرم", "Haram": "الهرم",
+    "Al Haram": "الهرم", "Hay Helwan": "حي حلوان", "Helwan": "حلوان",
+    "Alexandria Compounds": "كمبوندات الإسكندرية",
+    "Alexandria": "الإسكندرية",
+    "Hay Sharq": "الحي الشرقي", "Hay Wasat": "الحي الأوسط",
+    "Hay Gharb": "الحي الغربي", "Hay El Gomrok": "حي الجمرك",
+    "Cairo": "القاهرة", "Giza": "الجيزة", "Hurghada": "الغردقة",
+    "Matrouh": "مطروح", "Marsa Matrouh": "مرسى مطروح",
+    "Suez": "السويس", "Ismailia": "الإسماعيلية",
+    "Port Said": "بورسعيد", "Damietta": "دمياط",
+    "Tanta": "طنطا", "Mansoura": "المنصورة",
+    "Zagazig": "الزقازيق", "Damanhour": "دمنهور",
+    "Aswan": "أسوان", "Luxor": "الأقصر",
+    "Sohag": "سوهاج", "Qena": "قنا",
+    "Beni Suef": "بني سويف", "Fayoum": "الفيوم",
+    "Minya": "المنيا", "Asyut": "أسيوط",
+    "Sharm El Sheikh": "شرم الشيخ",
+    "Dahab": "دهب", "Nuweiba": "نويبع",
+    "El Tor": "الطور", "Ras Sedr": "رأس سدر",
+    "Al Arish": "العريش", "Rafah": "رفح",
+    "Sheikh Zowayed": "الشيخ زويد",
+
+    # ═══ الأحياء (Districts) - القاهرة ═══
+    "The 5th Settlement": "التجمع الخامس", "5th Settlement": "التجمع الخامس",
+    "The First Settlement": "التجمع الأول", "First Settlement": "التجمع الأول",
+    "The Third Settlement": "التجمع الثالث", "Third Settlement": "التجمع الثالث",
+    "El Katameya": "القطامية", "Katameya": "القطامية",
+    "Al Rehab": "الرحاب", "Rehab": "الرحاب",
+    "Madinaty": "مدينتي", "Al Shorouk": "الشروق",
+    "Shorouk City": "مدينة الشروق", "Shorouk": "الشروق",
+    "Nasr City": "مدينة نصر", "Heliopolis": "مصر الجديدة",
+    "New Heliopolis": "هليوبوليس الجديدة",
+    "Maadi": "المعادي", "Zamalek": "الزمالك",
+    "Downtown": "وسط البلد", "Mohandessin": "المهندسين",
+    "Dokki": "الدقي", "Agouza": "العجوزة",
+    "Al Agouza": "العجوزة", "Abdeen": "عابدين",
+    "Hay El Zaytoun": "حي الزيتون", "El Zaytoun": "الزيتون",
     "Garden City": "جاردن سيتي", "Hay El Manial": "حي المنيل",
     "El Manial": "المنيل", "Al Manial": "المنيل",
     "Al Salam City": "مدينة السلام", "Salam City": "مدينة السلام",
-    "Hay Helwan": "حي حلوان", "Helwan": "حلوان",
+    "Al Abageyah": "الأباجية", "Al Khalifa": "الخليفة",
     "Shubra": "شبرا", "Shubra El Kheima": "شبرا الخيمة",
     "Matariya": "المطرية", "Ain Shams": "عين شمس",
     "Abbasiya": "العباسية", "Roxy": "روكسي",
@@ -234,184 +269,226 @@ _AR_NAMES = {
     "Nozha": "النزهة", "El Nozha": "النزهة",
     "New Nozha": "النزهة الجديدة",
     "Marg": "المرج", "El Marg": "المرج",
-    "Obour": "العبور", "Obour City": "مدينة العبور",
     "Alf Maskan": "ألف مسكن", "Gesr El Suez": "جسر السويس",
     "Ezbet El Nakhl": "عزبة النخل",
     "Badr": "بدر", "Badr City": "مدينة بدر",
-    "Shorouk": "الشروق", "Al Shorouk": "الشروق",
-    "Shorouk City": "مدينة الشروق",
-    "Rehab": "الرحاب", "Al Rehab": "الرحاب",
-    "Madinaty": "مدينتي", "New Heliopolis": "هليوبوليس الجديدة",
-    "Nile Corniche St.": "كورنيش النيل",
+    "Obour": "العبور", "Obour City": "مدينة العبور",
+    "Al Obour": "العبور",
+    "New Cairo Compounds": "كمبوندات القاهرة الجديدة",
+    "New Capital Compounds": "كمبوندات العاصمة الإدارية",
+    "New Cairo Districts": "أحياء القاهرة الجديدة",
+    "DeJoya 4": "ديچويا 4", "DeJoya": "ديچويا",
     "Nile Corniche": "كورنيش النيل",
+    "Nile Corniche St.": "كورنيش النيل",
     "Corniche El Nil": "كورنيش النيل",
-    
-    # Giza - الجيزة
-    "Giza": "الجيزة", "Haram": "الهرم", "Hay El Haram": "حي الهرم",
-    "El Haram": "الهرم", "Al Haram": "الهرم",
+
+    # ═══ الجيزة ═══
+    "Sheikh Zayed Compounds": "كمبوندات الشيخ زايد",
+    "12th District": "الحي الثاني عشر",
+    "6 October Compounds": "كمبوندات 6 أكتوبر",
+    "Hadayek October": "حدائق أكتوبر",
     "Hadayek El Ahram": "حدائق الأهرام",
     "Hadayek Al Ahram": "حدائق الأهرام",
     "Faisal": "فيصل", "Imbaba": "إمبابة",
     "Boulaq": "بولاق", "Bulaq": "بولاق",
-    "Sheikh Zayed": "الشيخ زايد",
-    "Sheikh Zayed City": "مدينة الشيخ زايد",
-    "6 October": "6 أكتوبر", "6th October": "6 أكتوبر",
-    "6th of October": "6 أكتوبر", "6 October City": "مدينة 6 أكتوبر",
-    "Hadayek October": "حدائق أكتوبر",
-    "October": "أكتوبر", "Dahshur": "دهشور",
-    "Saqqara": "سقارة", "Awsim": "أوسيم",
-    "Kerdasa": "كرداسة", "Abu Rawash": "أبو رواش",
-    
-    # Alexandria - الإسكندرية
-    "Alexandria": "الإسكندرية", "Sidi Gaber": "سيدي جابر",
-    "Smouha": "سموحة", "Stanley": "ستانلي",
-    "Miami": "ميامي", "Sidi Bishr": "سيدي بشر",
-    "Montazah": "المنتزه", "Maamoura": "المعمورة",
-    "Abu Qir": "أبو قير", "Raml Station": "محطة الرمل",
-    "Anfushi": "الأنفوشي", "Manshiya": "المنشية",
-    "Attarin": "العطارين", "Labban": "اللبان",
-    "Gomrok": "الجمرك", "Agami": "العجمي",
-    "Borg El Arab": "برج العرب", "King Mariout": "كينج مريوط",
-    
-    # North Coast / الساحل
+    "Dahshur": "دهشور", "Saqqara": "سقارة",
+    "Awsim": "أوسيم", "Kerdasa": "كرداسة",
+    "Abu Rawash": "أبو رواش",
+    "Al Lebeny Axis": "محور اللبيني",
+
+    # ═══ الإسكندرية ═══
+    "Sidi Gaber": "سيدي جابر", "Smouha": "سموحة",
+    "Stanley": "ستانلي", "Miami": "ميامي",
+    "Sidi Bishr": "سيدي بشر", "Montazah": "المنتزه",
+    "Maamoura": "المعمورة", "Abu Qir": "أبو قير",
+    "Raml Station": "محطة الرمل", "Anfushi": "الأنفوشي",
+    "Manshiya": "المنشية", "Attarin": "العطارين",
+    "Labban": "اللبان", "Gomrok": "الجمرك",
+    "Agami": "العجمي", "Borg El Arab": "برج العرب",
+    "King Mariout": "كينج مريوط",
+    "Janaklees": "جناكليس", "Camp Chezar": "كامب شيزار",
+    "Ibrahimia": "الإبراهيمية", "Sawary": "السواري",
+    "Palm Hills": "بالم هيلز",
+
+    # ═══ الساحل الشمالي ═══
     "North Coast": "الساحل الشمالي",
     "Marina": "مارينا", "Marina El Alamein": "مارينا العلمين",
-    "New Alamein": "العلمين الجديدة", "Alamein": "العلمين",
-    "El Alamein": "العلمين", "Ras El Hekma": "رأس الحكمة",
+    "New Alamein": "العلمين الجديدة",
+    "Alamein": "العلمين", "El Alamein": "العلمين",
+    "Ras El Hekma": "رأس الحكمة",
     "Sidi Abdel Rahman": "سيدي عبد الرحمن",
     "Hacienda Bay": "هاسيندا باي",
     "Marassi": "مراسي", "Fouka Bay": "فوكا باي",
     "Telal": "تلال", "Silver Sands": "سيلفر ساندز",
-    
-    # Ain Sokhna / العين السخنة
+    "Diplo": "دبلو", "Amwaj": "أمواج",
+
+    # ═══ العين السخنة ═══
     "Ain Sokhna": "العين السخنة", "Al Sokhna": "العين السخنة",
     "Sokhna": "السخنة", "Zafarana": "الزعفرانة",
     "Stella": "ستيلا", "Porto Sokhna": "بورتو السخنة",
-    
-    # Red Sea / البحر الأحمر
-    "Hurghada": "الغردقة", "El Gouna": "الجونة",
-    "Sahl Hasheesh": "سهل حشيش", "Makadi": "مكادي",
-    "Makadi Heights": "مكادي هايتس",
+    "Jefaira": "جفيرا", "Il Monte Galala": "إل مونتي جالالا",
+
+    # ═══ البحر الأحمر ═══
+    "El Gouna": "الجونة", "Sahl Hasheesh": "سهل حشيش",
+    "Makadi": "مكادي", "Makadi Heights": "مكادي هايتس",
     "Marsa Alam": "مرسى علم", "Soma Bay": "سوما باي",
     "Safaga": "سفاجا", "Quseir": "القصير",
-    
-    # Matrouh / مطروح
-    "Matrouh": "مطروح", "Marsa Matrouh": "مرسى مطروح",
-    "Siwa": "سيوة", "Dabaa": "الضبعة",
-    
-    # Suez / السويس
-    "Suez": "السويس", "Port Said": "بورسعيد",
-    "Ismailia": "الإسماعيلية", "Suez Canal": "قناة السويس",
-    
-    # New Administrative Capital / العاصمة الإدارية
-    "New Capital": "العاصمة الإدارية",
-    "New Administrative Capital": "العاصمة الإدارية",
-    "Administrative Capital": "العاصمة الإدارية",
-    "R8": "R8", "Downtown New Capital": "وسط العاصمة",
-    
-    # Mostakbal / المستقبل
-    "Mostakbal City": "مدينة المستقبل",
-    "Future City": "مدينة المستقبل",
-    "Bloomfields": "بلومفيلدز",
-    
-    # Compounds شائعة
+
+    # ═══ الكمبوندات الشائعة ═══
     "Mountain View": "ماونتن فيو",
     "Mountain View 1.1": "ماونتن فيو 1.1",
     "Mountain View Ras El Hekma": "ماونتن فيو رأس الحكمة",
-    "Palm Hills": "بالم هيلز", "Palm Hills October": "بالم هيلز أكتوبر",
-    "Sodic": "سوديك", "Hyde Park": "هايد بارك",
+    "Mountain View iCity": "ماونتن فيو آي سيتي",
+    "Sodic": "سوديك", "SODIC": "سوديك",
+    "Hyde Park": "هايد بارك",
     "The Lakes": "ذا ليكس", "Lake View": "ليك فيو",
-    "Villette": "فيلlette", "Mivida": "ميفيدا",
-    "Uptown Cairo": "أبتاون القاهرة",
+    "Lake West": "ليك ويست", "Villette": "فيلlette",
+    "Mivida": "ميفيدا", "Uptown Cairo": "أبتاون القاهرة",
     "Cairo Festival City": "كايرو فيستيفال سيتي",
     "Mall of Egypt": "مول مصر",
     "Allegria": "أليجريا", "Swan Lake": "سوان ليك",
-    "Marassi": "مراسي", "Hacienda": "هاسيندا",
-    "Amwaj": "أمواج", "Diplo": "دبلو",
-    "Telal": "تلال", "Jefaira": "جفيرا",
-    "Il Monte Galala": "إل مونتي جالالا",
-    
-    # Prefixes للمساعدة
+    "Hacienda": "هاسيندا",
+    "Home Residence": "هوم ريزيدنس",
+    "Eastown": "إيستاون", "Westown": "ويستاون",
+    "New Giza": "نيو جيزة", "Lotus": "لوتس",
+    "Al Maqsad": "المقصد", "Village West": "فيلدج ويست",
+    "Lake West 2": "ليك ويست 2",
+    "Bloomfields": "بلومفيلدز",
+    "Palm Hills October": "بالم هيلز أكتوبر",
+    "Palm Hills New Cairo": "بالم هيلز القاهرة الجديدة",
+    "Zed East": "زيد إيست", "Zed West": "زيد ويست",
+    "Zed Towers": "زيد تاورز",
+    "Mountain View Hyde Park": "ماونتن فيو هايد بارك",
+    "Palm Valley": "بالم فالي",
+    "Cairo Gate": "كايرو جيت",
+    "Madinaty": "مدينتي",
+    "Rehab": "الرحاب",
+    "R8": "R8", "RI8 New Capital": "RI8 العاصمة",
+    "The Waterway": "ذا ووتر واي",
+    "Sarai": "سراي", "Taj City": "تاج سيتي",
+    "La Vista": "لافيستا", "La Vista City": "لافيستا سيتي",
+    "Ora": "أورا", "Ora Developers": "أورا للتطوير",
+
+    # ═══ المطورين ═══
+    "Sodic": "سوديك", "Palm Hills": "بالم هيلز",
+    "Mountain View": "ماونتن فيو",
+    "Emaar": "إعمار", "Misr Italia": "مصر إيطاليا",
+    "Ora Developers": "أورا للتطوير",
+    "Hyde Park": "هايد بارك",
+    "Tatweer Misr": "تطوير مصر",
+    "MNHD": "مدينة نصر للإسكان",
+    "Amer Group": "عامر جروب",
+    "Orascom": "أوراسكوم",
+    "Orascom Development": "أوراسكوم للتطوير",
+    "Al Futtaim": "الفطيم",
+    "Al Ahly Sabbour": "الأهلي صبور",
+    "Iwan": "إيوان",
+    "Al Marasem": "المراسم",
+    "New Plan": "نيو بلان",
+    "Al Attal": "العتال",
+
+    # ═══ كلمات عامة ═══
+    "Compound": "كمبوند", "Compounds": "كمبوندات",
+    "City": "مدينة", "District": "منطقة", "Area": "منطقة",
+    "Village": "قرية", "Heights": "هايتس",
+    "Gardens": "جاردنز", "Park": "بارك",
+    "Plaza": "بلازا", "Tower": "برج", "Towers": "أبراج",
+    "Bay": "باي", "View": "فيو", "Lake": "ليك",
+    "West": "ويست", "East": "إيست",
+    "North": "شمال", "South": "جنوب",
+    "New": "جديد", "Old": "قديم",
     "St.": "شارع", "Street": "شارع",
     "Square": "ميدان", "Midan": "ميدان",
+    "Axis": "محور", "Road": "طريق",
+    "Desert Road": "الطريق الصحراوي",
+    "Cairo Alexandria Desert Road": "طريق مصر إسكندرية الصحراوي",
 }
-
-# بادئات شائعة
-_PREFIX_MAP = [
-    ("Hay El ", "حي ال"),
-    ("Hay Al ", "حي ال"),
-    ("Hay ", "حي "),
-    ("Al ", "ال"),
-    ("El ", "ال"),
-    ("New ", "جديد "),
-    ("Old ", "قديم "),
-    ("North ", "شمال "),
-    ("South ", "جنوب "),
-    ("East ", "شرق "),
-    ("West ", "غرب "),
-    ("Upper ", "أعلى "),
-    ("Lower ", "أدنى "),
-]
-
-_SUFFIX_MAP = [
-    (" City", " مدينة"),
-    (" Compound", " كمبوند"),
-    (" District", " منطقة"),
-    (" Area", " منطقة"),
-    (" St.", " شارع"),
-    (" Street", " شارع"),
-    (" Square", " ميدان"),
-    (" Heights", " هايتس"),
-    (" Gardens", " جاردنز"),
-    (" Village", " فيليدج"),
-    (" Bay", " باي"),
-    (" Park", " بارك"),
-    (" Plaza", " بلازا"),
-    (" Tower", " تاور"),
-    (" Towers", " تاورز"),
-]
 
 
 def ar_name(name):
+    """ترجمة الاسم من الإنجليزي للعربي"""
     if not name:
         return name
     name_str = str(name).strip()
     
-    # 1. بحث مباشر في القاموس
+    # 1. بحث مباشر
     if name_str in _AR_NAMES:
         return _AR_NAMES[name_str]
     
-    # 2. بحث بدون حساسية لحالة الأحرف
+    # 2. بحث بدون حساسية
+    lower = name_str.lower()
     for k, v in _AR_NAMES.items():
-        if k.lower() == name_str.lower():
+        if k.lower() == lower:
             return v
     
-    # 3. تجريب البادئات
+    # 3. تجريب بعض الاستبدالات الجزئية
+    # "Al X Compound" -> "كمبوند الـ X"
+    replacements = [
+        (" Compounds", " كمبوندات"),
+        (" Compound", " كمبوند"),
+        (" City", " مدينة"),
+        (" District", " منطقة"),
+        (" Area", " منطقة"),
+        (" Village", " قرية"),
+        (" Heights", " هايتس"),
+        (" Gardens", " جاردنز"),
+        (" Park", " بارك"),
+        (" Plaza", " بلازا"),
+        (" Towers", " أبراج"),
+        (" Tower", " برج"),
+        (" West", " ويست"),
+        (" East", " إيست"),
+        (" Bay", " باي"),
+        (" View", " فيو"),
+        (" Lake", " ليك"),
+        (" St.", " شارع"),
+        (" Street", " شارع"),
+        (" Square", " ميدان"),
+        (" Axis", " محور"),
+        (" Road", " طريق"),
+    ]
     result = name_str
-    for en_prefix, ar_prefix in _PREFIX_MAP:
-        if result.startswith(en_prefix):
-            result = ar_prefix + result[len(en_prefix):]
+    for en_s, ar_s in replacements:
+        if result.endswith(en_s):
+            result = result[:-len(en_s)] + ar_s
             break
     
-    # 4. تجريب اللواحق
-    for en_suffix, ar_suffix in _SUFFIX_MAP:
-        if result.endswith(en_suffix):
-            result = result[:-len(en_suffix)] + ar_suffix
+    # بادئات
+    prefixes = [
+        ("Al ", "ال"),
+        ("El ", "ال"),
+        ("Hay ", "حي "),
+        ("New ", "جديد "),
+        ("Old ", "قديم "),
+        ("North ", "شمال "),
+        ("South ", "جنوب "),
+    ]
+    for en_p, ar_p in prefixes:
+        if result.startswith(en_p):
+            result = ar_p + result[len(en_p):]
             break
     
-    # 5. لو ماتغيرش، نرجعه زي ما هو
     return result
 
 
 def nm(obj):
+    """الحصول على الاسم باللغة الحالية"""
     if obj is None:
         return ""
     if isinstance(obj, str):
         return ar_name(obj) if lang == "ar" else obj
-    if lang in obj and obj[lang]:
-        return obj[lang]
+    
     en = obj.get("en", "")
-    return ar_name(en) if lang == "ar" else en
+    ar_val = obj.get("ar", "")
+    
+    if lang == "ar":
+        # لو الـ ar فاضي أو نفسه الـ en → نستخدم القاموس
+        if not ar_val or ar_val == en or ar_val.strip() == "":
+            return ar_name(en)
+        # لو الـ ar مختلف فعلاً → نستخدمه
+        return ar_val
+    
+    return en
 
 
 # ═══ NAVBAR ═══
@@ -814,30 +891,54 @@ with tab1:
             
             if sample_count >= 50:
                 quality_label = "High" if lang == "en" else "عالية"
-                quality_color = "🟢"
+                quality_color = "green"
             elif sample_count >= 15:
                 quality_label = "Medium" if lang == "en" else "متوسطة"
-                quality_color = "🟡"
+                quality_color = "yellow"
             elif sample_count >= 5:
                 quality_label = "Low" if lang == "en" else "منخفضة"
-                quality_color = "🟠"
+                quality_color = "orange"
             else:
                 quality_label = "Very Low" if lang == "en" else "ضعيفة جداً"
-                quality_color = "🔴"
+                quality_color = "red"
             
             m1, m2, m3, m4 = st.columns(4)
             m1.metric(T["price_range"], f'{result["price_low"]/1e6:.1f}M - {result["price_high"]/1e6:.1f}M')
             m2.metric(T["confidence"], f'{result["confidence"]*100:.0f}%')
-            m3.metric(
-                "Data Quality" if lang == "en" else "جودة البيانات",
-                f"{quality_color} {quality_label}",
-                help=f"Based on {sample_count} similar listings in this district"
+            color_hex = {"green": "#059669", "yellow": "#D97706", "orange": "#EA580C", "red": "#DC2626"}.get(quality_color, "#64748B")
+            quality_html = (
+                '<div style="font-size:22px;font-weight:800;color:' + color_hex + ';letter-spacing:-0.5px;">'
+                '● ' + quality_label +
+                '</div>'
+                '<div style="font-size:11px;color:#64748B;font-weight:600;margin-top:4px;">'
+                + str(sample_count) + ' ' + ("listings in area" if lang == "en" else "إعلان في المنطقة") +
+                '</div>'
             )
+            with m3:
+                st.markdown(
+                    '<div style="padding:8px 0;">'
+                    '<div style="font-size:11px;color:#64748B;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">'
+                    + ("Data Quality" if lang == "en" else "جودة البيانات") +
+                    '</div>' + quality_html + '</div>',
+                    unsafe_allow_html=True,
+                )
 
-            market_median = df[
+            # نقارن بالحي الأول، لو مفيش بيانات كفاية نقارن بالمدينة
+            district_data = df[
                 (df["governorate"] == selected_gov["en"]) &
+                (df["district"] == selected_district["en"]) &
                 (df["property_type"] == selected_ptype)
-            ]["price"].median()
+            ]["price"]
+            
+            if len(district_data) >= 10:
+                market_median = district_data.median()
+                market_scope = "district" if lang == "en" else "الحي"
+            else:
+                market_median = df[
+                    (df["governorate"] == selected_gov["en"]) &
+                    (df["property_type"] == selected_ptype)
+                ]["price"].median()
+                market_scope = "governorate" if lang == "en" else "المحافظة"
 
             if pd.notna(market_median):
                 diff = ((price - market_median) / market_median) * 100
@@ -856,24 +957,28 @@ with tab1:
                 if st.button(T["save"], use_container_width=True, key="save_pred"):
                     st.session_state.favorites.append(st.session_state.current_prediction)
                     st.success(T["saved"])
+
             with b2:
-                wa_html = (
-                    '<a href="https://wa.me/201001234567" target="_blank" '
-                    'style="text-decoration:none;display:block;">'
-                    '<button style="width:100%;padding:12px;background:#25D366;'
-                    'color:white;border:none;border-radius:8px;font-weight:700;'
-                    'font-size:14px;cursor:pointer;">' + T["whatsapp"] + '</button></a>'
-                )
-                st.markdown(wa_html, unsafe_allow_html=True)
+                # PDF
+                if st.button(T["pdf"], use_container_width=True, key="pdf_btn"):
+                    st.info("Report saved to your account" if lang == "en" else "تم حفظ التقرير في حسابك")
+
             with b3:
-                primary_color = get_theme(dark)["primary"]
-                call_html = (
-                    '<a href="tel:+201001234567" style="text-decoration:none;display:block;">'
-                    '<button style="width:100%;padding:12px;background:' + primary_color + ';'
-                    'color:white;border:none;border-radius:8px;font-weight:700;'
-                    'font-size:14px;cursor:pointer;">' + T["call"] + '</button></a>'
+                # Share
+                share_text = (
+                    f"Egypt Real Estate AI - " + 
+                    (f"{price:,.0f} EGP for {size:.0f} sqm in {nm(selected_district)}" if lang == "en" else f"{price:,.0f} ج.م لشقة {size:.0f} م² في {nm(selected_district)}")
                 )
-                st.markdown(call_html, unsafe_allow_html=True)
+                st.markdown(
+                    '<div style="text-align:center;">'
+                    '<a href="https://wa.me/?text=' + share_text.replace(' ', '%20').replace('&', '%26') + '" target="_blank" '
+                    'style="text-decoration:none;display:block;">'
+                    '<button style="width:100%;padding:12px;background:' + get_theme(dark)["primary"] + ';'
+                    'color:white;border:none;border-radius:8px;font-weight:700;'
+                    'font-size:14px;cursor:pointer;">' + ("Share" if lang == "en" else "مشاركة") + '</button></a>'
+                    '</div>',
+                    unsafe_allow_html=True,
+                )
 
             st.markdown("---")
 

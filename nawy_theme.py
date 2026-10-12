@@ -1035,6 +1035,46 @@ section[data-testid="stSidebar"] * { color: TEXT !important; }
     color: TEXT_MUTED;
 }
 
+
+/* MOBILE OPTIMIZATION */
+@media (max-width: 768px) {
+    .price-history-value {
+        font-size: 20px !important;
+    }
+    .price-history-label {
+        font-size: 10px !important;
+    }
+    .price-history-card {
+        padding: 14px 12px !important;
+        min-height: 110px !important;
+    }
+    .roi-value {
+        font-size: 18px !important;
+    }
+    .roi-label {
+        font-size: 10px !important;
+    }
+    .roi-card {
+        padding: 16px 12px !important;
+    }
+    [data-testid="stMetricValue"] {
+        font-size: 20px !important;
+    }
+    [data-testid="stMetricLabel"] {
+        font-size: 10px !important;
+    }
+    .stButton > button {
+        font-size: 12px !important;
+        padding: 10px 10px !important;
+        min-height: 42px !important;
+    }
+}
+
+/* Feature pills - wider on desktop */
+.stButton > button {
+    min-width: 90px !important;
+}
+
 </style>
 """
 

@@ -6,26 +6,25 @@ import streamlit as st
 
 
 def property_card(title, location, price, image_url, badge=None, beds=None, baths=None, area=None, key=None):
-    badge_html = f'<div class="card-badge">{badge}</div>' if badge else ''
+    badge_html = ('<div class="card-badge">' + badge + '</div>') if badge else ''
     meta_parts = []
-    if beds: meta_parts.append(f"🛏️ {beds}")
-    if baths: meta_parts.append(f"🚿 {baths}")
-    if area: meta_parts.append(f"📐 {area} م²")
-    meta_html = " · ".join(meta_parts)
-    st.markdown(f"""
-    <div class="property-card-nawy">
-        <div class="property-card-img-wrap">
-            <img src="{image_url}" alt="{title}">
-            {badge_html}
-            <div class="property-overlay">
-                <div class="property-overlay-title">{title}</div>
-                <div class="property-overlay-location">📍 {location}</div>
-                <div class="property-overlay-price">{price}</div>
-                <div class="property-overlay-meta">{meta_html}</div>
-            </div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    if beds: meta_parts.append(str(beds) + " Beds")
+    if baths: meta_parts.append(str(baths) + " Baths")
+    if area: meta_parts.append(str(area) + " sqm")
+    meta_html = " &middot; ".join(meta_parts)
+    html = (
+        '<div class="property-card-nawy">'
+        '<div class="property-card-img-wrap">'
+        '<img src="' + image_url + '" alt="' + title + '">'
+        + badge_html +
+        '<div class="property-overlay">'
+        '<div class="property-overlay-title">' + title + '</div>'
+        '<div class="property-overlay-location">' + location + '</div>'
+        '<div class="property-overlay-price">' + price + '</div>'
+        '<div class="property-overlay-meta">' + meta_html + '</div>'
+        '</div></div></div>'
+    )
+    st.markdown(html, unsafe_allow_html=True)
 
 
 def number_pills(label, options, key, default_idx=0):
