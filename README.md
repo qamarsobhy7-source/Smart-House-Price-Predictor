@@ -46,6 +46,28 @@ The app combines valuation intelligence with a modern, Nawy-inspired interface â
 ---
 
 
+## Demo & Presentation
+
+### Video Demo
+
+[![Demo Video](https://img.shields.io/badge/â–¶_Watch_Video_Demo-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](demo/Egypt_Real_Estate_AI_Demo.mp4)
+
+> **3-minute walkthrough** covering all features: price estimation, market analysis, mortgage calculator, chat with agent, dark mode, and Arabic support.
+
+**Direct download:** [Egypt_Real_Estate_AI_Demo.mp4](demo/Egypt_Real_Estate_AI_Demo.mp4) (3.7 MB)
+
+---
+
+### Presentation
+
+| Format | Link | Size |
+|:------:|:----:|:----:|
+| **PowerPoint** | [Egypt_Real_Estate_AI_Presentation.pptx](demo/Egypt_Real_Estate_AI_Presentation.pptx) | 1.5 MB |
+| **PDF** | [Egypt_Real_Estate_AI_Presentation.pdf](demo/Egypt_Real_Estate_AI_Presentation.pdf) | 710 KB |
+
+> **21 slides** covering the problem, solution, dataset, model, features, screenshots, results, competitive analysis, and roadmap.
+
+---
 ## Features
 
 ### AI Price Estimator
