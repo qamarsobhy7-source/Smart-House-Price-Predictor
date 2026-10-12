@@ -38,12 +38,57 @@ The app combines valuation intelligence with a modern, Nawy-inspired interface â
 
 ## Live Demo
 
-**Try the app now:** [**da.gd/AOPPkw**](https://smart-house-price-predictor-77.streamlit.app)
+**Try the app now:** [smart-house-price-predictor-77.streamlit.app](https://smart-house-price-predictor-77.streamlit.app)
 
-> Bilingual AI-powered property valuation for the Egyptian real estate market.
+> Bilingual property valuation for the Egyptian real estate market.
 
 ---
 
+
+## Screenshots
+
+### Main View
+
+![Egypt Real Estate AI - Homepage](screenshots/01_homepage.png)
+
+### Estimation Result
+
+![Property Price Estimation](screenshots/09_result_price.png)
+
+### More Screenshots
+
+<details>
+<summary>Click to see all 10 screenshots</summary>
+
+<br>
+
+**Hero Section & KPIs**
+![Hero](screenshots/02_hero_kpis.png)
+
+**Browse by Property Type**
+![Property Types](screenshots/03_property_types.png)
+
+**Popular Areas**
+![Popular Areas](screenshots/04_popular_areas.png)
+
+**Latest Compounds**
+![Compounds](screenshots/05_compounds.png)
+
+**Dark Mode**
+![Dark Mode](screenshots/06_dark_mode.png)
+
+**Mobile View**
+![Mobile](screenshots/07_mobile.png)
+
+**Price Estimator Form**
+![Form](screenshots/08_estimator_form.png)
+
+**Investment Analysis (ROI)**
+![ROI](screenshots/10_result_roi.png)
+
+</details>
+
+---
 
 ## Presentation
 
@@ -237,50 +282,6 @@ streamlit run streamlit_app.py
 ### 5. Open in browser
 
 Visit http://localhost:8501
-
----
-## Screenshots
-
-### Main View
-
-![Egypt Real Estate AI - Homepage](screenshots/01_homepage.png)
-
-### Estimation Result
-
-![Property Price Estimation](screenshots/09_result_price.png)
-
-### More Screenshots
-
-<details>
-<summary>Click to see all 10 screenshots</summary>
-
-<br>
-
-**Hero Section & KPIs**
-![Hero](screenshots/02_hero_kpis.png)
-
-**Browse by Property Type**
-![Property Types](screenshots/03_property_types.png)
-
-**Popular Areas**
-![Popular Areas](screenshots/04_popular_areas.png)
-
-**Latest Compounds**
-![Compounds](screenshots/05_compounds.png)
-
-**Dark Mode**
-![Dark Mode](screenshots/06_dark_mode.png)
-
-**Mobile View**
-![Mobile](screenshots/07_mobile.png)
-
-**Price Estimator Form**
-![Form](screenshots/08_estimator_form.png)
-
-**Investment Analysis (ROI)**
-![ROI](screenshots/10_result_roi.png)
-
-</details>
 
 ---
 
