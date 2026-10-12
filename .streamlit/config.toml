@@ -1,13 +1,22 @@
 [theme]
-primaryColor = "#6366F1"
+primaryColor = "#0066FF"
 backgroundColor = "#FFFFFF"
-secondaryBackgroundColor = "#F9FAFB"
-textColor = "#1F2937"
+secondaryBackgroundColor = "#F8FAFC"
+textColor = "#0A0F1C"
 font = "sans serif"
 
 [server]
 maxUploadSize = 200
 enableCORS = false
+headless = true
 
 [browser]
 gatherUsageStats = false
+
+[client]
+toolbarMode = "minimal"
+showErrorDetails = false
+
+[runner]
+magicEnabled = false
+fastReruns = true

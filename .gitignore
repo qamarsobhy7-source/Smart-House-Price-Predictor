@@ -1,17 +1,12 @@
 __pycache__/
 *.py[cod]
+*$py.class
 .venv/
 venv/
 .env
 .ipynb_checkpoints/
 .DS_Store
+*.log
 *.csv
 !data/processed/FINAL_DATASET_v9.csv
-
-# Backup folders
-BACKUP_BEFORE_IMPROVEMENTS/
-*_BACKUP_*.py
-BACKUP_*/
-
-# Archive
-ARCHIVE_UNUSED/
+.streamlit/secrets.toml
