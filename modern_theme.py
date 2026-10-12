@@ -642,6 +642,337 @@ section[data-testid="stSidebar"] {
     .content-area { padding: 16px; }
     .card-value { font-size: 24px; }
 }
+
+
+/* ═══════════════════════════════════════════════════════ */
+/* NEW COMPONENTS - Nawy + Aqarmap                          */
+/* ═══════════════════════════════════════════════════════ */
+
+/* PROPERTY CARD WITH OVERLAY */
+.property-card-nawy {
+    position: relative;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: SHADOW_MD;
+    transition: all 0.35s;
+    margin-bottom: 16px;
+    cursor: pointer;
+}
+.property-card-nawy:hover {
+    transform: translateY(-4px);
+    box-shadow: SHADOW_LG;
+}
+.property-card-img-wrap {
+    position: relative;
+    height: 320px;
+    overflow: hidden;
+}
+.property-card-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+}
+.property-card-nawy:hover img {
+    transform: scale(1.08);
+}
+.property-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px;
+    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
+    color: white;
+}
+.property-overlay-title {
+    font-size: 18px;
+    font-weight: 900;
+    margin-bottom: 4px;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+.property-overlay-location {
+    font-size: 13px;
+    opacity: 0.9;
+    margin-bottom: 8px;
+}
+.property-overlay-price {
+    font-size: 22px;
+    font-weight: 900;
+    color: #FFB800;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    margin-bottom: 4px;
+}
+.property-overlay-meta {
+    font-size: 12px;
+    opacity: 0.95;
+}
+.card-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(255,255,255,0.95);
+    color: PRIMARY;
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 800;
+    z-index: 2;
+}
+.new-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: white;
+    color: TEXT;
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 2;
+}
+
+/* PILLS LABEL */
+.pills-label {
+    font-size: 14px;
+    font-weight: 800;
+    color: TEXT;
+    margin-bottom: 10px;
+    margin-top: 8px;
+}
+
+/* PILLS BUTTONS - secondary becomes pill style */
+.stButton > button[kind="secondary"] {
+    background: BG_CARD !important;
+    color: TEXT !important;
+    border: 1.5px solid BORDER !important;
+    border-radius: 100px !important;
+    font-weight: 700 !important;
+    padding: 10px 20px !important;
+    font-size: 14px !important;
+    box-shadow: none !important;
+    transition: all 0.25s !important;
+}
+.stButton > button[kind="secondary"]:hover {
+    border-color: PRIMARY !important;
+    color: PRIMARY !important;
+    background: PRIMARY_SOFT !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(0,106,255,0.15) !important;
+}
+.stButton > button[kind="primary"] {
+    border-radius: 100px !important;
+}
+
+/* AREA CIRCLE CARD */
+.area-circle-card {
+    background: BG_CARD;
+    border: 1px solid BORDER;
+    border-radius: 20px;
+    padding: 20px 12px;
+    text-align: center;
+    transition: all 0.3s;
+    cursor: pointer;
+    box-shadow: SHADOW_SM;
+}
+.area-circle-card:hover {
+    border-color: PRIMARY;
+    transform: translateY(-4px);
+    box-shadow: SHADOW_MD;
+}
+.area-circle-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto 14px;
+    border: 3px solid PRIMARY_SOFT;
+}
+.area-circle-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.area-circle-name {
+    font-size: 15px;
+    font-weight: 800;
+    color: TEXT;
+    margin-bottom: 4px;
+}
+.area-circle-count {
+    font-size: 12px;
+    color: TEXT_MUTED;
+    font-weight: 500;
+}
+
+/* SECTION HEADER CUSTOM */
+.section-header-custom {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 8px 0 12px;
+}
+.section-header-icon {
+    font-size: 24px;
+}
+.section-header-title {
+    font-size: 22px;
+    font-weight: 900;
+    color: TEXT;
+    margin: 0;
+    letter-spacing: -0.3px;
+}
+
+/* PROMO BANNER */
+.promo-banner {
+    border-radius: 20px;
+    padding: 28px 32px;
+    margin: 20px 0;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.promo-banner:hover {
+    transform: translateY(-3px);
+    box-shadow: SHADOW_LG;
+}
+.promo-blue {
+    background: linear-gradient(135deg, #E8F1FF 0%, #D4E5FF 100%);
+}
+.promo-warm {
+    background: linear-gradient(135deg, #FFF4E6 0%, #FFE0B2 100%);
+}
+.promo-pink {
+    background: linear-gradient(135deg, #FFE8EE 0%, #FFD0DD 100%);
+}
+.promo-title {
+    font-size: 24px;
+    font-weight: 900;
+    color: PRIMARY;
+    margin-bottom: 8px;
+}
+.promo-warm .promo-title { color: #E65100; }
+.promo-pink .promo-title { color: #C2185B; }
+.promo-subtitle {
+    font-size: 15px;
+    color: TEXT_SOFT;
+    margin-bottom: 14px;
+    font-weight: 500;
+}
+.promo-cta {
+    font-size: 14px;
+    font-weight: 800;
+    color: PRIMARY;
+    display: inline-block;
+}
+.promo-warm .promo-cta { color: #E65100; }
+.promo-pink .promo-cta { color: #C2185B; }
+
+/* RECOMMENDATION CARD */
+.rec-card {
+    background: BG_CARD;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: SHADOW_MD;
+    transition: all 0.35s;
+    margin-bottom: 16px;
+}
+.rec-card:hover {
+    transform: translateY(-4px);
+    box-shadow: SHADOW_LG;
+}
+.rec-img-wrap {
+    position: relative;
+    height: 280px;
+    overflow: hidden;
+}
+.rec-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+}
+.rec-card:hover img {
+    transform: scale(1.06);
+}
+.rec-actions {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    display: flex;
+    gap: 8px;
+}
+.rec-action-btn {
+    width: 38px;
+    height: 38px;
+    background: rgba(255,255,255,0.92);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.rec-action-btn:hover {
+    background: white;
+    transform: scale(1.1);
+}
+.rec-delivery {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    background: rgba(0,0,0,0.75);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 700;
+}
+.rec-body {
+    padding: 16px 20px;
+}
+.rec-title {
+    font-size: 17px;
+    font-weight: 800;
+    color: TEXT;
+}
+
+/* STAT CARD */
+.stat-card {
+    background: BG_CARD;
+    border: 1px solid BORDER;
+    border-radius: 18px;
+    padding: 22px 20px;
+    text-align: center;
+    box-shadow: SHADOW_SM;
+    transition: all 0.3s;
+}
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: SHADOW_MD;
+}
+.stat-card-icon {
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+.stat-card-value {
+    font-size: 26px;
+    font-weight: 900;
+    color: PRIMARY;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+}
+.stat-card-label {
+    font-size: 12px;
+    color: TEXT_MUTED;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
 </style>
 """
 
