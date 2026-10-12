@@ -21,7 +21,7 @@ BASE = Path(__file__).resolve().parent
 sys.path.insert(0, str(BASE))
 
 # Modern theme
-from modern_theme import get_css, get_theme, t, load_translations
+from nawy_theme import get_css, get_theme, t, load_translations
 
 # Model
 from predictor import (
@@ -65,7 +65,7 @@ st.set_page_config(
 # SESSION STATE
 # ═══════════════════════════════════════════════════════════════
 if "lang" not in st.session_state:
-    st.session_state.lang = "ar"
+    st.session_state.lang = "en"
 if "dark" not in st.session_state:
     st.session_state.dark = False
 if "favorites" not in st.session_state:
@@ -212,7 +212,7 @@ with col_logo:
     <div style="display:flex;align-items:center;gap:12px;padding:12px 0;">
         <span style="font-size:32px;">🏠</span>
         <span style="font-size:22px;font-weight:900;color:{get_theme(dark)['primary']};">
-            {tr('navbar', 'brand').replace('🏠 ', '')}
+            {tr('navbar', 'brand').replace('', '')}
         </span>
     </div>
     """, unsafe_allow_html=True)
@@ -239,25 +239,25 @@ n_gov = sum(1 for g in hierarchy["governorates"] if g["listings"] > 0)
 
 st.markdown(f"""
 <div class="hero">
-    <div class="hero-badge">{tr('hero', 'badge')}</div>
+    <div class="hero-badge">AI-POWERED PROPERTY VALUATION</div>
     <h1 class="hero-title">{tr('hero', 'title')}</h1>
     <p class="hero-subtitle">{tr('hero', 'subtitle')}</p>
     <div class="stats-bar">
         <div class="stat-item">
             <div class="stat-value">{metrics['r2']:.4f}</div>
-            <div class="stat-label">🎯 {tr('stats', 'accuracy')}</div>
+            <div class="stat-label">{tr('stats', 'accuracy')}</div>
         </div>
         <div class="stat-item">
             <div class="stat-value">{metrics['mape']:.1f}%</div>
-            <div class="stat-label">📊 {tr('stats', 'error')}</div>
+            <div class="stat-label">{tr('stats', 'error')}</div>
         </div>
         <div class="stat-item">
             <div class="stat-value">{n_gov}</div>
-            <div class="stat-label">🏛️ {tr('stats', 'governorates')}</div>
+            <div class="stat-label">{tr('stats', 'governorates')}</div>
         </div>
         <div class="stat-item">
             <div class="stat-value">{training['n_total']:,}</div>
-            <div class="stat-label">🏘️ {tr('stats', 'listings')}</div>
+            <div class="stat-label">{tr('stats', 'listings')}</div>
         </div>
     </div>
 </div>
@@ -270,7 +270,7 @@ st.markdown('<div class="content-area">', unsafe_allow_html=True)
 # PROMO BANNER — Nawy style
 # ═══════════════════════════════════════════════════════════════
 promo_banner(
-    title="🏠 Egypt AI Premium",
+    title="Egypt AI Premium",
     subtitle="احصل على تقارير PDF مفصلة، حفظ غير محدود، وتنبيهات أسعار فورية",
     cta_text="اكتشف الباقات",
     gradient="warm",
@@ -362,12 +362,12 @@ with rec_cols[1]:
 st.markdown("---")
 
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
-    "🎯 " + tr('estimator', 'title').replace('🎯 ', ''),
-    "📊 " + tr('market', 'title').replace('📈 ', ''),
-    "🗺️ " + ("الخريطة" if lang == "ar" else "Map"),
-    "🧮 " + tr('mortgage', 'title').replace('🧮 ', ''),
-    "⚖️ " + tr('compare', 'title').replace('⚖️ ', ''),
-    "❤️ " + tr('favorites', 'title').replace('❤️ ', ''),
+    "" + tr('estimator', 'title').replace('', ''),
+    "" + tr('market', 'title').replace('', ''),
+    "" + ("الخريطة" if lang == "ar" else "Map"),
+    "" + tr('mortgage', 'title').replace('', ''),
+    "" + tr('compare', 'title').replace('', ''),
+    "" + tr('favorites', 'title').replace('', ''),
 ])
 
 
@@ -382,7 +382,7 @@ with tab1:
         <div class="section-header">
             <div class="section-icon">📝</div>
             <div>
-                <h2 class="section-title">{tr('estimator', 'title').replace('🎯 ', '')}</h2>
+                <h2 class="section-title">{tr('estimator', 'title').replace('', '')}</h2>
                 <div class="section-subtitle">{tr('estimator', 'subtitle')}</div>
             </div>
         </div>
@@ -433,7 +433,7 @@ with tab1:
         if compounds:
             comp_names = ["— " + ("لا يوجد" if lang == "ar" else "None") + " —"] + [c["ar"] if lang == "ar" else c["en"] for c in compounds]
             comp_idx = st.selectbox(
-                "🏘️ " + ("كومبوند" if lang == "ar" else "Compound"),
+                "" + ("كومبوند" if lang == "ar" else "Compound"),
                 range(len(comp_names)),
                 format_func=lambda i: comp_names[i],
                 key="sel_comp",
@@ -471,10 +471,10 @@ with tab1:
         with c1:
             size = st.number_input(tr('estimator', 'size'), 30, 5000, 200, 10, key="inp_size")
             bathrooms = st.number_input(tr('estimator', 'bathrooms'), 1, 15, 2, key="inp_baths")
-            living_rooms = st.number_input("🛋️ عدد الصالونات", 0, 5, 1, key="inp_living")
+            living_rooms = st.number_input("عدد الصالونات", 0, 5, 1, key="inp_living")
         with c2:
             bedrooms = st.number_input(tr('estimator', 'bedrooms'), 0, 15, 3, key="inp_beds")
-            kitchens = st.number_input("🍳 عدد المطابخ", 0, 3, 1, key="inp_kitchen")
+            kitchens = st.number_input("عدد المطابخ", 0, 3, 1, key="inp_kitchen")
             floor = st.number_input(
                 "🏢 " + ("الطابق" if lang == "ar" else "Floor"),
                 0, 50, 3, key="inp_floor"
@@ -507,19 +507,19 @@ with tab1:
         
         st.markdown("---")
         if lang == "ar":
-            st.markdown("**✨ مميزات إضافية**")
+            st.markdown("**مميزات إضافية**")
             features_options = [
                 "🌳 حديقة", "🏊 حمام سباحة", "🚗 جراج", "🛡️ أمن 24/7",
-                "💪 جيم", "🛗 أسانسير", "☀️ بلكونة", "🌅 إطلالة",
-                "🏪 مول تجاري", "🕌 مسجد", "🎯 نادي رياضي", "🌊 على البحر"
+                "جيم", "🛗 أسانسير", "☀️ بلكونة", "🌅 إطلالة",
+                "🏪 مول تجاري", "🕌 مسجد", "نادي رياضي", "🌊 على البحر"
             ]
             features_label = "اختر المميزات المتاحة"
         else:
-            st.markdown("**✨ Additional Features**")
+            st.markdown("**Additional Features**")
             features_options = [
                 "🌳 Garden", "🏊 Pool", "🚗 Garage", "🛡️ Security 24/7",
-                "💪 Gym", "🛗 Elevator", "☀️ Balcony", "🌅 View",
-                "🏪 Mall", "🕌 Mosque", "🎯 Sports Club", "🌊 Sea Front"
+                "Gym", "🛗 Elevator", "☀️ Balcony", "🌅 View",
+                "🏪 Mall", "🕌 Mosque", "Sports Club", "🌊 Sea Front"
             ]
             features_label = "Select available features"
 
@@ -609,7 +609,7 @@ with tab1:
                 <div class="price-label">{tr('estimator', 'result_title')}</div>
                 <div class="price-value">{price:,.0f}</div>
                 <div class="price-currency">EGP</div>
-                <div class="price-per-m2">💰 {tr('estimator', 'per_sqm')}: {ppm2:,.0f} EGP/m²</div>
+                <div class="price-per-m2">{tr('estimator', 'per_sqm')}: {ppm2:,.0f} EGP/m²</div>
             </div>
             """, unsafe_allow_html=True)
             
@@ -619,7 +619,7 @@ with tab1:
                 f"{result['price_low']/1e6:.1f}M - {result['price_high']/1e6:.1f}M"
             )
             m2.metric(
-                "🎯 " + tr('estimator', 'confidence'),
+                "" + tr('estimator', 'confidence'),
                 f"{result['confidence']*100:.0f}%"
             )
             
@@ -636,7 +636,7 @@ with tab1:
                     label = f"⬇️ {tr('estimator', 'below_market')} {abs(diff):.0f}%"
                 else:
                     label = f"➡️ {tr('estimator', 'at_market')}"
-                m3.metric("📊 " + tr('estimator', 'vs_market'), label)
+                m3.metric("" + tr('estimator', 'vs_market'), label)
             
             st.markdown("---")
             b1, b2, b3, b4 = st.columns(4)
@@ -754,7 +754,7 @@ with tab1:
                 <div class="section-header">
                     <div class="section-icon">🏘️</div>
                     <div>
-                        <h3 class="section-title">{tr('similar', 'title').replace('🏘️ ', '')}</h3>
+                        <h3 class="section-title">{tr('similar', 'title').replace('', '')}</h3>
                         <div class="section-subtitle">{tr('similar', 'subtitle')}</div>
                     </div>
                 </div>
@@ -776,9 +776,9 @@ with tab1:
                                     <div class="property-price">{row['price']/1e6:.2f}M EGP</div>
                                     <div class="property-title">{row['property_type']} · {row['district'][:25]}</div>
                                     <div class="property-meta">
-                                        <span>📐 {row['size']:.0f}m²</span>
-                                        <span>🛏️ {row['bedrooms']:.0f}BR</span>
-                                        <span>🚿 {row['bathrooms']:.0f}BA</span>
+                                        <span>{row['size']:.0f}m²</span>
+                                        <span>{row['bedrooms']:.0f}BR</span>
+                                        <span>{row['bathrooms']:.0f}BA</span>
                                     </div>
                                 </div>
                             </div>
@@ -790,7 +790,7 @@ with tab1:
                 st.markdown(f"""
                 <div class="section-header">
                     <div class="section-icon">📊</div>
-                    <div><h3 class="section-title">{tr('roi', 'title').replace('📊 ', '')}</h3></div>
+                    <div><h3 class="section-title">{tr('roi', 'title').replace('', '')}</h3></div>
                 </div>
                 """, unsafe_allow_html=True)
                 
@@ -799,14 +799,14 @@ with tab1:
                 rental_yield = 7.0
                 
                 r1, r2, r3 = st.columns(3)
-                r1.metric("💰 " + tr('roi', 'current_value'), f"{roi['current_price']/1e6:.2f}M")
-                r2.metric("🏠 " + tr('roi', 'annual_rental'), f"{annual_rent/1e3:.0f}K")
-                r3.metric("📈 " + tr('roi', 'rental_yield'), f"{rental_yield:.1f}%")
+                r1.metric("" + tr('roi', 'current_value'), f"{roi['current_price']/1e6:.2f}M")
+                r2.metric("" + tr('roi', 'annual_rental'), f"{annual_rent/1e3:.0f}K")
+                r3.metric("" + tr('roi', 'rental_yield'), f"{rental_yield:.1f}%")
                 
                 r4, r5, r6 = st.columns(3)
                 r4.metric("📅 " + tr('roi', '5yr_value'), f"{roi['future_price']/1e6:.2f}M")
-                r5.metric("📊 " + tr('roi', 'appreciation'), f"+{roi['roi_percent']:.1f}%")
-                r6.metric("🎯 " + tr('roi', 'total_roi'), f"{roi['roi_percent'] + rental_yield*5:.0f}%")
+                r5.metric("" + tr('roi', 'appreciation'), f"+{roi['roi_percent']:.1f}%")
+                r6.metric("" + tr('roi', 'total_roi'), f"{roi['roi_percent'] + rental_yield*5:.0f}%")
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -817,7 +817,7 @@ with tab2:
     <div class="section-header">
         <div class="section-icon">📊</div>
         <div>
-            <h2 class="section-title">{tr('market', 'title').replace('📈 ', '')}</h2>
+            <h2 class="section-title">{tr('market', 'title').replace('', '')}</h2>
             <div class="section-subtitle">{tr('market', 'subtitle')}</div>
         </div>
     </div>
@@ -873,7 +873,7 @@ with tab2:
         avg = df.groupby('governorate')['price'].median().sort_values()
         fig = px.bar(
             x=avg.values, y=avg.index, orientation='h',
-            title='💰 ' + tr('market', 'by_governorate'),
+            title='' + tr('market', 'by_governorate'),
             color=avg.values, color_continuous_scale='Viridis',
         )
         fig.update_layout(height=420, showlegend=False, paper_bgcolor='rgba(0,0,0,0)')
@@ -883,7 +883,7 @@ with tab2:
     with c3:
         fig = px.histogram(
             df.sample(min(5000, len(df))), x='price', nbins=50,
-            title='📊 ' + tr('market', 'price_distribution'),
+            title='' + tr('market', 'price_distribution'),
             color_discrete_sequence=['#6366F1'],
         )
         fig.update_layout(height=420, paper_bgcolor='rgba(0,0,0,0)')
@@ -893,7 +893,7 @@ with tab2:
         sample = df.sample(min(2000, len(df)))
         fig = px.scatter(
             sample, x='size', y='price', color='property_type',
-            title='📐 ' + tr('market', 'size_vs_price'), opacity=0.6,
+            title='' + tr('market', 'size_vs_price'), opacity=0.6,
         )
         fig.update_layout(height=420, paper_bgcolor='rgba(0,0,0,0)')
         st.plotly_chart(fig, use_container_width=True)
@@ -919,7 +919,7 @@ with tab3:
     with m2:
         map_type = st.selectbox("🏢 " + tr('hero', 'property_type'), ['All'] + list(df['property_type'].unique()), key='map_t')
     with m3:
-        max_pts = st.slider("📍 Points", 100, 2000, 500, key='map_p')
+        max_pts = st.slider("Points", 100, 2000, 500, key='map_p')
     with m4:
         map_view = st.selectbox("👁️ View", ["Normal", "🔥 Heatmap"], key='map_v')
     
@@ -948,7 +948,7 @@ with tab3:
                 folium.CircleMarker(
                     location=[row['latitude'], row['longitude']],
                     radius=5,
-                    popup=f"<b>{row['property_type']}</b><br>💰 {row['price']:,.0f} EGP<br>📐 {row['size']:.0f} m²",
+                    popup=f"<b>{row['property_type']}</b><br>{row['price']:,.0f} EGP<br>{row['size']:.0f} m²",
                     color=color, fill=True, fillOpacity=0.6,
                 ).add_to(m)
         
@@ -960,14 +960,14 @@ with tab3:
     <div class="section-header">
         <div class="section-icon">🏘️</div>
         <div>
-            <h2 class="section-title">{tr('neighborhood', 'title').replace('🏘️ ', '')}</h2>
+            <h2 class="section-title">{tr('neighborhood', 'title').replace('', '')}</h2>
             <div class="section-subtitle">{tr('neighborhood', 'subtitle')}</div>
         </div>
     </div>
     """, unsafe_allow_html=True)
     
     n_dist = st.selectbox(
-        "📍 " + tr('hero', 'district'),
+        "" + tr('hero', 'district'),
         sorted(df['district'].unique())[:100],
         key='nb_dist'
     )
@@ -976,10 +976,10 @@ with tab3:
         n_df = df[df['district'] == n_dist]
         
         n1, n2, n3, n4 = st.columns(4)
-        n1.metric("💰 " + tr('market', 'median'), f"{n_df['price'].median()/1e6:.1f}M")
-        n2.metric("📐 " + ("المساحة" if lang == "ar" else "Size"), f"{n_df['size'].median():.0f}m²")
+        n1.metric("" + tr('market', 'median'), f"{n_df['price'].median()/1e6:.1f}M")
+        n2.metric("" + ("المساحة" if lang == "ar" else "Size"), f"{n_df['size'].median():.0f}m²")
         n3.metric("🏢 " + tr('stats', 'listings'), f"{len(n_df):,}")
-        n4.metric("🏘️ " + tr('stats', 'compounds'), f"{n_df['compound'].nunique()}")
+        n4.metric("" + tr('stats', 'compounds'), f"{n_df['compound'].nunique()}")
         
         n_items = [
             ("🏫", tr('neighborhood', 'schools'), 12, 4.2),
@@ -998,7 +998,7 @@ with tab3:
                     <div class="card-icon">{icon}</div>
                     <div class="card-title">{name}</div>
                     <div class="card-value">{count}</div>
-                    <div class="card-subtitle">⭐ {rating}</div>
+                    <div class="card-subtitle">{rating}</div>
                 </div>
                 """, unsafe_allow_html=True)
 
@@ -1011,7 +1011,7 @@ with tab4:
     <div class="section-header">
         <div class="section-icon">🧮</div>
         <div>
-            <h2 class="section-title">{tr('mortgage', 'title').replace('🧮 ', '')}</h2>
+            <h2 class="section-title">{tr('mortgage', 'title').replace('', '')}</h2>
             <div class="section-subtitle">{tr('mortgage', 'subtitle')}</div>
         </div>
     </div>
@@ -1021,13 +1021,13 @@ with tab4:
     
     with mc1:
         p_price = st.number_input(
-            "💰 " + tr('mortgage', 'property_price'),
+            "" + tr('mortgage', 'property_price'),
             min_value=100_000, max_value=200_000_000,
             value=5_000_000, step=100_000, key="mort_price",
         )
-        down_pct = st.slider("📊 " + tr('mortgage', 'down_payment_pct'), 5, 50, 20, key="mort_down")
+        down_pct = st.slider("" + tr('mortgage', 'down_payment_pct'), 5, 50, 20, key="mort_down")
         years = st.slider("📅 " + tr('mortgage', 'years'), 5, 30, 20, key="mort_years")
-        rate = st.slider("📈 " + tr('mortgage', 'interest_rate'), 5.0, 30.0, 15.0, 0.5, key="mort_rate")
+        rate = st.slider("" + tr('mortgage', 'interest_rate'), 5.0, 30.0, 15.0, 0.5, key="mort_rate")
     
     with mc2:
         down_payment = p_price * down_pct / 100
@@ -1048,8 +1048,8 @@ with tab4:
         
         k1, k2 = st.columns(2)
         with k1:
-            st.metric("💰 " + tr('mortgage', 'down_payment'), f"{down_payment:,.0f}")
-            st.metric("📊 " + tr('mortgage', 'total_interest'), f"{interest:,.0f}")
+            st.metric("" + tr('mortgage', 'down_payment'), f"{down_payment:,.0f}")
+            st.metric("" + tr('mortgage', 'total_interest'), f"{interest:,.0f}")
         with k2:
             st.metric("🏦 " + tr('mortgage', 'loan_amount'), f"{loan:,.0f}")
             st.metric("💸 " + tr('mortgage', 'total_paid'), f"{total:,.0f}")
@@ -1063,7 +1063,7 @@ with tab5:
     <div class="section-header">
         <div class="section-icon">⚖️</div>
         <div>
-            <h2 class="section-title">{tr('compare', 'title').replace('⚖️ ', '')}</h2>
+            <h2 class="section-title">{tr('compare', 'title').replace('', '')}</h2>
             <div class="section-subtitle">{tr('compare', 'subtitle')}</div>
         </div>
     </div>
@@ -1076,7 +1076,7 @@ with tab5:
     ]
     
     selected = st.multiselect(
-        "🎯 " + tr('compare', 'select'),
+        "" + tr('compare', 'select'),
         options, max_selections=4, key='comp_select',
     )
     
@@ -1099,7 +1099,7 @@ with tab5:
         
         st.dataframe(pd.DataFrame(comp_data), use_container_width=True, hide_index=True)
     else:
-        st.info("🎯 " + ("اختار عقارين على الأقل" if lang == "ar" else "Select at least 2"))
+        st.info("" + ("اختار عقارين على الأقل" if lang == "ar" else "Select at least 2"))
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -1109,7 +1109,7 @@ with tab6:
     st.markdown(f"""
     <div class="section-header">
         <div class="section-icon">❤️</div>
-        <div><h2 class="section-title">{tr('favorites', 'title').replace('❤️ ', '')}</h2></div>
+        <div><h2 class="section-title">{tr('favorites', 'title').replace('', '')}</h2></div>
     </div>
     """, unsafe_allow_html=True)
     
@@ -1134,8 +1134,8 @@ with tab6:
                         <div class="property-title">{fav['property_type']} · {fav.get('district_ar', fav['district']) if lang == 'ar' else fav['district']}</div>
                         <div class="property-meta">
                             <span>🏙️ {fav.get('governorate_ar', fav['governorate']) if lang == 'ar' else fav['governorate']}</span>
-                            <span>📐 {fav['size']:.0f}m²</span>
-                            <span>🛏️ {fav['bedrooms']:.0f}BR</span>
+                            <span>{fav['size']:.0f}m²</span>
+                            <span>{fav['bedrooms']:.0f}BR</span>
                         </div>
                     </div>
                 </div>
@@ -1153,7 +1153,7 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown(f"""
 <div class="footer">
-    <div class="footer-title">🏠 {tr('navbar', 'brand').replace('🏠 ', '')}</div>
+    <div class="footer-title">{tr('navbar', 'brand').replace('', '')}</div>
     <div class="footer-text">{tr('footer', 'made_with')}</div>
     <div class="footer-text" style="font-size:13px;">
         {len(df):,} {tr('stats', 'listings')} · 
