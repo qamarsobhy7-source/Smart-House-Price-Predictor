@@ -46,17 +46,36 @@ The app combines valuation intelligence with a modern, Nawy-inspired interface â
 ---
 
 
-## Demo & Presentation
+## Presentation
 
-### Video Demo
+**21 professional slides** covering the problem, solution, dataset, model, features, results, and roadmap.
 
-[![Demo Video](https://img.shields.io/badge/â–¶_Watch_Video_Demo-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](demo/Egypt_Real_Estate_AI_Demo.mp4)
+| Format | Size | Link |
+|:------:|:----:|:----:|
+| **PowerPoint** | 1.5 MB | [Egypt_Real_Estate_AI_Presentation.pptx](demo/Egypt_Real_Estate_AI_Presentation.pptx) |
+| **PDF** | 710 KB | [Egypt_Real_Estate_AI_Presentation.pdf](demo/Egypt_Real_Estate_AI_Presentation.pdf) |
 
-> **3-minute walkthrough** covering all features: price estimation, market analysis, mortgage calculator, chat with agent, dark mode, and Arabic support.
-
-**Direct download:** [Egypt_Real_Estate_AI_Demo.mp4](demo/Egypt_Real_Estate_AI_Demo.mp4) (3.7 MB)
+**Slide contents:**
+1. Title
+2. Agenda
+3. The Problem
+4. Our Solution
+5. Key Metrics
+6. Dataset
+7. ML Model
+8. Tech Stack
+9. Features (1/2)
+10. Features (2/2)
+11-15. Live Demo Screenshots
+16. Results & Performance
+17. Competitive Analysis
+18. System Architecture
+19. Future Roadmap
+20. Key Takeaways
+21. Thank You
 
 ---
+
 
 ### Presentation
 
@@ -345,6 +364,18 @@ Inspired by leading Egyptian and international real estate platforms:
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+---
+
+## Documentation
+
+| File | Description |
+|:----:|:-----------|
+| [README.md](README.md) | Main project documentation (this file) |
+| [PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md) | Complete technical overview (337 lines) |
+| [TECHNICAL_NOTES.md](TECHNICAL_NOTES.md) | Architecture deep-dive (282 lines) |
+| [CHANGELOG.md](CHANGELOG.md) | Version history (120 lines) |
+| [LICENSE](LICENSE) | MIT License |
 
 ---
 
