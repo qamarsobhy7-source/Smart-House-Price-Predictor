@@ -907,6 +907,134 @@ section[data-testid="stSidebar"] * { color: TEXT !important; }
     margin: 0 !important;
 }
 
+
+/* FIX: Prevent word breaking in feature pills */
+.stButton > button {
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
+    min-height: 46px !important;
+    height: auto !important;
+    white-space: nowrap !important;
+    padding: 12px 16px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0 !important;
+    line-height: 1.2 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+}
+
+.stButton > button > div,
+.stButton > button > div > p,
+.stButton > button p {
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    white-space: nowrap !important;
+    text-overflow: clip !important;
+    overflow: visible !important;
+    margin: 0 !important;
+    letter-spacing: 0 !important;
+}
+
+
+/* PRICE HISTORY CARDS */
+.price-history-card {
+    background: BG_CARD;
+    border: 1px solid BORDER;
+    border-radius: 14px;
+    padding: 20px 18px;
+    text-align: right;
+    transition: all 0.25s ease;
+    height: 100%;
+    min-height: 130px;
+}
+.price-history-card:hover {
+    transform: translateY(-3px);
+    box-shadow: SHADOW_MD;
+}
+.price-history-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: TEXT_MUTED;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 10px;
+}
+.price-history-value {
+    font-size: 26px;
+    font-weight: 800;
+    color: TEXT;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+    margin-bottom: 2px;
+}
+.price-history-unit {
+    font-size: 12px;
+    color: TEXT_MUTED;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+.price-card-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-top: 6px;
+}
+.badge-gray {
+    background: BG_SOFT;
+    color: TEXT_MUTED;
+}
+.badge-green {
+    background: SUCCESS_SOFT;
+    color: SUCCESS;
+}
+.badge-blue {
+    background: PRIMARY_SOFT;
+    color: PRIMARY;
+}
+
+/* ROI CARDS */
+.roi-card {
+    background: BG_CARD;
+    border: 1px solid BORDER;
+    border-radius: 14px;
+    padding: 22px 20px;
+    text-align: right;
+    transition: all 0.25s ease;
+    height: 100%;
+    margin-bottom: 16px;
+}
+.roi-card:hover {
+    border-color: PRIMARY;
+    transform: translateY(-2px);
+    box-shadow: SHADOW_MD;
+}
+.roi-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: TEXT_MUTED;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 10px;
+}
+.roi-value {
+    font-size: 24px;
+    font-weight: 800;
+    color: TEXT;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+}
+.roi-unit {
+    font-size: 13px;
+    font-weight: 600;
+    color: TEXT_MUTED;
+}
+
 </style>
 """
 

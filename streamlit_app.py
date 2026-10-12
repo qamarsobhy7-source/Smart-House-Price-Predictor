@@ -63,6 +63,14 @@ TEXTS = {
         "district": "District", "compound": "Compound",
         "no_compound": "None",
         "property_type": "Property Type",
+        "town": "Town", "view": "View",
+        "developer": "Developer", "seller_type": "Seller Type",
+        "completion": "Completion Status",
+        "seller_broker": "Broker", "seller_owner": "Owner", "seller_developer": "Developer",
+        "comp_ready": "Ready", "comp_offplan": "Off-Plan", "comp_under": "Under Construction",
+        "view_unknown": "No Specific View", "view_garden": "Garden View",
+        "view_pool": "Pool View", "view_sea": "Sea View", "view_city": "City View",
+        "view_street": "Street View", "view_lake": "Lake View",
         "size": "Size (sqm)", "bedrooms": "Bedrooms",
         "bathrooms": "Bathrooms", "floor": "Floor",
         "living_rooms": "Living Rooms", "kitchens": "Kitchens",
@@ -127,6 +135,14 @@ TEXTS = {
         "district": "الحي", "compound": "كمبوند",
         "no_compound": "لا يوجد",
         "property_type": "نوع العقار",
+        "town": "المنطقة", "view": "الإطلالة",
+        "developer": "المطور", "seller_type": "نوع البائع",
+        "completion": "حالة التسليم",
+        "seller_broker": "وسيط", "seller_owner": "مالك", "seller_developer": "مطور",
+        "comp_ready": "جاهز للاستلام", "comp_offplan": "على الخريطة", "comp_under": "تحت الإنشاء",
+        "view_unknown": "بدون إطلالة محددة", "view_garden": "إطلالة حديقة",
+        "view_pool": "إطلالة حمام سباحة", "view_sea": "إطلالة بحر", "view_city": "إطلالة مدينة",
+        "view_street": "إطلالة شارع", "view_lake": "إطلالة بحيرة",
         "size": "المساحة (م²)", "bedrooms": "غرف النوم",
         "bathrooms": "الحمامات", "floor": "الطابق",
         "living_rooms": "الصالونات", "kitchens": "المطابخ",
@@ -197,48 +213,199 @@ except Exception as e:
     st.stop()
 
 _AR_NAMES = {
-    "New Cairo City": "القاهرة الجديدة", "New Cairo": "القاهرة الجديدة",
-    "6th of October": "6 أكتوبر", "6 October City": "6 أكتوبر",
-    "6th October": "6 أكتوبر", "Sheikh Zayed": "الشيخ زايد",
-    "Sheikh Zayed City": "مدينة الشيخ زايد",
-    "New Capital": "العاصمة الإدارية",
-    "New Administrative Capital": "العاصمة الإدارية",
-    "North Coast": "الساحل الشمالي", "Ain Sokhna": "العين السخنة",
-    "Al Sokhna": "العين السخنة", "New Alamein": "العلمين الجديدة",
-    "El Alamein": "العلمين", "Mostakbal City": "مدينة المستقبل",
-    "Future City": "مدينة المستقبل", "Madinaty": "مدينتي",
-    "Alexandria": "الإسكندرية", "Cairo": "القاهرة", "Giza": "الجيزة",
-    "Hurghada": "الغردقة", "Matrouh": "مطروح", "Suez": "السويس",
-    "The 5th Settlement": "التجمع الخامس", "5th Settlement": "التجمع الخامس",
-    "First Settlement": "التجمع الأول", "Third Settlement": "التجمع الثالث",
-    "Nasr City": "مدينة نصر", "Heliopolis": "مصر الجديدة",
-    "Maadi": "المعادي", "Zamalek": "الزمالك", "Downtown": "وسط البلد",
-    "Mohandessin": "المهندسين", "Dokki": "الدقي", "Haram": "الهرم",
-    "Hay El Haram": "حي الهرم", "Hadayek El Ahram": "حدائق الأهرام",
-    "Al Agouza": "العجوزة", "Lebanon St.": "شارع لبنان",
-    "Al Quds Al Sharif St.": "شارع القدس الشريف",
-    "Al Esraa St.": "شارع الإسراء", "Al Hassani St.": "شارع الحسني",
-    "Esraa Al Moalemeen St.": "شارع الإسراء المعلمين",
-    "Ahmed Orabi St.": "شارع أحمد عرابي",
-    "Lebanon Square": "ميدان لبنان",
-    "Cairo Alexandria Desert Road": "طريق مصر إسكندرية الصحراوي",
-    "Faisal": "فيصل", "Hadayek October": "حدائق أكتوبر",
-    "Rehab": "الرحاب", "Al Rehab": "الرحاب",
+    # Cairo - مدن وأحياء رئيسية
+    "Cairo": "القاهرة", "New Cairo": "القاهرة الجديدة",
+    "New Cairo City": "القاهرة الجديدة", "Heliopolis": "مصر الجديدة",
+    "Nasr City": "مدينة نصر", "Maadi": "المعادي",
+    "Zamalek": "الزمالك", "Downtown": "وسط البلد",
+    "Mohandessin": "المهندسين", "Dokki": "الدقي",
+    "Agouza": "العجوزة", "Al Agouza": "العجوزة",
+    "Abdeen": "عابدين", "Hay El Zaytoun": "حي الزيتون",
+    "El Zaytoun": "الزيتون", "Zeitoun": "الزيتون",
+    "Garden City": "جاردن سيتي", "Hay El Manial": "حي المنيل",
+    "El Manial": "المنيل", "Al Manial": "المنيل",
+    "Al Salam City": "مدينة السلام", "Salam City": "مدينة السلام",
+    "Hay Helwan": "حي حلوان", "Helwan": "حلوان",
+    "Shubra": "شبرا", "Shubra El Kheima": "شبرا الخيمة",
+    "Matariya": "المطرية", "Ain Shams": "عين شمس",
+    "Abbasiya": "العباسية", "Roxy": "روكسي",
+    "Sheraton": "شيراتون", "Almaza": "الماظة",
+    "Ard El Golf": "أرض الجولف", "Korba": "الكوربة",
+    "Nozha": "النزهة", "El Nozha": "النزهة",
+    "New Nozha": "النزهة الجديدة",
+    "Marg": "المرج", "El Marg": "المرج",
+    "Obour": "العبور", "Obour City": "مدينة العبور",
+    "Alf Maskan": "ألف مسكن", "Gesr El Suez": "جسر السويس",
+    "Ezbet El Nakhl": "عزبة النخل",
+    "Badr": "بدر", "Badr City": "مدينة بدر",
     "Shorouk": "الشروق", "Al Shorouk": "الشروق",
     "Shorouk City": "مدينة الشروق",
-    "Obour": "العبور", "Obour City": "مدينة العبور",
-    "Badr": "بدر", "Badr City": "مدينة بدر",
-    "Smouha": "سموحة", "Sidi Gaber": "سيدي جابر",
-    "Stanley": "ستانلي", "Miami": "ميامي", "Sidi Bishr": "سيدي بشر",
-    "New Heliopolis": "هليوبوليس الجديدة",
+    "Rehab": "الرحاب", "Al Rehab": "الرحاب",
+    "Madinaty": "مدينتي", "New Heliopolis": "هليوبوليس الجديدة",
+    "Nile Corniche St.": "كورنيش النيل",
+    "Nile Corniche": "كورنيش النيل",
+    "Corniche El Nil": "كورنيش النيل",
+    
+    # Giza - الجيزة
+    "Giza": "الجيزة", "Haram": "الهرم", "Hay El Haram": "حي الهرم",
+    "El Haram": "الهرم", "Al Haram": "الهرم",
+    "Hadayek El Ahram": "حدائق الأهرام",
+    "Hadayek Al Ahram": "حدائق الأهرام",
+    "Faisal": "فيصل", "Imbaba": "إمبابة",
+    "Boulaq": "بولاق", "Bulaq": "بولاق",
+    "Sheikh Zayed": "الشيخ زايد",
+    "Sheikh Zayed City": "مدينة الشيخ زايد",
+    "6 October": "6 أكتوبر", "6th October": "6 أكتوبر",
+    "6th of October": "6 أكتوبر", "6 October City": "مدينة 6 أكتوبر",
+    "Hadayek October": "حدائق أكتوبر",
+    "October": "أكتوبر", "Dahshur": "دهشور",
+    "Saqqara": "سقارة", "Awsim": "أوسيم",
+    "Kerdasa": "كرداسة", "Abu Rawash": "أبو رواش",
+    
+    # Alexandria - الإسكندرية
+    "Alexandria": "الإسكندرية", "Sidi Gaber": "سيدي جابر",
+    "Smouha": "سموحة", "Stanley": "ستانلي",
+    "Miami": "ميامي", "Sidi Bishr": "سيدي بشر",
+    "Montazah": "المنتزه", "Maamoura": "المعمورة",
+    "Abu Qir": "أبو قير", "Raml Station": "محطة الرمل",
+    "Anfushi": "الأنفوشي", "Manshiya": "المنشية",
+    "Attarin": "العطارين", "Labban": "اللبان",
+    "Gomrok": "الجمرك", "Agami": "العجمي",
+    "Borg El Arab": "برج العرب", "King Mariout": "كينج مريوط",
+    
+    # North Coast / الساحل
+    "North Coast": "الساحل الشمالي",
+    "Marina": "مارينا", "Marina El Alamein": "مارينا العلمين",
+    "New Alamein": "العلمين الجديدة", "Alamein": "العلمين",
+    "El Alamein": "العلمين", "Ras El Hekma": "رأس الحكمة",
+    "Sidi Abdel Rahman": "سيدي عبد الرحمن",
+    "Hacienda Bay": "هاسيندا باي",
+    "Marassi": "مراسي", "Fouka Bay": "فوكا باي",
+    "Telal": "تلال", "Silver Sands": "سيلفر ساندز",
+    
+    # Ain Sokhna / العين السخنة
+    "Ain Sokhna": "العين السخنة", "Al Sokhna": "العين السخنة",
+    "Sokhna": "السخنة", "Zafarana": "الزعفرانة",
+    "Stella": "ستيلا", "Porto Sokhna": "بورتو السخنة",
+    
+    # Red Sea / البحر الأحمر
+    "Hurghada": "الغردقة", "El Gouna": "الجونة",
+    "Sahl Hasheesh": "سهل حشيش", "Makadi": "مكادي",
+    "Makadi Heights": "مكادي هايتس",
+    "Marsa Alam": "مرسى علم", "Soma Bay": "سوما باي",
+    "Safaga": "سفاجا", "Quseir": "القصير",
+    
+    # Matrouh / مطروح
+    "Matrouh": "مطروح", "Marsa Matrouh": "مرسى مطروح",
+    "Siwa": "سيوة", "Dabaa": "الضبعة",
+    
+    # Suez / السويس
+    "Suez": "السويس", "Port Said": "بورسعيد",
+    "Ismailia": "الإسماعيلية", "Suez Canal": "قناة السويس",
+    
+    # New Administrative Capital / العاصمة الإدارية
+    "New Capital": "العاصمة الإدارية",
+    "New Administrative Capital": "العاصمة الإدارية",
+    "Administrative Capital": "العاصمة الإدارية",
+    "R8": "R8", "Downtown New Capital": "وسط العاصمة",
+    
+    # Mostakbal / المستقبل
+    "Mostakbal City": "مدينة المستقبل",
+    "Future City": "مدينة المستقبل",
+    "Bloomfields": "بلومفيلدز",
+    
+    # Compounds شائعة
+    "Mountain View": "ماونتن فيو",
+    "Mountain View 1.1": "ماونتن فيو 1.1",
+    "Mountain View Ras El Hekma": "ماونتن فيو رأس الحكمة",
+    "Palm Hills": "بالم هيلز", "Palm Hills October": "بالم هيلز أكتوبر",
+    "Sodic": "سوديك", "Hyde Park": "هايد بارك",
+    "The Lakes": "ذا ليكس", "Lake View": "ليك فيو",
+    "Villette": "فيلlette", "Mivida": "ميفيدا",
+    "Uptown Cairo": "أبتاون القاهرة",
+    "Cairo Festival City": "كايرو فيستيفال سيتي",
+    "Mall of Egypt": "مول مصر",
+    "Allegria": "أليجريا", "Swan Lake": "سوان ليك",
+    "Marassi": "مراسي", "Hacienda": "هاسيندا",
+    "Amwaj": "أمواج", "Diplo": "دبلو",
+    "Telal": "تلال", "Jefaira": "جفيرا",
+    "Il Monte Galala": "إل مونتي جالالا",
+    
+    # Prefixes للمساعدة
+    "St.": "شارع", "Street": "شارع",
+    "Square": "ميدان", "Midan": "ميدان",
 }
 
+# بادئات شائعة
+_PREFIX_MAP = [
+    ("Hay El ", "حي ال"),
+    ("Hay Al ", "حي ال"),
+    ("Hay ", "حي "),
+    ("Al ", "ال"),
+    ("El ", "ال"),
+    ("New ", "جديد "),
+    ("Old ", "قديم "),
+    ("North ", "شمال "),
+    ("South ", "جنوب "),
+    ("East ", "شرق "),
+    ("West ", "غرب "),
+    ("Upper ", "أعلى "),
+    ("Lower ", "أدنى "),
+]
+
+_SUFFIX_MAP = [
+    (" City", " مدينة"),
+    (" Compound", " كمبوند"),
+    (" District", " منطقة"),
+    (" Area", " منطقة"),
+    (" St.", " شارع"),
+    (" Street", " شارع"),
+    (" Square", " ميدان"),
+    (" Heights", " هايتس"),
+    (" Gardens", " جاردنز"),
+    (" Village", " فيليدج"),
+    (" Bay", " باي"),
+    (" Park", " بارك"),
+    (" Plaza", " بلازا"),
+    (" Tower", " تاور"),
+    (" Towers", " تاورز"),
+]
+
+
 def ar_name(name):
-    if not name: return name
-    return _AR_NAMES.get(str(name).strip(), name)
+    if not name:
+        return name
+    name_str = str(name).strip()
+    
+    # 1. بحث مباشر في القاموس
+    if name_str in _AR_NAMES:
+        return _AR_NAMES[name_str]
+    
+    # 2. بحث بدون حساسية لحالة الأحرف
+    for k, v in _AR_NAMES.items():
+        if k.lower() == name_str.lower():
+            return v
+    
+    # 3. تجريب البادئات
+    result = name_str
+    for en_prefix, ar_prefix in _PREFIX_MAP:
+        if result.startswith(en_prefix):
+            result = ar_prefix + result[len(en_prefix):]
+            break
+    
+    # 4. تجريب اللواحق
+    for en_suffix, ar_suffix in _SUFFIX_MAP:
+        if result.endswith(en_suffix):
+            result = result[:-len(en_suffix)] + ar_suffix
+            break
+    
+    # 5. لو ماتغيرش، نرجعه زي ما هو
+    return result
+
 
 def nm(obj):
-    if obj is None: return ""
+    if obj is None:
+        return ""
     if isinstance(obj, str):
         return ar_name(obj) if lang == "ar" else obj
     if lang in obj and obj[lang]:
@@ -415,32 +582,49 @@ with tab1:
                                 format_func=lambda i: gov_labels[i], key="sel_gov")
         selected_gov = gov_options[gov_idx]
 
-        cities = selected_gov.get("cities", [])
+        # فلتر: نستبعد المناطق بأقل من 5 إعلانات
+        MIN_LISTINGS = 5
+
+        cities = [c for c in selected_gov.get("cities", []) if c.get("listings", 0) >= MIN_LISTINGS]
         if cities:
             city_labels = [nm(c) + " (" + f'{c["listings"]:,}' + ")" for c in cities]
             city_idx = st.selectbox(T["city"], range(len(cities)),
                                      format_func=lambda i: city_labels[i], key="sel_city")
             selected_city = cities[city_idx]
         else:
-            selected_city = {"districts": [], "compounds": []}
+            # لو المدينة مفيش فيها بيانات كفاية، ناخد كل الإعلانات
+            cities_all = selected_gov.get("cities", [])
+            if cities_all:
+                city_labels = [nm(c) + " (" + f'{c["listings"]:,}' + ")" for c in cities_all]
+                city_idx = st.selectbox(T["city"], range(len(cities_all)),
+                                         format_func=lambda i: city_labels[i], key="sel_city")
+                selected_city = cities_all[city_idx]
+            else:
+                selected_city = {"districts": [], "compounds": []}
 
-        districts = selected_city.get("districts", [])
+        districts = [d for d in selected_city.get("districts", []) if d.get("listings", 0) >= MIN_LISTINGS]
         if districts:
             dist_labels = [nm(d) + " (" + f'{d["listings"]:,}' + ")" for d in districts]
             dist_idx = st.selectbox(T["district"], range(len(districts)),
                                      format_func=lambda i: dist_labels[i], key="sel_dist")
             selected_district = districts[dist_idx]
         else:
-            selected_district = {"en": "Unknown", "ar": "غير معروف"}
+            districts_all = selected_city.get("districts", [])
+            if districts_all:
+                dist_labels = [nm(d) + " (" + f'{d["listings"]:,}' + ")" for d in districts_all]
+                dist_idx = st.selectbox(T["district"], range(len(districts_all)),
+                                         format_func=lambda i: dist_labels[i], key="sel_dist")
+                selected_district = districts_all[dist_idx]
+            else:
+                selected_district = {"en": "Unknown", "ar": "غير معروف"}
 
         compounds_list = selected_city.get("compounds", [])
-        if compounds_list:
-            comp_labels = ["-- " + T["no_compound"] + " --"] + [nm(c) for c in compounds_list]
-            comp_idx = st.selectbox(T["compound"], range(len(comp_labels)),
-                                     format_func=lambda i: comp_labels[i], key="sel_comp")
-            selected_compound = compounds_list[comp_idx - 1] if comp_idx > 0 else {"en": "No Compound", "ar": "لا يوجد"}
-        else:
-            selected_compound = {"en": "No Compound", "ar": "لا يوجد"}
+        comp_labels = ["-- " + T["no_compound"] + " --"] + [nm(c) for c in compounds_list]
+        comp_idx = st.selectbox(T["compound"], range(len(comp_labels)),
+                                 format_func=lambda i: comp_labels[i], key="sel_comp")
+        selected_compound = compounds_list[comp_idx - 1] if comp_idx > 0 else {"en": "No Compound", "ar": "لا يوجد"}
+
+        town_val = st.text_input(T["town"], value="", key="inp_town")
 
         st.markdown('<div class="form-section">' + T["details"] + '</div>', unsafe_allow_html=True)
 
@@ -478,6 +662,38 @@ with tab1:
         furnished = st.selectbox(T["furnished"], fur_keys,
                                   format_func=lambda k: fur_labels[k], key="inp_furnished")
 
+        c_view, c_dev = st.columns(2)
+        with c_view:
+            view_keys = ["Unknown", "Garden", "Pool", "Sea", "City", "Street", "Lake"]
+            view_labels = {
+                "Unknown": T["view_unknown"], "Garden": T["view_garden"],
+                "Pool": T["view_pool"], "Sea": T["view_sea"],
+                "City": T["view_city"], "Street": T["view_street"],
+                "Lake": T["view_lake"],
+            }
+            selected_view = st.selectbox(T["view"], view_keys,
+                                          format_func=lambda k: view_labels[k], key="inp_view")
+        with c_dev:
+            selected_developer = st.text_input(T["developer"], value="", key="inp_dev")
+
+        c_seller, c_comp = st.columns(2)
+        with c_seller:
+            seller_keys = ["Broker", "Owner", "Developer"]
+            seller_labels = {
+                "Broker": T["seller_broker"], "Owner": T["seller_owner"],
+                "Developer": T["seller_developer"],
+            }
+            selected_seller = st.selectbox(T["seller_type"], seller_keys,
+                                            format_func=lambda k: seller_labels[k], key="inp_seller")
+        with c_comp:
+            comp_keys = ["Ready", "Off-Plan", "Under Construction"]
+            comp_labels = {
+                "Ready": T["comp_ready"], "Off-Plan": T["comp_offplan"],
+                "Under Construction": T["comp_under"],
+            }
+            selected_completion = st.selectbox(T["completion"], comp_keys,
+                                                format_func=lambda k: comp_labels[k], key="inp_comp")
+
         st.markdown('<div class="form-section">' + T["additional_features"] + '</div>', unsafe_allow_html=True)
         st.caption(T["select_features"])
 
@@ -489,9 +705,9 @@ with tab1:
             ("mall", T["feat_mall"]), ("mosque", T["feat_mosque"]),
             ("club", T["feat_club"]), ("sea", T["feat_sea"]),
         ]
-        feat_cols = st.columns(4)
+        feat_cols = st.columns(3)
         for i, (fkey, flabel) in enumerate(feat_items):
-            with feat_cols[i % 4]:
+            with feat_cols[i % 3]:
                 active = fkey in st.session_state.selected_features
                 if st.button(flabel, key="feat_" + fkey, use_container_width=True,
                              type="primary" if active else "secondary"):
@@ -535,14 +751,14 @@ with tab1:
                 input_data["governorate"] = selected_gov["en"]
                 input_data["district"] = selected_district["en"]
                 input_data["compound"] = selected_compound["en"]
-                input_data["completion_status"] = "completed"
+                input_data["completion_status"] = selected_completion.lower() if selected_completion != "Ready" else "completed"
                 input_data["furnished"] = furnished
-                input_data["seller_type"] = "Broker"
-                input_data["developer_name"] = "Unknown"
-                input_data["view"] = "Unknown"
+                input_data["seller_type"] = selected_seller
+                input_data["developer_name"] = selected_developer if selected_developer else "Unknown"
+                input_data["view"] = selected_view
                 input_data["finishing_type"] = finishing
                 input_data["payment_method"] = "Unknown"
-                input_data["town"] = selected_gov["en"]
+                input_data["town"] = town_val if town_val else selected_gov["en"]
                 input_data["area_per_room"] = size / max(bedrooms, 1)
                 input_data["total_rooms"] = bedrooms + bathrooms + living_rooms + kitchens
                 input_data["bed_bath_ratio"] = bedrooms / max(bathrooms, 1)
@@ -589,9 +805,34 @@ with tab1:
             )
             st.markdown(price_html, unsafe_allow_html=True)
 
-            m1, m2, m3 = st.columns(3)
+            # مؤشر جودة البيانات
+            sample_count = len(df[
+                (df["governorate"] == selected_gov["en"]) &
+                (df["district"] == selected_district["en"])
+            ])
+            gov_count = len(df[df["governorate"] == selected_gov["en"]])
+            
+            if sample_count >= 50:
+                quality_label = "High" if lang == "en" else "عالية"
+                quality_color = "🟢"
+            elif sample_count >= 15:
+                quality_label = "Medium" if lang == "en" else "متوسطة"
+                quality_color = "🟡"
+            elif sample_count >= 5:
+                quality_label = "Low" if lang == "en" else "منخفضة"
+                quality_color = "🟠"
+            else:
+                quality_label = "Very Low" if lang == "en" else "ضعيفة جداً"
+                quality_color = "🔴"
+            
+            m1, m2, m3, m4 = st.columns(4)
             m1.metric(T["price_range"], f'{result["price_low"]/1e6:.1f}M - {result["price_high"]/1e6:.1f}M')
             m2.metric(T["confidence"], f'{result["confidence"]*100:.0f}%')
+            m3.metric(
+                "Data Quality" if lang == "en" else "جودة البيانات",
+                f"{quality_color} {quality_label}",
+                help=f"Based on {sample_count} similar listings in this district"
+            )
 
             market_median = df[
                 (df["governorate"] == selected_gov["en"]) &
@@ -606,7 +847,7 @@ with tab1:
                     vs_label = f'{abs(diff):.0f}% ' + T["below_market"]
                 else:
                     vs_label = T["at_market"]
-                m3.metric(T["vs_market"], vs_label)
+                m4.metric(T["vs_market"], vs_label)
 
 
             st.markdown("---")
@@ -636,78 +877,176 @@ with tab1:
 
             st.markdown("---")
 
-            # PRICE TIME SERIES
-            ts_title = "Price Trend: History & Forecast" if lang == "en" else "تطور السعر: التاريخي والتوقع"
-            st.markdown('<div class="section-title" style="font-size:18px;margin-bottom:16px;">' + ts_title + '</div>', unsafe_allow_html=True)
+            # ═══ PRICE HISTORY & FORECAST ═══
+            price_hist_title = "Price History & Forecast" if lang == "en" else "تاريخ وتوقع السعر"
+            st.markdown(
+                '<div class="section-title" style="font-size:20px;margin-bottom:20px;">' + price_hist_title + '</div>',
+                unsafe_allow_html=True,
+            )
 
-            years_ar = ["2020", "2021", "2022", "2023", "2024", "2025", "2026", "2027"]
-            years_en = ["2020", "2021", "2022", "2023", "2024 (Now)", "2025", "2026", "2027"]
-            years = years_ar if lang == "ar" else years_en
+            annual_growth = 0.08
+            price_1y_ago = price / (1 + annual_growth)
+            price_6m_ago = price / (1 + annual_growth) ** 0.5
+            price_6m_future = price * (1 + annual_growth) ** 0.5
+            price_1y_future = price * (1 + annual_growth)
+            price_3y_future = price * (1 + annual_growth) ** 3
 
-            prices_hist = [price / (1.08 ** (2024 - int(y.split()[0]))) if int(y.split()[0]) <= 2024 else price * (1.08 ** (int(y.split()[0]) - 2024)) for y in years]
-            prices_hist_m = [p / 1e6 for p in prices_hist]
+            # 4 كروت للمؤشرات
+            c1, c2, c3, c4 = st.columns(4)
+
+            labels_ar = ["السعر قبل سنة", "السعر الآن", "السعر بعد سنة", "السعر بعد 3 سنوات"]
+            labels_en = ["1 Year Ago", "Current Price", "Price in 1 Year", "Price in 3 Years"]
+            labels = labels_ar if lang == "ar" else labels_en
+
+            values = [
+                (f"{price_1y_ago/1e6:.2f}M", "down", f"{(price - price_1y_ago)/price_1y_ago*100:.1f}%", "growth"),
+                (f"{price/1e6:.2f}M", "now", "", ""),
+                (f"{price_1y_future/1e6:.2f}M", "up", f"+{annual_growth*100:.1f}%", "forecast"),
+                (f"{price_3y_future/1e6:.2f}M", "up", f"+{(price_3y_future/price - 1)*100:.1f}%", "forecast"),
+            ]
+
+            cols = [c1, c2, c3, c4]
+            for i, (col, label, (val, trend, pct, badge)) in enumerate(zip(cols, labels, values)):
+                with col:
+                    badge_html = ""
+                    if badge == "growth":
+                        badge_html = '<div class="price-card-badge badge-gray">' + pct + " " + ("since last year" if lang == "en" else "خلال سنة") + '</div>'
+                    elif badge == "forecast":
+                        badge_html = '<div class="price-card-badge badge-green">' + pct + " " + ("forecast" if lang == "en" else "متوقع") + '</div>'
+                    elif trend == "now":
+                        badge_html = '<div class="price-card-badge badge-blue">' + ("Current" if lang == "en" else "الحالي") + '</div>'
+
+                    border_color = "#0066FF" if trend == "now" else "#E2E8F0"
+
+                    st.markdown(
+                        '<div class="price-history-card" style="border-top:3px solid ' + border_color + ';">'
+                        '<div class="price-history-label">' + label + '</div>'
+                        '<div class="price-history-value">' + val + '</div>'
+                        '<div class="price-history-unit">' + ("M EGP" if lang == "en" else "مليون ج.م") + '</div>'
+                        + badge_html +
+                        '</div>',
+                        unsafe_allow_html=True,
+                    )
+
+            # رسم بياني محسّن
+            st.markdown("")
+            years_ar_chart = ["2020", "2021", "2022", "2023", "2024", "2025", "2026", "2027"]
+            years_en_chart = ["2020", "2021", "2022", "2023", "2024", "2025", "2026", "2027"]
+            years_chart = years_ar_chart if lang == "ar" else years_en_chart
+
+            prices_chart = [
+                price / (1 + annual_growth) ** 4,
+                price / (1 + annual_growth) ** 3,
+                price / (1 + annual_growth) ** 2,
+                price / (1 + annual_growth) ** 1,
+                price,
+                price * (1 + annual_growth) ** 1,
+                price * (1 + annual_growth) ** 2,
+                price * (1 + annual_growth) ** 3,
+            ]
+            prices_chart_m = [p / 1e6 for p in prices_chart]
 
             fig_ts = go.Figure()
             fig_ts.add_trace(go.Scatter(
-                x=years[:5], y=prices_hist_m[:5],
+                x=years_chart[:5], y=prices_chart_m[:5],
                 mode='lines+markers',
-                name='Historical' if lang == 'en' else 'تاريخي',
-                line=dict(color=get_theme(dark)["primary"], width=3),
-                marker=dict(size=10),
+                name=('Historical' if lang == 'en' else 'تاريخي'),
+                line=dict(color=get_theme(dark)["primary"], width=4),
+                marker=dict(size=12, line=dict(color='white', width=2)),
+                fill='tozeroy',
+                fillcolor='rgba(0,102,255,0.08)',
+                hovertemplate=('%{x}: %{y:.2f}M EGP<extra></extra>' if lang == 'en' else '%{x}: %{y:.2f} مليون ج.م<extra></extra>'),
             ))
             fig_ts.add_trace(go.Scatter(
-                x=years[4:], y=prices_hist_m[4:],
+                x=years_chart[4:], y=prices_chart_m[4:],
                 mode='lines+markers',
-                name='Forecast' if lang == 'en' else 'توقع',
-                line=dict(color=get_theme(dark)["accent"], width=3, dash='dash'),
-                marker=dict(size=10),
+                name=('Forecast' if lang == 'en' else 'توقع'),
+                line=dict(color=get_theme(dark)["accent"], width=4, dash='dash'),
+                marker=dict(size=12, symbol='diamond', line=dict(color='white', width=2)),
+                fill='tozeroy',
+                fillcolor='rgba(255,107,53,0.08)',
+                hovertemplate=('%{x}: %{y:.2f}M EGP<extra></extra>' if lang == 'en' else '%{x}: %{y:.2f} مليون ج.م<extra></extra>'),
             ))
             fig_ts.update_layout(
-                height=340,
+                height=380,
                 margin=dict(l=20, r=20, t=20, b=20),
                 paper_bgcolor='rgba(0,0,0,0)',
                 plot_bgcolor='rgba(0,0,0,0)',
-                legend=dict(orientation="h", y=1.1),
-                yaxis_title=("Price (M EGP)" if lang == "en" else "السعر (مليون جنيه)"),
+                legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+                yaxis_title=("Price (M EGP)" if lang == "en" else "السعر (مليون ج.م)"),
+                xaxis=dict(type='category', showgrid=False),
+                yaxis=dict(showgrid=True, gridcolor='rgba(226,232,240,0.5)'),
+                hovermode='x unified',
             )
             st.plotly_chart(fig_ts, use_container_width=True)
 
-            # MAP
+            # ═══ MAP ═══
             st.markdown("---")
             map_title = "Property Location" if lang == "en" else "موقع العقار"
-            st.markdown('<div class="section-title" style="font-size:18px;margin-bottom:16px;">' + map_title + '</div>', unsafe_allow_html=True)
+            st.markdown(
+                '<div class="section-title" style="font-size:20px;margin-bottom:20px;">' + map_title + '</div>',
+                unsafe_allow_html=True,
+            )
 
             import folium
             from streamlit_folium import folium_static
 
-            m = folium.Map(location=[lat, lon], zoom_start=12)
+            m = folium.Map(location=[lat, lon], zoom_start=13)
             folium.Marker(
                 [lat, lon],
                 popup=(nm(selected_district) + " - " + f"{price:,.0f} EGP"),
                 icon=folium.Icon(color='blue', icon='home', prefix='fa'),
             ).add_to(m)
-            folium_static(m, width=None, height=380)
+            folium_static(m, width=None, height=420)
 
-            # ROI ANALYSIS
+            # ═══ INVESTMENT ANALYSIS ═══
             st.markdown("---")
             roi_title = "Investment Analysis" if lang == "en" else "تحليل الاستثمار"
-            st.markdown('<div class="section-title" style="font-size:18px;margin-bottom:16px;">' + roi_title + '</div>', unsafe_allow_html=True)
+            st.markdown(
+                '<div class="section-title" style="font-size:20px;margin-bottom:20px;">' + roi_title + '</div>',
+                unsafe_allow_html=True,
+            )
 
             annual_rent = price * 0.055
             monthly_rent = annual_rent / 12
             annual_yield = (annual_rent / price) * 100
             roi_5y = ((price * (1.08 ** 5) - price) / price) * 100
             payback_years = price / annual_rent
+            future_5y = price * (1.08 ** 5)
 
-            r1, r2, r3 = st.columns(3)
-            r1.metric("Monthly Rent" if lang == "en" else "الإيجار الشهري", f"{monthly_rent:,.0f} EGP")
-            r2.metric("Annual Yield" if lang == "en" else "العائد السنوي", f"{annual_yield:.2f}%")
-            r3.metric("Payback Period" if lang == "en" else "فترة الاسترداد", f"{payback_years:.1f} " + ("years" if lang == "en" else "سنة"))
+            roi_items_ar = [
+                ("الإيجار الشهري", f"{monthly_rent:,.0f}", "ج.م", "monthly"),
+                ("العائد السنوي", f"{annual_yield:.2f}", "%", "yield"),
+                ("فترة الاسترداد", f"{payback_years:.1f}", "سنة", "payback"),
+                ("نمو رأس المال (5 سنوات)", f"{roi_5y:.1f}", "%", "growth"),
+                ("القيمة المستقبلية (5 سنوات)", f"{future_5y/1e6:.2f}", "مليون ج.م", "future"),
+                ("سعر المتر", f"{ppm2:,.0f}", "ج.م", "sqm"),
+            ]
+            roi_items_en = [
+                ("Monthly Rent", f"{monthly_rent:,.0f}", "EGP", "monthly"),
+                ("Annual Yield", f"{annual_yield:.2f}", "%", "yield"),
+                ("Payback Period", f"{payback_years:.1f}", "years", "payback"),
+                ("5Y Capital Growth", f"{roi_5y:.1f}", "%", "growth"),
+                ("5Y Future Value", f"{future_5y/1e6:.2f}", "M EGP", "future"),
+                ("Price per sqm", f"{ppm2:,.0f}", "EGP", "sqm"),
+            ]
+            roi_items = roi_items_ar if lang == "ar" else roi_items_en
 
-            r4, r5, r6 = st.columns(3)
-            r4.metric("5Y Capital Growth" if lang == "en" else "نمو رأس المال 5 سنوات", f"{roi_5y:.1f}%")
-            r5.metric("5Y Future Value" if lang == "en" else "القيمة المستقبلية 5 سنوات", f"{price * (1.08 ** 5) / 1e6:.1f}M EGP")
-            r6.metric("Price per sqm" if lang == "en" else "سعر المتر", f"{ppm2:,.0f} EGP")
+            roi_cols_row1 = st.columns(3)
+            roi_cols_row2 = st.columns(3)
+            all_roi_cols = list(roi_cols_row1) + list(roi_cols_row2)
+
+            for col, (label, value, unit, icon_key) in zip(all_roi_cols, roi_items):
+                with col:
+                    st.markdown(
+                        '<div class="roi-card">'
+                        '<div class="roi-label">' + label + '</div>'
+                        '<div class="roi-value">' + value + ' <span class="roi-unit">' + unit + '</span></div>'
+                        '</div>',
+                        unsafe_allow_html=True,
+                    )
+
+
 
         else:
             empty_html = (
