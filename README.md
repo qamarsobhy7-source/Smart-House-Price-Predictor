@@ -433,10 +433,6 @@ Contributions are welcome! If you have suggestions or find a bug:
 
 ---
 
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=qamarsobhy7-source/Smart-House-Price-Predictor&type=Date)](https://star-history.com/#qamarsobhy7-source/Smart-House-Price-Predictor&Date)
-
 ---
 
 <div align="center">
