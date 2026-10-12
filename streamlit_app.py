@@ -30,6 +30,8 @@ from predictor import (
     calculate_roi, recommend_similar_properties,
 )
 
+from ui_components import promo_banner, stat_card
+
 # Optional modules
 try:
     from mock_images import get_property_images
@@ -231,6 +233,17 @@ st.markdown(f"""
 
 # Content area start
 st.markdown('<div class="content-area">', unsafe_allow_html=True)
+
+# ═══════════════════════════════════════════════════════════════
+# PROMO BANNER — Nawy style
+# ═══════════════════════════════════════════════════════════════
+promo_banner(
+    title="🏠 Egypt AI Premium",
+    subtitle="احصل على تقارير PDF مفصلة، حفظ غير محدود، وتنبيهات أسعار فورية",
+    cta_text="اكتشف الباقات",
+    gradient="warm",
+)
+
 
 
 # ═══════════════════════════════════════════════════════════════
