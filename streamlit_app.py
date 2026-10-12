@@ -115,6 +115,35 @@ if not LOADED:
 # ═══════════════════════════════════════════════════════════════
 # TRANSLATIONS HELPER
 # ═══════════════════════════════════════════════════════════════
+
+_AR_NAMES = {
+    "New Cairo City": "القاهرة الجديدة", "New Cairo": "القاهرة الجديدة",
+    "6th of October": "6 أكتوبر", "Sheikh Zayed": "الشيخ زايد",
+    "New Capital": "العاصمة الإدارية", "New Administrative Capital": "العاصمة الإدارية",
+    "North Coast": "الساحل الشمالي", "Ain Sokhna": "العين السخنة",
+    "Al Sokhna": "العين السخنة", "New Alamein": "العلمين الجديدة",
+    "El Alamein": "العلمين", "Mostakbal City": "مدينة المستقبل",
+    "Future City": "مدينة المستقبل", "Madinaty": "مدينتي",
+    "Alexandria": "الإسكندرية", "Cairo": "القاهرة", "Giza": "الجيزة",
+    "Hurghada": "الغردقة", "Matrouh": "مطروح", "Suez": "السويس",
+    "The 5th Settlement": "التجمع الخامس", "5th Settlement": "التجمع الخامس",
+    "First Settlement": "التجمع الأول", "Third Settlement": "التجمع الثالث",
+    "Nasr City": "مدينة نصر", "Heliopolis": "مصر الجديدة",
+    "Maadi": "المعادي", "Zamalek": "الزمالك", "Downtown": "وسط البلد",
+    "Mohandessin": "المهندسين", "Dokki": "الدقي", "Haram": "الهرم",
+    "Faisal": "فيصل", "6 October": "6 أكتوبر", "Hadayek October": "حدائق أكتوبر",
+    "Rehab": "الرحاب", "Shorouk": "الشروق", "Obour": "العبور",
+    "Badr": "بدر", "Smouha": "سموحة", "Sidi Gaber": "سيدي جابر",
+    "Stanley": "ستانلي", "Miami": "ميامي", "Sidi Bishr": "سيدي بشر",
+    "New Heliopolis": "هليوبوليس الجديدة", "Shorouk City": "مدينة الشروق",
+    "Badr City": "مدينة بدر", "Obour City": "مدينة العبور",
+    "Al Rehab": "الرحاب", "Al Shorouk": "الشروق",
+}
+
+def ar_name(name):
+    if not name: return name
+    return _AR_NAMES.get(name, name)
+
 def tr(section, key):
     return t(section, key, lang)
 
@@ -362,7 +391,7 @@ with tab1:
         st.markdown(f"**1️⃣ {tr('estimator', 'step1')}**")
         
         gov_options = [g for g in hierarchy["governorates"] if g["listings"] > 0]
-        gov_names = [f"{g['ar']} ({g['listings']:,})" if lang == "ar" else f"{g['en']} ({g['listings']:,})" for g in gov_options]
+        gov_names = [f"{(g.get('ar') or ar_name(g['en']))} ({g['listings']:,})" if lang == "ar" else f"{g['en']} ({g['listings']:,})" for g in gov_options]
         
         gov_idx = st.selectbox(
             tr('hero', 'governorate'),
@@ -374,7 +403,7 @@ with tab1:
         
         cities = selected_gov.get("cities", [])
         if cities:
-            city_names = [c["ar"] if lang == "ar" else c["en"] for c in cities]
+            city_names = [(c.get("ar") or ar_name(c["en"])) if lang == "ar" else c["en"] for c in cities]
             city_idx = st.selectbox(
                 tr('hero', 'city'),
                 range(len(cities)),
@@ -388,7 +417,7 @@ with tab1:
         
         districts = selected_city.get("districts", [])
         if districts:
-            dist_names = [d["ar"] if lang == "ar" else d["en"] for d in districts]
+            dist_names = [(d.get("ar") or ar_name(d["en"])) if lang == "ar" else d["en"] for d in districts]
             dist_idx = st.selectbox(
                 tr('hero', 'district'),
                 range(len(districts)),
@@ -476,10 +505,28 @@ with tab1:
             key="inp_furnished",
         )
         
-        amenity_count = st.slider(
-            "✨ " + ("عدد الكماليات" if lang == "ar" else "Amenities Count"),
-            0, 20, 5, key="inp_amenities"
-        )
+        st.markdown("---")
+if lang == "ar":
+    st.markdown("**✨ مميزات إضافية**")
+    features_options = [
+        "🌳 حديقة", "🏊 حمام سباحة", "🚗 جراج", "🛡️ أمن 24/7",
+        "💪 جيم", "🛗 أسانسير", "☀️ بلكونة", "🌅 إطلالة",
+        "🏪 مول تجاري", "🕌 مسجد", "🎯 نادي رياضي", "🌊 على البحر"
+    ]
+    features_label = "اختر المميزات المتاحة"
+else:
+    st.markdown("**✨ Additional Features**")
+    features_options = [
+        "🌳 Garden", "🏊 Pool", "🚗 Garage", "🛡️ Security 24/7",
+        "💪 Gym", "🛗 Elevator", "☀️ Balcony", "🌅 View",
+        "🏪 Mall", "🕌 Mosque", "🎯 Sports Club", "🌊 Sea Front"
+    ]
+    features_label = "Select available features"
+
+selected_features = multi_pills(features_label, features_options, key="property_features", cols_per_row=4)
+
+amenity_count = 5 + len(selected_features)
+st.caption(f"📊 إجمالي الكماليات: {amenity_count}" if lang == "ar" else f"📊 Total amenities: {amenity_count}")
         
         st.markdown("---")
         st.markdown(f"**4️⃣ {tr('estimator', 'step4')}**")
