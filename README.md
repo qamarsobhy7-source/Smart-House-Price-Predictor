@@ -424,6 +424,29 @@ Contributions are welcome! If you have suggestions or find a bug:
 
 ---
 
+## Limitations & Future Work
+
+### Current Limitations
+
+- **MAPE = 40.52%** — متوسط خطأ مقبول لسوق العقارات
+  (السوق فيه تباين كبير في الأسعار، مساومات، واختلافات في المواصفات)
+- **Sample Images** — صور توضيحية (مش صور العقار الحقيقي)
+- **Estimated Neighborhood Data** — بيانات تقديرية للحي
+- **No Real-time Updates** — البيانات ثابتة مش بتتحدث تلقائياً
+
+### Future Improvements
+
+1. **Rich Data** — إضافة بيانات الحالة القانونية، العمر، والحيوية
+2. **Spatial Models** — استخدام Spatial Regression للتنبؤ بالموقع
+3. **Real-time Updates** — تكامل مع APIs مباشرة من مواقع العقارات
+4. **Deep Learning** — استخدام Neural Networks للتنبؤات
+5. **Ensemble Models** — دمج أكثر من موديل للحصول على دقة أعلى
+6. **Real Photos** — استخراج صور حقيقية من الإعلانات
+7. **Mobile App** — تطبيق موبايل (PWA أو React Native)
+8. **3D Virtual Tours** — جولات افتراضية للعقارات
+
+---
+
 ## Author
 
 **Qamar Sobhy**
